@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project Procurement Management System</title>
 @include('components.header')
 </head>
 <body class="hold-transition login-page">
+<div class="overlay-wrapper"></div>
 <div class="login-box">
   <div class="login-logo">
-    <a href="#">System Title</a>
+    <a href="#">{{ $settings[0]->setting_description }}</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -17,7 +17,7 @@
       <p class="login-box-msg">Sign in to start your session</p>
   
     <div class="input-group mb-3">
-        <input type="email" class="form-control" placeholder="Email">
+        <input type="text" id="txt_username" class="form-control" placeholder="Username">
         <div class="input-group-append">
         <div class="input-group-text">
             <span class="fas fa-user"></span>
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="input-group mb-3">
-        <input type="password" class="form-control" placeholder="Password">
+        <input type="password" id="txt_password" class="form-control" placeholder="Password">
         <div class="input-group-append">
         <div class="input-group-text">
             <span class="fas fa-lock"></span>
@@ -60,10 +60,10 @@
       <!-- /.social-auth-links -->
 
       <p class="mb-1">
-        <a href="forgot-password.html">I forgot my password</a>
+        <a href="#" id="btn_forgot_pass">I forgot my password</a>
       </p>
       <p class="mb-0">
-        <a href="register.html" class="text-center">Register a new membership</a>
+        <a href="#" class="text-center">Register a new membership</a>
       </p>
     </div>
   </div>

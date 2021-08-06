@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProcurementController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ItemsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,3 +19,9 @@ use App\Http\Controllers\AuthenticationController;
 */
 
 Route::get('/', [AuthenticationController::class, 'index']);
+Route::post('authenticate', [AuthenticationController::class, 'authenticate']);
+
+Route::get('dashboard', [DashboardController::class, 'index']);
+Route::get('procurement', [ProcurementController::class, 'index']);
+Route::get('reports', [ReportsController::class, 'index']);
+Route::get('items', [ItemsController::class, 'displayItemListProcurement']);

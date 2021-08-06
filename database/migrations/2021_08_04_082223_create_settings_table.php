@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TblSystemSettings extends Migration
+class CreateSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class TblSystemSettings extends Migration
      */
     public function up()
     {
-        if (!(Schema::hasTable('tbl_system_settings'))){
-            Schema::create('tbl_system_settings', function (Blueprint $table) {
+        if (!(Schema::hasTable('settings'))){
+            Schema::create('settings', function (Blueprint $table) {
                 $table->id();
                 $table->string('setting_name');
                 $table->string('setting_description');
                 $table->integer('status');
             });
 
-            DB::table('tbl_system_settings')->insert(
+            DB::table('settings')->insert(
                 array(
                     'setting_name' => 'Application Name',
                     'setting_description' => 'Project Procurement Management System',
@@ -38,6 +38,6 @@ class TblSystemSettings extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_system_settings');
+        Schema::dropIfExists('settings');
     }
 }

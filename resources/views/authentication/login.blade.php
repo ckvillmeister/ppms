@@ -65,6 +65,7 @@
       <p class="mb-0">
         <a href="#" class="text-center">Register a new membership</a>
       </p>
+      
     </div>
   </div>
 </div>

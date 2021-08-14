@@ -23,7 +23,10 @@ class CreateUsersTable extends Migration
                 $table->string('extension')->nullable(true);
                 $table->string('username')->unique();
                 $table->string('password');
+                $table->integer('department')->default(1);
+                $table->integer('role')->default(1);
                 $table->timestamps();
+                $table->rememberToken();
                 $table->string('createdby')->nullable(true);
                 $table->datetime('datecreated')->nullable(true);
                 $table->string('updatedby')->nullable(true);
@@ -32,9 +35,9 @@ class CreateUsersTable extends Migration
             });
         }
 
-        $password = md5('E9q3gnDr');
+        $password = \Hash::make('E9q3gnDr');
         $datenow = date('Y-m-d H:i:s');
-        $inputs = ['firstname' => 'Super','lastname' => 'User','username' => 'super.user','password' => $password,'datecreated' => $datenow,'status' => 1];
+        $inputs = ['firstname' => 'Super','lastname' => 'User','username' => 'super.user','password' => $password, 'role' => 1, 'datecreated' => $datenow,'status' => 1];
         User::create($inputs);
     }
 

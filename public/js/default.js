@@ -6,7 +6,7 @@ function message(title, color, content){
     })
 }
 
-function request(link, met, data, type, container = '', navigate = ''){
+function request(link, met, data, type, container = ''){
     var token = $('meta[name="csrf-token"]').attr('content');
 
     $.ajax({
@@ -31,16 +31,21 @@ function request(link, met, data, type, container = '', navigate = ''){
             if (container){
                 $(container).html(result);
             }
-            else if (navigate){
-                message('Result', result['color'], result['message']);
-                setTimeout(function(){ window.location = navigate;}, 3000);
-            }
             else{
-                message('Result', result['color'], result['message']);
+                message(result['result'], result['color'], result['message']);
+
+                if (result['redirect']){
+                    setTimeout(function(){ window.location = result['redirect'];}, 3000);
+                }
             }
         },
         error: function(obj, msg, exception){
             message('Error', 'red', msg + ": " + obj.status + " " + exception);
         }
     })
+}
+
+function numericFormat(n) {
+    var parts=n.toString().split(".");
+    return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
 }

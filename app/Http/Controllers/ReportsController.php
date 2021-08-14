@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reports;
 use App\Models\Settings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
@@ -16,7 +17,15 @@ class ReportsController extends Controller
     public function index()
     {
         $settings = Settings::all();
-        return view('reports\index', array('settings' => $settings));
+
+        if(!(Auth::check()))
+        {
+            return redirect('/');
+        }
+        else{
+            return view('reports\index', array('settings' => $settings));
+        }
+        
     }
 
     /**

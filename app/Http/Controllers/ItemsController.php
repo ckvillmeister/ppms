@@ -22,9 +22,19 @@ class ItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $data = array('itemname' => $request->input('itemname'),
+                        'price' => $request->input('itemprice'),
+                        'uom' => $request->input('uom'),
+                        'category' => $request->input('category'),
+                        'datecreated' => date('Y-m-d H:i:s'),
+                        'status' => 1);
+
+        $result = Items::create($data);
+        return array('result' => 'Success',
+                        'color' => 'green',
+                        'message' => 'New item created!');
     }
 
     /**
@@ -88,5 +98,12 @@ class ItemsController extends Controller
                         ->where("status", "=", 1)
                         ->get();
         return view('procurement\itemlist', array('items' => $items));
+    }
+
+    public function getQueriedItemName(Request $request){
+        $items =  Items::select("*")
+                        ->where("itemname", "LIKE", "%" . trim($request->input('itemname')) . "%")
+                        ->get();
+        return $items;
     }
 }

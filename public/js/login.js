@@ -8,9 +8,7 @@ $('#btn_signin').on('click', function(){
     else{
         request('authenticate', 'POST', 
                 {"username": username, "password": password},
-                'JSON',
-                '',
-                'dashboard');
+                'JSON');
     }
 })
 

@@ -31,16 +31,15 @@
     <!-- Notifications Dropdown Menu -->
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#">
-        <img class="img-circle elevation-1" src="">
-        <b></b>
+        <h2 class="mr-2"><i class="fas fa-user"></i></h2>
       </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <div class="card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img class="profile-user-img img-fluid img-circle" src="">
+              <img class="profile-user-img img-fluid img-circle" src="{{ asset('images/avatar100x100.jpg') }}">
             </div>
-            <h3 class="profile-username text-center"></h3>
+            <h3 class="profile-username text-center">{{ Auth::user()->firstname.' '.Auth::user()->lastname }}</h3>
           </div>
           <div class="dropdown-divider"></div>
           <!--
@@ -50,7 +49,7 @@
           <a href="#" class="dropdown-item" data-toggle="modal" data-target="#modal_change_password">
             <i class="fas fa-key ml-3 mr-3"></i> Change Password
           </a>
-          <a href="" class="dropdown-item">
+          <a href="authenticate/logout" class="dropdown-item">
             <i class="fas fa-undo ml-3 mr-3"></i> Logout
           </a>
         </div>

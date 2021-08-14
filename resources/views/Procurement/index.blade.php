@@ -6,6 +6,10 @@
   #tbl_procurement_list{
     font-size: 10pt
   }
+
+  .numerical-cols {
+    text-align: right
+  }
 </style>
 </head>
 
@@ -35,24 +39,28 @@
         
         <div class="row m-3">
             <div class="col-lg-1">Navigate to:</div>
-            <div class="col-lg-2">
+            <div class="col-lg-1">
                 <select id="cbo_year" class="form-control form-control-sm mr-2 mb-2">
                     @for ($i = (date('Y') - 5); $i < (date('Y') + 5); $i++)
                         <option value="{{ $i }}" {{ (date("Y") == $i) ? "selected" : ""; }}>{{ $i }}</option>
                     @endfor
                 </select>
             </div>
+            <div class="col-lg-1">
+              <button class="btn btn-sm btn-success" id="go"><i class="fas fa-paper-plane mr-2"></i>GO</button>
+            </div>
         </div>
-
+        <br>
         <div class="row m-3">
             <div class="col-sm-4">
                 <div class="card card-primary card-outline direct-chat direct-chat-primary shadow-none">
                     <div class="card-header">
-                        <h3 class="card-title">Item List</h3>
+                        <h3 class="card-title"><i class="fas fa-list mr-2"></i>Item List</h3>
                         <div class="card-tools mt-2">
                             <button type="button" class="btn btn-tool" id="btn_create_new_item"><i class="fas fa-plus mr-2"> Create New Item</i>
-                        </button>
+                            </button>
                         </div>
+                        <div class="overlay-wrapper"></div>
                     </div>
                     <div class="card-body">
                       <div id="item_list"></div>
@@ -65,23 +73,24 @@
             <div class="col-sm-8">
                 <div class="card card-primary card-outline direct-chat direct-chat-primary shadow-none">
                     <div class="card-header">
-
+                      <h3 class="card-title"><i class="fas fa-list mr-2"></i>Procurement List</h3>
                     </div>
                     <div class="card-body">
                       <div class="row m-3">
                         <div class="col-sm-12 align-self-center">
-                            <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_procurement_list">
+                            <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list">
                                 <thead>
                                     <tr>
+                                        <th class="text-center" style="width:100px">Control</th>
                                         <th class="text-center">No.</th>
-                                        <th class="text-center">General Description</th>
+                                        <th class="text-center" style="width: 150px">General Description</th>
                                         <th class="text-center">Unit</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-center">Price</th>
                                         <th class="text-center">Estimated Budget</th>
                                         <th class="text-center">Procurement Mode</th>
                                         @foreach ($months as $month)
-                                        <th class="text-center" width="100px">{{ $month }}</th>
+                                        <th class="text-center" width="">{{ $month }}</th>
                                         @endforeach
                                         
                                     </tr>
@@ -94,7 +103,11 @@
                       </div>
                     </div>
                     <div class="card-footer">
-                        
+                      <div class="float-right">
+                        <button type="button" class="btn btn-sm btn-primary" id="save_procurement">
+                          <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
+                        </button>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -106,7 +119,7 @@
 </html>
 
 <div class="modal fade" id="modal_create_new_item" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header card-primary card-outline">
         <h5 class="modal-title" id="modal_title">Create New Item</h5>
@@ -115,97 +128,156 @@
         </button>
       </div>
       <div class="modal-body">
+        <form id="frm_create_new_item">
+          <div class="row mt-3">
+            <div class="col-lg-4 align-self-center">
+                Item General Description:
+            </div>
+            <div class="col-lg-8">
+                <!-- <input list="items" name="itemname" id="itemname" class="form-control form-control-sm">
+                <datalist id="items">
+                </datalist> -->
+                <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname">
+            </div>
+            <!-- <div class="col-lg-2 align-self-center">
+                Item Description:
+            </div>
+            <div class="col-lg-5">
+                <input type="text" class="form-control form-control-sm" placeholder="Ex. (Long, Red, Big)" id="itemdesc" name="itemdesc">
+            </div> -->
+          </div>
 
-        <div class="row mt-3">
-          <div class="col-lg-2 align-self-center">
-              Item Name:
+          <div class="row mt-3">
+            <div class="col-lg-4 align-self-center">
+                Price:
+            </div>
+            <div class="col-lg-4">
+              <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice">
+            </div>
           </div>
-          <div class="col-lg-3">
-              <input type="text" class="form-control form-control-sm" placeholder="Ex. Bondpaper" id="txt_itemname">
-          </div>
-          <div class="col-lg-2 align-self-center">
-              Item Description:
-          </div>
-          <div class="col-lg-5">
-              <input type="text" class="form-control form-control-sm" placeholder="Ex. Bondpaper (Long)" id="txt_itemdesc">
-          </div>
-        </div>
 
-        <div class="row mt-3">
-          <div class="col-lg-2 align-self-center">
-              Price:
-          </div>
-          <div class="col-lg-3">
-            <input type="text" class="form-control form-control-sm" placeholder="Ex. Bondpaper" id="txt_price">
-          </div>
-          <div class="col-lg-2 align-self-center">
-              Unit of Measurement:
-          </div>
-          <div class="col-md-3">
-              <select class="form-control form-control-sm" multiple="multiple" style="width: 100%;" id="cbo_uom">
-                <option>Alabama</option>
-                <option>Alaska</option>
-                <option>California</option>
-                <option>Delaware</option>
-                <option>Tennessee</option>
-                <option>Texas</option>
-                <option>Washington</option>
+          <div class="row mt-3">
+            <div class="col-lg-4 align-self-center">
+                Unit of Measurement:
+            </div>
+            <div class="col-lg-4">
+              <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom">
+                <option value=""></option>
+              @foreach ($uom as $key => $unit)
+                <option value="{{ $unit }}">{{ $unit }}</option>
+                @endforeach
               </select>
+            </div>
           </div>
-        </div>
 
-        <div class="row mt-3">
-          <div class="col-lg-2 align-self-center">
-              Mode:
+          <div class="row mt-3">
+
+            <div class="col-lg-4 align-self-center">
+                Category:
+            </div>
+            <div class="col-lg-4">
+              <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
+                <option value=""></option>
+              @foreach ($categories as $key => $category)
+                <option value="{{ $key }}">{{ $category }}</option>
+                @endforeach
+              </select>
+            </div>
+
           </div>
-          <div class="col-lg-3">
-              <select class="form-control form-control-sm select2" multiple="" style="width: 100%;" data-dropdown-css-class="select2-primary" id="cbo_mode">
-              @foreach ($modes as $mode)
+
+          <div class="row mt-3">
+            <div class="col-lg-8">
+              <span id="message"></span>
+            </div>
+            <div class="col-lg-4">
+              <div class="float-right">
+                <input type="submit" class="btn btn-sm btn-primary" id="save" value="Save">
+                <input type="reset" class="btn btn-sm btn-primary" id="reset" value="Reset">
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_add_to_list" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header card-primary card-outline">
+        <h5 class="modal-title" id="modal_title">Add Item to List</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          <div class="row">
+            <div class="col-lg-12">
+                Entery quantity for item <h4 id="displayname"></h4>
+            </div>
+          </div>
+        
+          <div class="row mt-3">
+            <div class="col-lg-3 align-self-center">
+                Quantity:
+            </div>
+            <div class="col-lg-3">
+                <input type="text" class="form-control form-control-sm" placeholder="Quantity" id="qty" name="qty">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-lg-3 align-self-center">
+                Mode:
+            </div>
+            <div class="col-lg-3">
+              <select class="form-control form-control-sm" style="width: 100%;" id="mode" name="mode">
+              <option value=""></option>
+              @foreach ($modes as $key => $mode)
                 <option value="{{ $mode }}">{{ $mode }}</option>
                 @endforeach
               </select>
-          </div>
-          <div class="col-lg-2 align-self-center">
-              Category:
-          </div>
-          <div class="col-lg-3">
-              <select class="form-control form-control-sm" multiple="multiple" style="width: 100%;" id="cbo_category">
-                
-              </select>
-          </div>
-        </div>
-
-        <div class="row mt-3">
-          <div class="col-lg-8">
-            <span id="message"></span>
-          </div>
-          <div class="col-lg-4">
-            <div class="float-right">
-              <button class="btn btn-sm btn-primary" id="btn_save"><icon class="fas fa-thumbs-up mr-2"></icon>Save</button>
             </div>
           </div>
-        </div>
+
+          <div class="row mt-3">
+            <div class="col-lg-3 align-self-center">
+                  Months:
+              </div>
+          </div>
+
+          <div class="row mt-3" id="MonthsList">
+            @foreach ($months as $month)
+            <div class="col-lg-3 p-2">
+                <input type="checkbox" class="mr-3" id="{{ 'chk'.$month }}" name="{{ $month }}" value="{{ $month }}" {{ ($month == 'January' | $month == 'July') ? "checked='checked'" : ""; }}><label>{{ $month }}</label>
+            </div>
+            @endforeach
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-lg-8">
+              <span id="message"></span>
+            </div>
+            <div class="col-lg-4">
+              <div class="float-right">
+                <button class="btn btn-sm btn-primary" id="additemtolist"><i class="fas fa-cart-plus mr-2"></i>Add to List</button>
+              </div>
+            </div>
+          </div>
 
       </div>
     </div>
   </div>
 </div>
+
 <script src="{{ asset('js/procurement.js') }}"></script>
 <script type="text/javascript">
-  
-  $('#cbo_uom').select2();
-  $('#cbo_mode').select2();
-  $('#cbo_category').select2();
+  $('#uom').select2({dropdownParent: $("#modal_create_new_item")});
+  $('#category').select2({dropdownParent: $("#modal_create_new_item")});
 
-  var table = $('#tbl_procurement_list').DataTable({
-    "scrollX": true,
-    "ordering": false,
-    lengthMenu: [[25, 50, 100, 200, -1], [25, 50, 100, 200, "All"]],
-    styles: {
-      tableHeader: {
-        fontSize: 8
-      }
-    }
-  });
-
+  $('#mode').select2({dropdownParent: $("#modal_add_to_list")});
 </script>

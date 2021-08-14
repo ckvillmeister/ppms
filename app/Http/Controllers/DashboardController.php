@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dashboard;
 use App\Models\Settings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -16,7 +17,14 @@ class DashboardController extends Controller
     public function index()
     {
         $settings = Settings::all();
-        return view('dashboard\index', array('settings' => $settings));
+
+        if(!(Auth::check()))
+        {
+            return redirect('/');
+        }
+        else{
+            return view('dashboard\index', array('settings' => $settings));
+        }
     }
 
     /**

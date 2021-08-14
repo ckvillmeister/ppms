@@ -15,7 +15,28 @@ class CreateProcurementsTable extends Migration
     {
         Schema::create('procurements', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->integer('itemid');
+            $table->string('itemname');
+            $table->integer('quantity');
+            $table->double('price');
+            $table->string('mode');
+            $table->integer('january')->nullable(true);
+            $table->integer('february')->nullable(true);
+            $table->integer('march')->nullable(true);
+            $table->integer('april')->nullable(true);
+            $table->integer('may')->nullable(true);
+            $table->integer('june')->nullable(true);
+            $table->integer('july')->nullable(true);
+            $table->integer('august')->nullable(true);
+            $table->integer('september')->nullable(true);
+            $table->integer('october')->nullable(true);
+            $table->integer('november')->nullable(true);
+            $table->integer('december')->nullable(true);
+            $table->string('createdby')->nullable(true);
+            $table->datetime('datecreated')->nullable(true);
+            $table->string('updatedby')->nullable(true);
+            $table->datetime('dateupdated')->nullable(true);
+            $table->integer('status');
         });
     }
 

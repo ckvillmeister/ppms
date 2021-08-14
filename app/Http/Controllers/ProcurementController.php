@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Procurement;
 use App\Models\Settings;
 use App\Models\Items;
-use App\Enums\Months;
-use App\Enums\ProcurementMode;
+use App\Enums\Lists;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProcurementController extends Controller
 {
@@ -19,11 +19,22 @@ class ProcurementController extends Controller
     public function index()
     {
         $settings = Settings::all();
-        $months = Months::$months;
-        $modes = ProcurementMode::$modes;
-        return view('procurement\index', array('settings' => $settings, 
-                                                'months' => $months,
-                                                'modes' => $modes));
+
+        if(!(Auth::check()))
+        {
+            return redirect('/');
+        }
+        else{
+            $months = Lists::$months;
+            $modes = Lists::$modes;
+            $categories = Lists::$categories;
+            $uom = Lists::$uom;
+            return view('procurement\index', array('settings' => $settings, 
+                                                    'months' => $months,
+                                                    'modes' => $modes,
+                                                    'categories' => $categories,
+                                                    'uom' => $uom));
+        }
     }
 
     /**
@@ -31,9 +42,10 @@ class ProcurementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        dd(Auth::user());
+        $list = $request->input('list');
     }
 
     /**

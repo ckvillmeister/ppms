@@ -9,10 +9,10 @@
             <thead>
                 <tr>
                     <th class="text-center">No.</th>
-                    <th class="text-center">Item Name</th>
-                    <th class="text-center">Description</th>
+                    <th class="text-center">General Description</th>
+                    <th class="text-center">UOM</th>
                     <th class="text-center">Price</th>
-                    <th class="text-center" style="width: 130px">Control</th>
+                    <th class="text-center">Control</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,9 +21,9 @@
                     <tr>
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td>{{ $item->itemname }}</td>
-                        <td>{{ $item->description }}</td>
+                        <td>{{ $item->uom }}</td>
                         <td>{{ $item->price }}</td>
-                        <td><button class="btn btn-sm btn-primary"><i class="fas fa-shopping-cart mr-2"></i>Add to List</button></td>
+                        <td class="text-center"><button class="btn btn-sm btn-primary" id="addtolist" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Add Item to Procurement List"><i class="fas fa-long-arrow-alt-right"></i></button></td>
                     </tr> 
                 @endforeach
             </tbody>

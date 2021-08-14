@@ -4,37 +4,48 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use App\Models\Settings;
-use App\Models\User;
+//use App\Models\User;
 
 class AuthenticationController extends Controller
 {
+
     function index(){
         $settings = Settings::all();
-        return view('authentication\login', array('settings' => $settings));
+
+        if(!(Auth::check()))
+        {
+            return view('authentication\login', array('settings' => $settings));
+        }
+        else{
+            return redirect('dashboard');
+        }
     }
 
     function authenticate(Request $request){
-        $user = $request->input('username');
-        $pass = md5($request->input('password'));
-
-        if (User::where('username', '=', $user)->exists()) {
-            if (User::where('username', '=', $user)->where('password', '=', $pass)->exists()) {
-                return array('result' => 'Success',
+        $credentials = $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+                
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return array('result' => 'Success',
                         'color' => 'green',
-                        'message' => 'Login Successful!');
-            }
-            else{
-                return array('result' => 'Error',
-                        'color' => 'red',
-                        'message' => 'Incorrect password!');
-            }
+                        'message' => 'Login Successful!',
+                        'redirect' => 'dashboard');
         }
         else{
             return array('result' => 'Error',
                         'color' => 'red',
-                        'message' => 'Username does not exist!');
+                        'message' => 'Incorrect user credentials!');
         }
         
+    }
+
+    function logout(){
+        Auth::logout();
+        return redirect('/');
     }
 }

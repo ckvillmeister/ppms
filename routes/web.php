@@ -20,8 +20,15 @@ use App\Http\Controllers\ItemsController;
 
 Route::get('/', [AuthenticationController::class, 'index']);
 Route::post('authenticate', [AuthenticationController::class, 'authenticate']);
+Route::get('authenticate/logout', [AuthenticationController::class, 'logout']);
 
 Route::get('dashboard', [DashboardController::class, 'index']);
+
 Route::get('procurement', [ProcurementController::class, 'index']);
+Route::post('procurement.create', [ProcurementController::class, 'create']);
+
 Route::get('reports', [ReportsController::class, 'index']);
-Route::get('items', [ItemsController::class, 'displayItemListProcurement']);
+
+Route::post('items.create', [ItemsController::class, 'create']);
+Route::get('items.displayItemListProcurement', [ItemsController::class, 'displayItemListProcurement']);
+Route::post('items.getQueriedItems', [ItemsController::class, 'getQueriedItemName']);

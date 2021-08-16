@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Departments;
 use App\Models\Settings;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class UserController extends Controller
+class DepartmentsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +25,7 @@ class UserController extends Controller
             return redirect('/');
         }
         else{
-            return view('accounts\index', array('settings' => $settings));
+            return view('departments\index', array('settings' => $settings));
         }
         
     }
@@ -54,10 +54,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Departments  $departments
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Departments $departments)
     {
         //
     }
@@ -65,10 +65,10 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Departments  $departments
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Departments $departments)
     {
         //
     }
@@ -77,10 +77,10 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Departments  $departments
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Departments $departments)
     {
         //
     }
@@ -88,29 +88,30 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Departments  $departments
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Departments $departments)
     {
         //
     }
 
-    public function retrieveAccounts(Request $request){
-        $accounts = DB::table('users')
+    public function retrieveDepartments(Request $request){
+        $departments = DB::table('departments')
                         ->where('status', '=', $request->input('status'))
+                        ->orderBy('office_name', 'asc')
                         ->get();
 
-        return view('accounts\accountlist', array('accounts' => $accounts));
+        return view('departments\departmentlist', array('departments' => $departments));
     }
 
     public function getForm(Request $request){
-        $accountid = ($request->input('accountid')) ? $request->input('accountid') : 0;
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
 
-        $accountinfo = DB::table('users')
-                        ->where('id', '=', $accountid)
+        $deptinfo = DB::table('departments')
+                        ->where('id', '=', $deptid)
                         ->get();
 
-        return view('accounts\accountform', array('accountinfo' => $accountinfo));
+        return view('departments\departmentform', array('deptinfo' => $deptinfo));
     }
 }

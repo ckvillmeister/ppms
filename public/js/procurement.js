@@ -1,5 +1,5 @@
 getItems();
-
+retrieveProcurementList(0);
 var id, general_desc, uom, price, ctr = 1;
 var tbl_proc_list = $('#tbl_procurement_list').DataTable({
     "scrollX": true,
@@ -19,7 +19,7 @@ var tbl_proc_list = $('#tbl_procurement_list').DataTable({
             // }
         },
         {
-            targets: [0, 1, ,2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+            targets: [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
             className: 'text-center'
         },
         {
@@ -30,6 +30,12 @@ var tbl_proc_list = $('#tbl_procurement_list').DataTable({
         }
     ]
   });
+
+$('#go').on('click', function(){
+    var year = $('#cbo_year').val();
+
+    retrieveProcurementList(year);
+});
 
 $('#btn_create_new_item').on('click', function(){
     $('#reset').click(); 
@@ -82,6 +88,37 @@ $('body').on('click', '#remove_from_list', function(){
                     no++;
                 });
                 ctr--;
+            },
+            cancel: function () {
+                
+            }
+        }
+    });
+});
+
+$('body').on('click', '#permanently_delete', function(){
+    var item = $(this);
+    $.confirm({
+        title: 'Confirm',
+        type: 'blue',
+        content: 'This is an irreversible action. Are you sure you want to permanently remove this item?',
+        buttons: {
+            confirm: function () {
+                tbl_proc_list.row( $(item).parents('tr') )
+                    .remove()
+                    .draw();
+
+                var no = 1;
+                $('#tbl_procurement_list tbody').find('tr').each(function(){
+                    var $this = $(this);
+                    $('td:eq(1)', $this).text(no);
+                    no++;
+                });
+                ctr--;
+                
+                request('procurement.toggleProcurementItem', 'POST', 
+                            {'itemid' : item.val(), 'status' : 0},
+                            'HTML', 'dummy');
             },
             cancel: function () {
                 
@@ -182,9 +219,9 @@ $('#additemtolist').on('click', function(){
         });
         
         var total = parseFloat(qty) * parseFloat(price);
-        tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2" value="' + id + '" id="remove_from_list" data-toggle="tooltip" data-placement="top" title="Remove Item"><i class="fas fa-minus"></i></button>' +
+        tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + id + '" id="remove_from_list" data-toggle="tooltip" data-placement="top" title="Remove Item"><i class="fas fa-minus"></i></button>' +
                                     '<button class="btn btn-sm btn-warning" value="' + id + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
-                                    ctr, general_desc, uom, qty, numericFormat(price), numericFormat(total), mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec ] ).draw();
+                                    ctr, general_desc, uom, qty, price, numericFormat(total), mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec ] ).draw();
         ctr++;
         $('#modal_add_to_list').modal('hide');
     }
@@ -215,9 +252,9 @@ $('#frm_create_new_item').on('submit', function(e){
 });
 
 $('#save_procurement').on('click', function(){
-    var procurementlist = [], ctr = 0;
+    var procurementlist = [], i = 0;
     $('#tbl_procurement_list tbody').find('tr').each(function(){
-        var itemid = $(this).closest('tr').find('#remove_from_list').val(),
+        var itemid = $(this).closest('tr').find('#edit_qty').val(),
             itemname = $(this).closest('tr').find('td:eq(2)').text(),
             qty = $(this).closest('tr').find('td:eq(4)').text(),
             price = $(this).closest('tr').find('td:eq(5)').text(),
@@ -261,28 +298,30 @@ $('#save_procurement').on('click', function(){
             dec = 1;
         }
         
-        procurementlist[ctr] = [itemid, itemname, qty, price, mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec];
-        ctr++;
+        procurementlist[i] = [itemid, itemname, qty, price, mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec];
+        i++;
     });
-
     console.log(procurementlist);
     request('procurement.create',
                 'POST', 
                 {'list': procurementlist},
-                'JSON');
+                'JSON',
+                null,
+                '#page_loading');
 });
 
 function getItems(){
     request('items.displayItemListProcurement', 'GET', 
                 null,
                 'HTML',
-                '#item_list');
+                '#item_list',
+                '#itemlist_loading');
 }
 
 function isItemExist(itemid){
 	var flag = false;
 
-	$('#tbl_procurement_list #remove_from_list').each(function(){
+	$('#tbl_procurement_list #edit_qty').each(function(){
 	    if(itemid == $(this).val()){
 	        flag = true;
 	    }
@@ -294,4 +333,110 @@ function isItemExist(itemid){
 	else{
 	  return false;
 	}
+}
+
+function retrieveProcurementList(year){
+    ctr = 1;
+    var token = $('meta[name="csrf-token"]').attr('content');
+
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: 'procurement.retrieveProcurementList',
+        method: 'POST',
+        data: {"year": year},
+        setCookies: token,
+        dataType: 'JSON',
+        beforeSend: function() {
+            $('#proclist_loading').html('<div class="overlay">' +
+                    '<i class="fas fa-3x fa-sync-alt fa-spin"></i>' +
+                    '<div class="text-bold pt-2">&nbsp;&nbsp;Loading...</div>' +
+                        '</div>');
+        },
+        complete: function(){
+            $('#proclist_loading').html('');
+        },
+        success: function(result) {
+            tbl_proc_list.clear().draw();
+            $.each(result, function( index, value ) {
+                var jan = "<input type='checkbox' id='January'>", 
+                    feb = "<input type='checkbox' id='February'>",
+                    mar = "<input type='checkbox' id='March'>",
+                    apr = "<input type='checkbox' id='April'>",
+                    may = "<input type='checkbox' id='May'>",
+                    jun = "<input type='checkbox' id='June'>",
+                    jul = "<input type='checkbox' id='July'>",
+                    aug = "<input type='checkbox' id='August'>",
+                    sep = "<input type='checkbox' id='September'>",
+                    oct = "<input type='checkbox' id='October'>",
+                    nov = "<input type='checkbox' id='November'>",
+                    dec = "<input type='checkbox' id='December'>";
+
+                if (value.january == 1){
+                    jan = "<input type='checkbox' id='January' checked='checked'>";
+                }
+                if (value.february == 1){
+                    feb = "<input type='checkbox' id='February' checked='checked'>";
+                }
+                if (value.march == 1){
+                    mar = "<input type='checkbox' id='March' checked='checked'>";
+                }
+                if (value.april == 1){
+                    apr = "<input type='checkbox' id='April' checked='checked'>";
+                }
+                if (value.may == 1){
+                    may = "<input type='checkbox' id='May' checked='checked'>";
+                }
+                if (value.june == 1){
+                    jun = "<input type='checkbox' id='June' checked='checked'>";
+                }
+                if (value.july == 1){
+                    jul = "<input type='checkbox' id='July' checked='checked'>";
+                }
+                if (value.august == 1){
+                    aug = "<input type='checkbox' id='August' checked='checked'>";
+                }
+                if (value.september == 1){
+                    sep = "<input type='checkbox' id='September' checked='checked'>";
+                }
+                if (value.october == 1){
+                    oct = "<input type='checkbox' id='October' checked='checked'>";
+                }
+                if (value.november == 1){
+                    nov = "<input type='checkbox' id='November' checked='checked'>";
+                }
+                if (value.december == 1){
+                    dec = "<input type='checkbox' id='December' checked='checked'>";
+                }
+
+                tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + value.id + '" id="permanently_delete" data-toggle="tooltip" data-placement="top" title="Permanently Remove Item"><i class="fas fa-trash"></i></button>' +
+                                    '<button class="btn btn-sm btn-warning" value="' + value.itemid + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
+                                    ctr, 
+                                    value.itemname,
+                                    value.uom, 
+                                    value.quantity, 
+                                    value.price, 
+                                    numericFormat(parseFloat(value.quantity) * parseFloat(value.price)), 
+                                    value.mode, 
+                                    jan, 
+                                    feb, 
+                                    mar, 
+                                    apr, 
+                                    may, 
+                                    jun, 
+                                    jul, 
+                                    aug, 
+                                    sep, 
+                                    oct, 
+                                    nov, 
+                                    dec ] ).draw();
+                ctr++;
+            });
+            
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
 }

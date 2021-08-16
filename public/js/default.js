@@ -6,7 +6,7 @@ function message(title, color, content){
     })
 }
 
-function request(link, met, data, type, container = ''){
+function request(link, met, data, type, container = '', loading = ''){
     var token = $('meta[name="csrf-token"]').attr('content');
 
     $.ajax({
@@ -19,13 +19,13 @@ function request(link, met, data, type, container = ''){
         setCookies: token,
         dataType: type,
         beforeSend: function() {
-            $('.overlay-wrapper').html('<div class="overlay">' +
+            $(loading).html('<div class="overlay">' +
                     '<i class="fas fa-3x fa-sync-alt fa-spin"></i>' +
                     '<div class="text-bold pt-2">&nbsp;&nbsp;Loading...</div>' +
                         '</div>');
         },
         complete: function(){
-            $('.overlay-wrapper').html('');
+            $(loading).html('');
         },
         success: function(result) {
             if (container){

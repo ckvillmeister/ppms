@@ -13,8 +13,20 @@ class CreateProcurementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('procurements', function (Blueprint $table) {
+        Schema::create('procurement_info', function (Blueprint $table) {
             $table->id();
+            $table->integer('department');
+            $table->integer('year');
+            $table->string('createdby')->nullable(true);
+            $table->datetime('datecreated')->nullable(true);
+            $table->string('updatedby')->nullable(true);
+            $table->datetime('dateupdated')->nullable(true);
+            $table->integer('status');
+        });
+
+        Schema::create('procurement_items', function (Blueprint $table) {
+            $table->id();
+            $table->integer('procurement_id');
             $table->integer('itemid');
             $table->string('itemname');
             $table->integer('quantity');
@@ -32,10 +44,8 @@ class CreateProcurementsTable extends Migration
             $table->integer('october')->nullable(true);
             $table->integer('november')->nullable(true);
             $table->integer('december')->nullable(true);
-            $table->string('createdby')->nullable(true);
-            $table->datetime('datecreated')->nullable(true);
-            $table->string('updatedby')->nullable(true);
-            $table->datetime('dateupdated')->nullable(true);
+            $table->string('addedby')->nullable(true);
+            $table->datetime('dateadded')->nullable(true);
             $table->integer('status');
         });
     }

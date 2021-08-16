@@ -38,6 +38,15 @@
             </p>
           </a>
         </li>
+        
+        <li class="nav-item">
+          <a href="review" class="nav-link {{ (Request::path() == 'review') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-search-location"></i>
+            <p>
+              Review Procurement
+            </p>
+          </a>
+        </li>
 
         <li class="nav-item">
           <a href="reports" class="nav-link {{ (Request::path() == 'reports') ? 'active' : '' }}">
@@ -48,8 +57,16 @@
           </a>
         </li>
 
-        <li class="nav-item has-treeview">
-          <a href="#" class="nav-link">
+        <li class="nav-item has-treeview {{ (Request::path() == 'departments') ? 'menu-open' : 
+                                                      (Request::path() == 'items') ? 'menu-open' : 
+                                                      (Request::path() == 'roles') ? 'menu-open' : 
+                                                      (Request::path() == 'accounts') ? 'menu-open' : 
+                                                      (Request::path() == 'settings') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (Request::path() == 'departments') ? 'active' : 
+                                                      (Request::path() == 'items') ? 'active' : 
+                                                      (Request::path() == 'roles') ? 'active' : 
+                                                      (Request::path() == 'accounts') ? 'active' : 
+                                                      (Request::path() == 'settings') ? 'active' : '' }}">
             <i class="nav-icon fas fa-wrench"></i>
             <p>
               Maintenance
@@ -59,9 +76,9 @@
           <ul class="nav nav-treeview">
 
             <li class="nav-item">
-              <a href="offices" class="nav-link {{ (Request::path() == 'offices') ? 'active' : '' }}">
+              <a href="departments" class="nav-link {{ (Request::path() == 'departments') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Offices</p>
+                <p>Departments</p>
               </a>
             </li>
 

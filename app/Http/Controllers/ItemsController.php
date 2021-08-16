@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Items;
+use App\Models\Settings;
+use App\Models\Roles;
+use App\Enums\Lists;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ItemsController extends Controller
 {
@@ -14,7 +19,35 @@ class ItemsController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Settings::all();
+
+        if(!(Auth::check()))
+        {
+            return redirect('/');
+        }
+        else{
+            return view('items\index', array('settings' => $settings));
+        }
+        
+    }
+
+    public function retrieveItems(Request $request){
+        $items = DB::table('items')
+                        ->where('status', '=', $request->input('status'))
+                        ->get();
+
+        return view('items\itemlist', array('items' => $items,
+                                                'categories' => Lists::$categories));
+    }
+
+    public function getForm(Request $request){
+        $itemid = ($request->input('itemid')) ? $request->input('itemid') : 0;
+
+        $iteminfo = DB::table('items')
+                        ->where('id', '=', $itemid)
+                        ->get();
+
+        return view('items\itemform', array('iteminfo' => $iteminfo));
     }
 
     /**

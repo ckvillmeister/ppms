@@ -20,6 +20,8 @@
     @include('components.sidebar')
 
     <div class="content-wrapper">
+
+      <div class="overlay-wrapper" id="page_loading"></div>
       
         <section class="content-header">
             <div class="container-fluid">
@@ -49,9 +51,15 @@
             <div class="col-lg-1">
               <button class="btn btn-sm btn-success" id="go"><i class="fas fa-paper-plane mr-2"></i>GO</button>
             </div>
+            <div class="col-lg-7">
+            </div>
+            <div class="col-lg-2">
+              Procurement for Year: <strong>{{ $settings[1]->setting_description }}</strong>
+            </div>
         </div>
-        <br>
+
         <div class="row m-3">
+
             <div class="col-sm-4">
                 <div class="card card-primary card-outline direct-chat direct-chat-primary shadow-none">
                     <div class="card-header">
@@ -60,10 +68,12 @@
                             <button type="button" class="btn btn-tool" id="btn_create_new_item"><i class="fas fa-plus mr-2"> Create New Item</i>
                             </button>
                         </div>
-                        <div class="overlay-wrapper"></div>
+                        <div class="overlay-wrapper" id="itemlist_loading">
+                        </div>
                     </div>
                     <div class="card-body">
-                      <div id="item_list"></div>
+                      <div id="item_list">
+                      </div>
                     </div>
                     <div class="card-footer">
                         
@@ -71,9 +81,11 @@
                 </div>
             </div>
             <div class="col-sm-8">
+
                 <div class="card card-primary card-outline direct-chat direct-chat-primary shadow-none">
                     <div class="card-header">
                       <h3 class="card-title"><i class="fas fa-list mr-2"></i>Procurement List</h3>
+                      <div class="overlay-wrapper" id="proclist_loading"></div>
                     </div>
                     <div class="card-body">
                       <div class="row m-3">
@@ -111,8 +123,11 @@
                     </div>
                 </div>
             </div>
+
         </div>
+        
     </div>
+    <br><br>
     @include('components.footer')
 </div>
 </body>
@@ -152,7 +167,7 @@
                 Price:
             </div>
             <div class="col-lg-4">
-              <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice">
+              <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right">
             </div>
           </div>
 

@@ -19,7 +19,7 @@
                         <td>{{ $item->itemname }}</td>
                         <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
                         <td class="text-center">{{ $item->uom }}</td>
-                        <td>{{ $categories[$item->category] }}</td>
+                        <td>{{ $item->category_name }}</td>
                         <td class="text-center">
                           <button class="btn btn-sm btn-warning" id="edititem" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Edit Item"><i class="fas fa-edit"></i></button>
                           @if ($item->status == 1)

@@ -44,7 +44,7 @@
             <div class="col-lg-1">
                 <select id="cbo_year" class="form-control form-control-sm mr-2 mb-2">
                     @for ($i = (date('Y') - 5); $i < (date('Y') + 5); $i++)
-                        <option value="{{ $i }}" {{ (date("Y") == $i) ? "selected" : ""; }}>{{ $i }}</option>
+                        <option value="{{ $i }}" {{ ($settings[1]->setting_description == $i) ? "selected" : ""; }}>{{ $i }}</option>
                     @endfor
                 </select>
             </div>
@@ -164,7 +164,7 @@
 
           <div class="row mt-3">
             <div class="col-lg-4 align-self-center">
-                Price:
+                Unit Price:
             </div>
             <div class="col-lg-4">
               <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right">
@@ -188,13 +188,29 @@
           <div class="row mt-3">
 
             <div class="col-lg-4 align-self-center">
+                Object of Expenditure:
+            </div>
+            <div class="col-lg-4">
+              <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
+                <option value=""></option>
+              @foreach ($objexpenditures as $key => $objexpenditure)
+                <option value="{{ $objexpenditure->id }}">{{ $objexpenditure->category_name }}</option>
+                @endforeach
+              </select>
+            </div>
+
+          </div>
+
+          <div class="row mt-3">
+
+            <div class="col-lg-4 align-self-center">
                 Category:
             </div>
             <div class="col-lg-4">
               <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
                 <option value=""></option>
-              @foreach ($categories as $key => $category)
-                <option value="{{ $key }}">{{ $category }}</option>
+              @foreach ($objexpenditures as $key => $objexpenditure)
+                <option value="{{ $objexpenditure->id }}">{{ $objexpenditure->category_name }}</option>
                 @endforeach
               </select>
             </div>
@@ -289,9 +305,10 @@
   </div>
 </div>
 
-<script src="{{ asset('js/procurement.js') }}"></script>
+<script src="{{ asset('js/myprocurement.js') }}"></script>
 <script type="text/javascript">
   $('#uom').select2({dropdownParent: $("#modal_create_new_item")});
+  $('#objexp').select2({dropdownParent: $("#modal_create_new_item")});
   $('#category').select2({dropdownParent: $("#modal_create_new_item")});
 
   $('#mode').select2({dropdownParent: $("#modal_add_to_list")});

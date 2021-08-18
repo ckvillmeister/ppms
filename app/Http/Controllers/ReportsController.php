@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reports;
 use App\Models\Settings;
 use App\Models\Departments;
+use App\Models\ItemCategory;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -116,9 +117,35 @@ class ReportsController extends Controller
             ->get();
 
         $months = Lists::$months;
-        $categories = Lists::$categories;
+        $categories = ItemCategory::all();
+        $depts = Departments::all();
+        
+        $deptinfo = DB::table('departments')
+            ->where('id', '=', Auth::user()->department)
+            ->get();
+
+        $head = $this->gethead($depts, 'Trinidad Municipal College');
+        $gso = $this->gethead($depts, 'General Services Office');
+        $mbo = $this->gethead($depts, 'Municipal Budget Office');
+        $mayor = $this->gethead($depts, 'Office of the Municipal Mayor');
+
         return view('reports\ppmp', array('months' => $months,
                                             'items' => $items,
-                                            'categories' => $categories));
+                                            'categories' => $categories,
+                                            'settings' => $settings,
+                                            'deptinfo' => $deptinfo,
+                                            'signatories' => array('head' => $head, 'gso' => $gso, 'mbo' => $mbo, 'mayor' => $mayor)));
+    }
+
+    public function retrieveAPP(Request $request){
+        return view('reports\app');
+    }
+
+    public function getHead($depts, $office){
+        foreach($depts as $dept){
+            if ($dept->description == $office){
+                return $dept->head;
+            }
+        }
     }
 }

@@ -40,10 +40,10 @@
         </li>
         
         <li class="nav-item">
-          <a href="review" class="nav-link {{ (Request::path() == 'review') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-search-location"></i>
+          <a href="manageproc" class="nav-link {{ (Request::path() == 'manageproc') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-tasks"></i>
             <p>
-              Review Procurement
+              Manage Procurement
             </p>
           </a>
         </li>

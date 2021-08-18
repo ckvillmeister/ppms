@@ -10,6 +10,10 @@
   .numerical-cols {
     text-align: right
   }
+
+  .font {
+    font-size: 10pt
+  }
 </style>
 </head>
 
@@ -68,7 +72,7 @@
                     </div>
                     <div class="col-lg-5">
                       <div class="float-right">
-                        <button class="btn btn-sm btn-success" id="export"><i class="fas fa-sheet mr-2"></i>Export</button>
+                        <button class="btn btn-sm btn-success" id="export"><i class="fas fa-file-excel mr-2"></i>Export</button>
                         <button class="btn btn-sm btn-secondary" id="print"><i class="fas fa-print mr-2"></i>Print</button>
                       </div>
                     </div>  
@@ -82,7 +86,7 @@
               <div class="tab-pane fade" id="custom-tabs-one-app" role="tabpanel" aria-labelledby="custom-tabs-one-app-tab">
               <div class="row">
                     <div class="col-lg-12">
-                      <div class="display_app"></div>
+                      <div id="display_app"></div>
                     </div>
                   </div>
               </div>
@@ -98,3 +102,6 @@
 </html>
 
 <script src="{{ asset('js/report.js') }}"></script>
+<script type="text/javascript">
+  $('#cbo_departments').select2({ dropdownCssClass: "font" });
+</script>

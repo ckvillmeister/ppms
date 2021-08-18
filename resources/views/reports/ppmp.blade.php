@@ -1,6 +1,99 @@
+<style>
+    #container {
+        overflow-x: auto;
+    }
+    #tbl_procurement_list, .footer, .header{
+        font-size: 8pt
+    }
+    .center{
+        text-align: center
+    }
+    
+    @page { 
+        size: landscape;
+    }
+
+    @media print{
+        .col-1 {
+            width: 8%;
+        }
+        .col-2 {
+            width: 16%;
+        }
+        .col-3 {
+            width: 25%;
+        }
+        .col-4 {
+            width: 33%;
+        }
+        .col-5 {
+            width: 42%;
+        }
+        .col-6 {
+            width: 50%;
+        }
+        .col-7 {
+            width: 58%;
+        }
+        .col-8 {
+            width: 66%;
+        }
+        .col-9 {
+            width: 75%;
+        }
+        .col-10 {
+            width: 83%;
+        }
+        .col-11 {
+            width: 92%;
+        }
+        .col-12 {
+            width: 100%;
+        }
+    }
+</style>
+<br>
+<div class="row header">
+    <div class="col-lg-6 col-6">
+        <strong>MUNICIPALITY OF TRINIDAD</strong><br>
+        Name of LGU
+    </div>
+    <div class="col-lg-5 col-5">
+        <div class="float-right">
+        Approved Budget<br>
+        Current Year {{ $settings[1]->setting_description }}<br>
+        Total
+        </div>
+    </div>
+    <div class="col-lg-1 col-1">
+        @php ($total_budget = 0.0)
+        @foreach ($items as $item)
+        @php ($total_budget += ($item->price * $item->quantity))
+        @endforeach
+        <div class="float-right">
+            <br>
+            <strong>{{ number_format($total_budget, 2) }}</strong><br>
+            <strong>{{ number_format($total_budget, 2) }}</strong>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row header">
+    <div class="col-lg-12">
+        Name of Office/Unit: <strong>{{ ($deptinfo[0]->sub_office) ? strtoupper($deptinfo[0]->description.' - '.$deptinfo[0]->sub_office) : strtoupper($deptinfo[0]->description) }}</strong>
+    </div>
+</div>
+<br>
 <div class="row">
+    <div class="col-lg-12 text-center">
+        <h2 style="font-size: 14pt"><strong>Project Procurement Management Plan (PPMP)</strong></h2>
+        <h2 style="font-size: 14pt"><strong>FY {{ $settings[1]->setting_description }}</strong></h2>
+    </div>
+</div>
+<br>
+<div class="row" id="container">
     <div class="col-sm-12 align-self-center">
-        <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list">
+        <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list" style="width:100%">
             <thead>
                 <tr>
                     <th class="text-center">No.</th>
@@ -55,11 +148,7 @@
                     @if ($item->category != $prev_category)
                         @if ($prev_category)
                             <tr>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="numerical-cols"><strong>{{ number_format($price, 2) }}</strong></td>
+                                <td colspan="5"><strong>SUBTOTAL</strong></td>
                                 <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
                                 <td class="text-center"></td>
                                 <td class="numerical-cols"><strong>{{ ($jan) ? number_format($jan, 2) : '' }}</strong></td>
@@ -79,24 +168,7 @@
 
                         <tr>
                             <td></td>
-                            <td>{{ $categories[$item->category] }}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td colspan="18"><strong>{{ $categories[$ctr - 1]->category_name }}</strong></td>
                         </tr>
                         
                         @php ($prev_category = $item->category)
@@ -236,11 +308,7 @@
                     @php ($ctr++)
                     @if ($row_count < $ctr)
                     <tr>
-                        <td class="text-center"></td>
-                        <td class="text-center"></td>
-                        <td class="text-center"></td>
-                        <td class="text-center"></td>
-                        <td class="numerical-cols"><strong>{{ number_format($price, 2) }}</strong></td>
+                        <td colspan="5"><strong>SUBTOTAL</strong></td>
                         <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
                         <td class="text-center"></td>
                         <td class="numerical-cols"><strong>{{ ($jan) ? number_format($jan, 2) : '' }}</strong></td>
@@ -259,11 +327,7 @@
                     @endif
                 @endforeach
                 <tr>
-                    <td class="text-center"></td>
-                    <td class="text-center"></td>
-                    <td class="text-center"></td>
-                    <td class="text-center"></td>
-                    <td class="numerical-cols"><strong>{{ number_format($totprice, 2) }}</strong></td>
+                    <td colspan="5"><strong>GRAND TOTAL</strong></td>
                     <td class="numerical-cols"><strong>{{ number_format($totitem, 2) }}</strong></td>
                     <td class="text-center"></td>
                     <td class="numerical-cols"><strong>{{ ($totjan) ? number_format($totjan, 2) : '' }}</strong></td>
@@ -283,18 +347,58 @@
         </table>
     </div>
 </div>
+<br>
+<div class="footer">
+    <div class="row">
+        <div class="col-lg-3 col-3">
+            Prepared by:
+        </div>
+        <div class="col-lg-3 col-3">
+            Recommended by:
+        </div>
+        <div class="col-lg-3 col-3">
+            Reviewed by:
+        </div>
+        <div class="col-lg-3 col-3">
+            Approved by:
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-3 center">
+            <br><br><br>
+            <strong>{{ strtoupper($signatories['head']) }}</strong><br>
+            Department Head
+        </div>
+        <div class="col-lg-3 col-3 center">
+            <br><br><br>
+            <strong>{{ strtoupper($signatories['gso']) }}</strong><br>
+            General Services Officer
+        </div>
+        <div class="col-lg-3 col-3 center">
+            <br><br><br>
+            <strong>{{ strtoupper($signatories['mbo']) }}</strong><br>
+            Municipal Budget Officer
+        </div>
+        <div class="col-lg-3 col-3 center">
+            <br><br><br>
+            <strong>{{ strtoupper($signatories['mayor']) }}</strong><br>
+            Municipal Mayor
+        </div>
+    </div>
+</div>
+
 
 <script>
-    var tbl_proc_list = $('#tbl_procurement_list').DataTable({
-    "scrollX": true,
-    "ordering": false,
-    paging: false,
-    searching: false,
-    info: false,
-    styles: {
-      tableHeader: {
-        fontSize: 8
-      }
-    }
-  });
+//     var tbl_proc_list = $('#tbl_procurement_list').DataTable({
+//     "scrollX": true,
+//     "ordering": false,
+//     paging: false,
+//     searching: false,
+//     info: false,
+//     styles: {
+//       tableHeader: {
+//         fontSize: 8
+//       }
+//     }
+//   });
 </script>

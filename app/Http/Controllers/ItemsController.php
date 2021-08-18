@@ -33,11 +33,12 @@ class ItemsController extends Controller
 
     public function retrieveItems(Request $request){
         $items = DB::table('items')
-                        ->where('status', '=', $request->input('status'))
+                        ->join('item_categories', 'item_categories.id', '=', 'items.category')
+                        ->select('items.*', 'item_categories.category_name')
+                        ->where('items.status', '=', $request->input('status'))
                         ->get();
 
-        return view('items\itemlist', array('items' => $items,
-                                                'categories' => Lists::$categories));
+        return view('items\itemlist', array('items' => $items));
     }
 
     public function getForm(Request $request){
@@ -130,7 +131,7 @@ class ItemsController extends Controller
         $items =  Items::select("*")
                         ->where("status", "=", 1)
                         ->get();
-        return view('procurement\itemlist', array('items' => $items));
+        return view('myprocurement\itemlist', array('items' => $items));
     }
 
     public function getQueriedItemName(Request $request){
@@ -139,4 +140,5 @@ class ItemsController extends Controller
                         ->get();
         return $items;
     }
+    
 }

@@ -1,3 +1,5 @@
+displayAPP();
+
 $('#go').on('click', function(){
     var dept = $('#cbo_departments').val();
     retrieveProcurementList(dept);
@@ -17,6 +19,15 @@ function retrieveProcurementList(dept){
                 '#page_loading');
 }
 
+function displayAPP(){
+    request('reports.retrieveAPP',
+                'POST', 
+                null,
+                'HTML',
+                '#display_app',
+                '#page_loading');
+}
+
 function printPPMP(dept){
     var token = $('meta[name="csrf-token"]').attr('content');
 
@@ -32,7 +43,7 @@ function printPPMP(dept){
             var mywindow = window.open('', 'Project Procurement Management Plan', 'height=800,width=1020,scrollbars=yes');
             mywindow.document.write('<html><head>');
             mywindow.document.write('<title>Project Procurement Management Plan</title>');
-            mywindow.document.write('<link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">');
+            mywindow.document.write('<link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css" media="all">');
             mywindow.document.write('<link rel="stylesheet" href="css/ppmp.css">');
             mywindow.document.write('</head><body>');
             mywindow.document.write(result);

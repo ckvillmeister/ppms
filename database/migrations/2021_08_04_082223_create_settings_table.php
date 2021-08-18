@@ -26,18 +26,25 @@ class CreateSettingsTable extends Migration
                     'setting_name' => 'Application Name',
                     'setting_description' => 'Project Procurement Management System',
                     'status' => 1
-                ),
+                )
+            );
+
+            DB::table('settings')->insert(
                 array(
                     'setting_name' => 'Procurement Year',
                     'setting_description' => '2022',
                     'status' => 1
                 ),
+            );
+
+            DB::table('settings')->insert(
                 array(
                     'setting_name' => 'Procurement Status',
                     'setting_description' => 1,
                     'status' => 1
                 )
-            );
+            ); 
+                
         }
     }
 

@@ -22,7 +22,7 @@
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td>{{ $item->itemname }}</td>
                         <td>{{ $item->uom }}</td>
-                        <td>{{ $item->price }}</td>
+                        <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
                         <td class="text-center"><button class="btn btn-sm btn-primary" id="addtolist" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Add Item to Procurement List"><i class="fas fa-long-arrow-alt-right"></i></button></td>
                     </tr> 
                 @endforeach

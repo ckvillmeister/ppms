@@ -41,6 +41,7 @@ $('#btn_create_new_item').on('click', function(){
     $('#reset').click(); 
     $('#uom').val([]).trigger('change');
     $('#mode').val([]).trigger('change');
+    $('#objexp').val([]).trigger('change');
     $('#category').val([]).trigger('change');
     $('#modal_create_new_item').modal({
                                     backdrop: 'static',
@@ -50,6 +51,7 @@ $('#btn_create_new_item').on('click', function(){
 
 $('#reset').on('click', function(){
     $('#uom').val([]).trigger('change');
+    $('#objexp').val([]).trigger('change');
     $('#category').val([]).trigger('change');
 });
 
@@ -218,10 +220,10 @@ $('#additemtolist').on('click', function(){
             }
         });
         
-        var total = parseFloat(qty) * parseFloat(price);
+        var total = parseFloat(qty) * parseFloat(price.replace(/,/g, ''));
         tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + id + '" id="remove_from_list" data-toggle="tooltip" data-placement="top" title="Remove Item"><i class="fas fa-minus"></i></button>' +
                                     '<button class="btn btn-sm btn-warning" value="' + id + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
-                                    ctr, general_desc, uom, qty, price, numericFormat(total), mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec ] ).draw();
+                                    ctr, general_desc, uom, qty, numericFormat(price), numericFormat(total), mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec ] ).draw();
         ctr++;
         $('#modal_add_to_list').modal('hide');
     }
@@ -253,61 +255,67 @@ $('#frm_create_new_item').on('submit', function(e){
 
 $('#save_procurement').on('click', function(){
     var procurementlist = [], i = 0;
-    $('#tbl_procurement_list tbody').find('tr').each(function(){
-        var itemid = $(this).closest('tr').find('#edit_qty').val(),
-            itemname = $(this).closest('tr').find('td:eq(2)').text(),
-            qty = $(this).closest('tr').find('td:eq(4)').text(),
-            price = $(this).closest('tr').find('td:eq(5)').text(),
-            mode = $(this).closest('tr').find('td:eq(7)').text();
-        var jan = 0, feb = 0, mar = 0, apr = 0, may = 0, jun = 0, jul = 0, aug = 0, sep = 0, oct = 0, nov = 0, dec = 0;
-        
-        if ($(this).find('#January').is(":checked")){
-            jan = 1;
-        }
-        if ($(this).find('#February').is(":checked")){
-            feb = 1;
-        }
-        if ($(this).find('#March').is(":checked")){
-            mar = 1;
-        }
-        if ($(this).find('#April').is(":checked")){
-            apr = 1;
-        }
-        if ($(this).find('#May').is(":checked")){
-            may = 1;
-        }
-        if ($(this).find('#June').is(":checked")){
-            jun = 1;
-        }
-        if ($(this).find('#July').is(":checked")){
-            jul = 1;
-        }
-        if ($(this).find('#August').is(":checked")){
-            aug = 1;
-        }
-        if ($(this).find('#September').is(":checked")){
-            sep = 1;
-        }
-        if ($(this).find('#October').is(":checked")){
-            oct = 1;
-        }
-        if ($(this).find('#November').is(":checked")){
-            nov = 1;
-        }
-        if ($(this).find('#December').is(":checked")){
-            dec = 1;
-        }
-        
-        procurementlist[i] = [itemid, itemname, qty, price, mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec];
-        i++;
-    });
-    console.log(procurementlist);
-    request('procurement.create',
-                'POST', 
-                {'list': procurementlist},
-                'JSON',
-                null,
-                '#page_loading');
+
+    if (tbl_proc_list.rows().count() <= 0){
+        message("Error", "red", "Procurement list is empty!");
+    }
+    else{
+        $('#tbl_procurement_list tbody').find('tr').each(function(){
+            var itemid = $(this).closest('tr').find('#edit_qty').val(),
+                itemname = $(this).closest('tr').find('td:eq(2)').text(),
+                qty = $(this).closest('tr').find('td:eq(4)').text(),
+                price = $(this).closest('tr').find('td:eq(5)').text(),
+                mode = $(this).closest('tr').find('td:eq(7)').text();
+            var jan = 0, feb = 0, mar = 0, apr = 0, may = 0, jun = 0, jul = 0, aug = 0, sep = 0, oct = 0, nov = 0, dec = 0;
+            
+            if ($(this).find('#January').is(":checked")){
+                jan = 1;
+            }
+            if ($(this).find('#February').is(":checked")){
+                feb = 1;
+            }
+            if ($(this).find('#March').is(":checked")){
+                mar = 1;
+            }
+            if ($(this).find('#April').is(":checked")){
+                apr = 1;
+            }
+            if ($(this).find('#May').is(":checked")){
+                may = 1;
+            }
+            if ($(this).find('#June').is(":checked")){
+                jun = 1;
+            }
+            if ($(this).find('#July').is(":checked")){
+                jul = 1;
+            }
+            if ($(this).find('#August').is(":checked")){
+                aug = 1;
+            }
+            if ($(this).find('#September').is(":checked")){
+                sep = 1;
+            }
+            if ($(this).find('#October').is(":checked")){
+                oct = 1;
+            }
+            if ($(this).find('#November').is(":checked")){
+                nov = 1;
+            }
+            if ($(this).find('#December').is(":checked")){
+                dec = 1;
+            }
+            
+            procurementlist[i] = [itemid, itemname, qty, price, mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec];
+            i++;
+        });
+        //console.log(procurementlist);
+        request('procurement.create',
+                    'POST', 
+                    {'list': procurementlist},
+                    'JSON',
+                    null,
+                    '#page_loading');
+    }
 });
 
 function getItems(){
@@ -416,7 +424,7 @@ function retrieveProcurementList(year){
                                     value.itemname,
                                     value.uom, 
                                     value.quantity, 
-                                    value.price, 
+                                    numericFormat(value.price), 
                                     numericFormat(parseFloat(value.quantity) * parseFloat(value.price)), 
                                     value.mode, 
                                     jan, 

@@ -32,14 +32,14 @@ Route::get('procurement', [ProcurementController::class, 'index']);
 Route::post('procurement.create', [ProcurementController::class, 'create']);
 Route::post('procurement.retrieveProcurementList', [ProcurementController::class, 'retrieveProcurementList']);
 Route::post('procurement.toggleProcurementItem', [ProcurementController::class, 'toggleProcurementItem']);
-
-Route::get('review', [ReviewController::class, 'index']);
-Route::post('review.proclist', [ReviewController::class, 'retrieveProcurementList']);
-Route::post('review.removeItemFromProcList', [ReviewController::class, 'removeItemFromProcList']);
-Route::post('review.updateProcItems', [ReviewController::class, 'updateProcItems']);
+Route::get('manageproc', [ProcurementController::class, 'manageprocurement']);
+Route::post('procurement.updateProcItems', [ProcurementController::class, 'updateProcItems']);
+Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProcurements']);
+Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
 
 Route::get('reports', [ReportsController::class, 'index']);
 Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']); 
+Route::post('reports.retrieveAPP', [ReportsController::class, 'retrieveAPP']); 
 
 Route::get('departments', [DepartmentsController::class, 'index']);
 Route::post('departments.retrieveDepartments', [DepartmentsController::class, 'retrieveDepartments']);

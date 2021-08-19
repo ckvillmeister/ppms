@@ -31,7 +31,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="procurement" class="nav-link {{ (Request::path() == 'procurement') ? 'active' : '' }}">
+          <a href="myprocurement" class="nav-link {{ (Request::path() == 'myprocurement') ? 'active' : '' }}">
             <i class="nav-icon fas fa-shopping-cart"></i>
             <p>
               My Procurement
@@ -40,7 +40,7 @@
         </li>
         
         <li class="nav-item">
-          <a href="manageproc" class="nav-link {{ (Request::path() == 'manageproc') ? 'active' : '' }}">
+          <a href="manageprocurement" class="nav-link {{ (Request::path() == 'manageprocurement') ? 'active' : '' }}">
             <i class="nav-icon fas fa-tasks"></i>
             <p>
               Manage Procurement
@@ -59,14 +59,14 @@
 
         <li class="nav-item has-treeview {{ (Request::path() == 'departments') ? 'menu-open' : 
                                                       (Request::path() == 'items') ? 'menu-open' : 
-                                                      (Request::path() == 'roles') ? 'menu-open' : 
-                                                      (Request::path() == 'accounts') ? 'menu-open' : 
-                                                      (Request::path() == 'settings') ? 'menu-open' : '' }}">
+                                                      (Request::path() == 'categories') ? 'menu-open' : 
+                                                      (Request::path() == 'objects') ? 'menu-open' : 
+                                                      (Request::path() == 'units') ? 'menu-open' : '' }}">
           <a href="#" class="nav-link {{ (Request::path() == 'departments') ? 'active' : 
                                                       (Request::path() == 'items') ? 'active' : 
-                                                      (Request::path() == 'roles') ? 'active' : 
-                                                      (Request::path() == 'accounts') ? 'active' : 
-                                                      (Request::path() == 'settings') ? 'active' : '' }}">
+                                                      (Request::path() == 'categories') ? 'active' : 
+                                                      (Request::path() == 'objects') ? 'active' : 
+                                                      (Request::path() == 'units') ? 'active' : '' }}">
             <i class="nav-icon fas fa-wrench"></i>
             <p>
               Maintenance
@@ -90,6 +90,43 @@
             </li>
 
             <li class="nav-item">
+              <a href="objects" class="nav-link {{ (Request::path() == 'objects') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Object of Expenditures</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="categories" class="nav-link {{ (Request::path() == 'categories') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Categories</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="units" class="nav-link {{ (Request::path() == 'units') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Units</p>
+              </a>
+            </li>
+
+          </ul>
+
+        <li class="nav-item has-treeview {{ (Request::path() == 'roles') ? 'menu-open' : 
+                                            (Request::path() == 'accounts') ? 'menu-open' : 
+                                            (Request::path() == 'settings') ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{  (Request::path() == 'roles') ? 'active' : 
+                                          (Request::path() == 'accounts') ? 'active' : 
+                                          (Request::path() == 'settings') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-cogs"></i>
+            <p>
+              Settings
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+
+            <li class="nav-item">
               <a href="roles" class="nav-link {{ (Request::path() == 'roles') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Roles and Permission</p>
@@ -111,6 +148,7 @@
             </li>
 
           </ul>
+
         </li>
       </ul>
     </nav>

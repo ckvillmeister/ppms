@@ -13,7 +13,7 @@
   </ul>
 
   <!-- SEARCH FORM -->
-  <form action="" method="POST">
+  <!-- <form action="" method="POST">
     <div class="form-inline ml-3">
       <div class="input-group input-group-sm">
         <input class="form-control form-control-navbar" name="text_search_supporter" type="search" placeholder="Quick Search" aria-label="Search">
@@ -24,14 +24,14 @@
         </div>
       </div>
     </div>
-  </form>
+  </form> -->
 
   <ul class="navbar-nav ml-auto">
    
     <!-- Notifications Dropdown Menu -->
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#">
-        <h2 class="mr-2"><i class="fas fa-user"></i></h2>
+        <h4 class="mr-2"><i class="fas fa-user"></i></h4>
       </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <div class="card-outline">

@@ -7,6 +7,8 @@ use App\Models\Settings;
 use App\Models\Items;
 use App\Models\ObjectExpenditure;
 use App\Models\Departments;
+use App\Models\Units;
+use App\Models\Categories;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,10 +16,8 @@ use Illuminate\Support\Facades\DB;
 
 class ProcurementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $settings = Settings::all();
-
         if(!(Auth::check()))
         {
             return redirect('/');
@@ -25,43 +25,30 @@ class ProcurementController extends Controller
         else{
             $months = Lists::$months;
             $modes = Lists::$modes;
-            $uom = Lists::$uom;
+            $settings = Settings::all();
+            $uom = Units::all();
+            $categories = Categories::all();
             $objexpenditures = ObjectExpenditure::all();
-            return view('myprocurement\index', array('settings' => $settings, 
+            $departments = Departments::all();
+            
+            if ($request->path() == 'myprocurement'){
+                return view('myprocurement\index', array('settings' => $settings, 
                                                     'months' => $months,
                                                     'modes' => $modes,
+                                                    'categories' => $categories,
                                                     'objexpenditures' => $objexpenditures,
                                                     'uom' => $uom));
-        }
-    }
-
-    public function manageprocurement()
-    {
-        
-
-        if(!(Auth::check()))
-        {
-            return redirect('/');
-        }
-        else{
-            $settings = Settings::all();
-            $departments = Departments::all();
-            $objexpenditures = ObjectExpenditure::all();
-            $months = Lists::$months;
-            $modes = Lists::$modes;
-            $uom = Lists::$uom;
-            $items = DB::table('items')
-                            ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
-                            ->select('items.*', 'object_expenditures.category_name')
-                            ->where('items.status', '=', 1)
-                            ->get();
-            return view('manageprocurement\index', array('settings' => $settings,
+            }
+            elseif ($request->path() == 'manageprocurement'){
+                return view('manageprocurement\index', array('settings' => $settings,
                                                     'departments' => $departments,
                                                     'modes' => $modes,
                                                     'months' => $months,
-                                                    'items' => $items,
                                                     'uom' => $uom,
+                                                    'categories' => $categories,
                                                     'objexpenditures' => $objexpenditures,));
+            }
+            
         }
     }
 
@@ -165,7 +152,8 @@ class ProcurementController extends Controller
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
-            ->select('procurement_items.*', 'items.uom')
+            ->join('units', 'units.id', '=', 'items.uom')
+            ->select('procurement_items.*', 'units.uom', 'units.description')
             ->where('procurement_info.department', '=', $deptid)
             ->where('procurement_info.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)

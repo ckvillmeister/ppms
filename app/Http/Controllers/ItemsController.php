@@ -33,8 +33,10 @@ class ItemsController extends Controller
 
     public function retrieveItems(Request $request){
         $items = DB::table('items')
-                        ->join('item_categories', 'item_categories.id', '=', 'items.category')
-                        ->select('items.*', 'item_categories.category_name')
+                        ->join('units', 'units.id', '=', 'items.uom')
+                        ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+                        ->join('categories', 'categories.id', '=', 'items.category')
+                        ->select('items.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
                         ->where('items.status', '=', $request->input('status'))
                         ->get();
 
@@ -61,10 +63,11 @@ class ItemsController extends Controller
         $data = array('itemname' => $request->input('itemname'),
                         'price' => $request->input('itemprice'),
                         'uom' => $request->input('uom'),
+                        'object_of_expenditure' => $request->input('objexp'),
                         'category' => $request->input('category'),
                         'datecreated' => date('Y-m-d H:i:s'),
                         'status' => 1);
-
+        
         $result = Items::create($data);
         return array('result' => 'Success',
                         'color' => 'green',
@@ -127,10 +130,14 @@ class ItemsController extends Controller
         //
     }
 
-    public function displayItemListProcurement(){
-        $items =  Items::select("*")
-                        ->where("status", "=", 1)
-                        ->get();
+    public function displayItemList(){
+        $items =  DB::table('items')
+                    ->join('units', 'units.id', '=', 'items.uom')
+                    ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+                    ->select('items.*', 'units.uom', 'units.description', 'object_expenditures.obj_exp_name')
+                    ->where('items.status', '=', 1)
+                    ->get();
+                        
         return view('myprocurement\itemlist', array('items' => $items));
     }
 

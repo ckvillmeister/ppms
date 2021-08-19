@@ -28,11 +28,11 @@ Route::get('authenticate/logout', [AuthenticationController::class, 'logout']);
 
 Route::get('dashboard', [DashboardController::class, 'index']);
 
-Route::get('procurement', [ProcurementController::class, 'index']);
+Route::get('myprocurement', [ProcurementController::class, 'index']);
 Route::post('procurement.create', [ProcurementController::class, 'create']);
 Route::post('procurement.retrieveProcurementList', [ProcurementController::class, 'retrieveProcurementList']);
 Route::post('procurement.toggleProcurementItem', [ProcurementController::class, 'toggleProcurementItem']);
-Route::get('manageproc', [ProcurementController::class, 'manageprocurement']);
+Route::get('manageprocurement', [ProcurementController::class, 'index']);
 Route::post('procurement.updateProcItems', [ProcurementController::class, 'updateProcItems']);
 Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProcurements']);
 Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
@@ -49,7 +49,7 @@ Route::get('items', [ItemsController::class, 'index']);
 Route::post('items.retrieveItems', [ItemsController::class, 'retrieveItems']);
 Route::post('items.getForm', [ItemsController::class, 'getForm']);
 Route::post('items.create', [ItemsController::class, 'create']);
-Route::get('items.displayItemListProcurement', [ItemsController::class, 'displayItemListProcurement']);
+Route::get('items.displayItemList', [ItemsController::class, 'displayItemList']);
 Route::post('items.getQueriedItems', [ItemsController::class, 'getQueriedItemName']);
 
 Route::get('roles', [RolesController::class, 'index']);

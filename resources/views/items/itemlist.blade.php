@@ -7,6 +7,7 @@
                     <th class="text-center">Item General Description</th>
                     <th class="text-center">Price</th>
                     <th class="text-center">Unit of Measurement</th>
+                    <th class="text-center">Object of Expenditure</th>
                     <th class="text-center">Category</th>
                     <th class="text-center" style="width:120px">Control</th>
                 </tr>
@@ -18,8 +19,9 @@
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td>{{ $item->itemname }}</td>
                         <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
-                        <td class="text-center">{{ $item->uom }}</td>
-                        <td>{{ $item->category_name }}</td>
+                        <td class="text-center">{{ $item->description }}</td>
+                        <td>{{ $item->obj_exp_name }}</td>
+                        <td>{{ $item->category }}</td>
                         <td class="text-center">
                           <button class="btn btn-sm btn-warning" id="edititem" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Edit Item"><i class="fas fa-edit"></i></button>
                           @if ($item->status == 1)

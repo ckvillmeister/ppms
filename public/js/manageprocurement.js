@@ -247,8 +247,9 @@ $('#frm_create_new_item').on('submit', function(e){
         desc = $('#itemdesc').val(),
         price = $('#itemprice').val(),
         uom = $('#uom').val(),
+        objexp = $('#objexp').val(),
         category = $('#category').val();
-
+        
     if (name === ''){
         message('Error', 'red', 'Please provide item name!');
     }
@@ -257,6 +258,9 @@ $('#frm_create_new_item').on('submit', function(e){
     }
     else if (uom === ''){
         message('Error', 'red', 'Please select unit of measurement!');
+    }
+    else if (objexp === ''){
+        message('Error', 'red', "Please select item's object of expenditure!");
     }
     else{
         request('items.create', 'POST', $(this).serialize(), 'JSON');
@@ -330,7 +334,7 @@ $('#save_procurement').on('click', function(){
 });
 
 function getItems(){
-    request('items.displayItemListProcurement', 'GET', 
+    request('items.displayItemList', 'GET', 
                 null,
                 'HTML',
                 '#item_list',
@@ -433,7 +437,7 @@ function retrieveProcurementList(deptid){
                                     '<button class="btn btn-sm btn-warning" value="' + value.itemid + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
                                     ctr, 
                                     value.itemname,
-                                    value.uom, 
+                                    value.description, 
                                     value.quantity, 
                                     numericFormat(value.price), 
                                     numericFormat(parseFloat(value.quantity) * parseFloat(value.price)), 

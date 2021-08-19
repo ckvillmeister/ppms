@@ -13,6 +13,7 @@ class Items extends Model
     protected $fillable = ['itemname',
                             'price',
                             'uom',
+                            'object_of_expenditure',
                             'category',
                             'createdby',
                             'datecreated',

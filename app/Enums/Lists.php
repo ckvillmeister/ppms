@@ -18,19 +18,4 @@ final class Lists extends Enum
         2 => 'Small Value Procurement', 
         3 => 'Public Bidding'
     ];
-
-    public static $uom = [
-        1 => 'meter', 
-        2 => 'box', 
-        3 => 'bottle', 
-        4 => 'roll',
-        5 => 'unit',
-        6 => 'pc',
-        7 => 'pcs',
-        8 => 'ream',
-        9 => 'doz',
-        10 => 'set',
-        11 => 'length',
-        12 => 'pack'
-    ];
 }

@@ -155,17 +155,8 @@
                 Item General Description:
             </div>
             <div class="col-lg-8">
-                <!-- <input list="items" name="itemname" id="itemname" class="form-control form-control-sm">
-                <datalist id="items">
-                </datalist> -->
-                <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname">
+                <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname" style="padding-left: 20px">
             </div>
-            <!-- <div class="col-lg-2 align-self-center">
-                Item Description:
-            </div>
-            <div class="col-lg-5">
-                <input type="text" class="form-control form-control-sm" placeholder="Ex. (Long, Red, Big)" id="itemdesc" name="itemdesc">
-            </div> -->
           </div>
 
           <div class="row mt-3">
@@ -185,7 +176,7 @@
               <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom">
                 <option value=""></option>
               @foreach ($uom as $key => $unit)
-                <option value="{{ $unit }}">{{ $unit }}</option>
+                <option value="{{ $unit->id }}">{{ $unit->uom.' ('.$unit->description.')' }}</option>
                 @endforeach
               </select>
             </div>
@@ -200,7 +191,7 @@
               <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
                 <option value=""></option>
               @foreach ($objexpenditures as $key => $objexpenditure)
-                <option value="{{ $objexpenditure->id }}">{{ $objexpenditure->category_name }}</option>
+                <option value="{{ $objexpenditure->id }}">{{ $objexpenditure->obj_exp_name }}</option>
                 @endforeach
               </select>
             </div>
@@ -215,8 +206,8 @@
             <div class="col-lg-4">
               <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
                 <option value=""></option>
-              @foreach ($objexpenditures as $key => $objexpenditure)
-                <option value="{{ $objexpenditure->id }}">{{ $objexpenditure->category_name }}</option>
+              @foreach ($categories as $key => $category)
+                <option value="{{ $category->id }}">{{ $category->category }}</option>
                 @endforeach
               </select>
             </div>

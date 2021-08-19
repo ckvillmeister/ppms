@@ -6,7 +6,9 @@
                     <th class="text-center">No.</th>
                     <th class="text-center">Deparment / Office</th>
                     <th class="text-center">Description</th>
-                    <th class="text-center">Sub Office</th>
+                    <th class="text-center">Department Head</th>
+                    <th class="text-center">Sub Office / Division</th>
+                    <th class="text-center">Sub Office <br> Division-in-charge</th>
                     <th class="text-center" style="width:120px">Control</th>
                 </tr>
             </thead>
@@ -17,7 +19,9 @@
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td class="text-center">{{ $department->office_name }}</td>
                         <td>{{ $department->description }}</td>
+                        <td>{{ $department->office_head }}</td>
                         <td>{{ $department->sub_office }}</td>
+                        <td>{{ $department->sub_office_in_charge }}</td>
                         <td class="text-center">
                           <button class="btn btn-sm btn-warning" id="editdept" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Edit Deparment"><i class="fas fa-edit"></i></button>
                           @if ($department->status == 1)

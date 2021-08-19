@@ -18,8 +18,8 @@ class CreateItemsTable extends Migration
             $table->string('itemname');
             $table->string('description')->nullable(true);
             $table->double('price');
-            $table->string('uom');
-            $table->integer('object_of_expenditure')->nullable(true);
+            $table->integer('uom');
+            $table->integer('object_of_expenditure');
             $table->integer('category')->nullable(true);
             $table->string('createdby')->nullable(true);
             $table->datetime('datecreated')->nullable(true);

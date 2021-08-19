@@ -16,12 +16,12 @@ class CreateObjectExpendituresTable extends Migration
     {
         Schema::create('object_expenditures', function (Blueprint $table) {
             $table->id();
-            $table->string('obj_exp_name');
+            $table->string('obj_exp_name')->nullable(true);
             $table->string('createdby')->nullable(true);
             $table->datetime('datecreated')->nullable(true);
             $table->string('updatedby')->nullable(true);
             $table->datetime('dateupdated')->nullable(true);;
-            $table->integer('status');
+            $table->integer('status')->default(1);  
         });
         
         $datenow = date('Y-m-d H:i:s');
@@ -47,7 +47,7 @@ class CreateObjectExpendituresTable extends Migration
                     ['obj_exp_name' => 'Office Equipment', 'createdby' => 1, 'datecreated' => $datenow],
                     ['obj_exp_name' => 'Information & Communication Technology Equipment', 'createdby' => 1, 'datecreated' => $datenow],
                 ];
-        ObjectExpenditure::create($inputs);
+        ObjectExpenditure::insert($inputs);
     }
 
     /**

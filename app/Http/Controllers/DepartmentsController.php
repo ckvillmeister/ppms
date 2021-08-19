@@ -99,7 +99,7 @@ class DepartmentsController extends Controller
     public function retrieveDepartments(Request $request){
         $departments = DB::table('departments')
                         ->where('status', '=', $request->input('status'))
-                        ->orderBy('office_name', 'asc')
+                        ->orderBy('id', 'asc')
                         ->get();
 
         return view('departments\departmentlist', array('departments' => $departments));

@@ -111,7 +111,7 @@
             <tbody>
                 @php ($no = 1)
                 @php ($ctr = 1)
-                @php ($prev_category = '')
+                @php ($prev_object_of_expenditure = '')
                 @php ($row_count = count($items))
                 @php ($price = 0.0)
                 @php ($total = 0.0)
@@ -145,8 +145,8 @@
                 @foreach ($items as $item)
                     @php ($count = 0)
                     
-                    @if ($item->category != $prev_category)
-                        @if ($prev_category)
+                    @if ($item->obj_exp_name != $prev_object_of_expenditure)
+                        @if ($prev_object_of_expenditure)
                             <tr>
                                 <td colspan="5"><strong>SUBTOTAL</strong></td>
                                 <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
@@ -168,10 +168,10 @@
 
                         <tr>
                             <td></td>
-                            <td colspan="18"><strong>{{ $categories[$ctr - 1]->category_name }}</strong></td>
+                            <td colspan="18"><strong>{{ $item->obj_exp_name }}</strong></td>
                         </tr>
                         
-                        @php ($prev_category = $item->category)
+                        @php ($prev_object_of_expenditure = $item->obj_exp_name)
                         @php ($price = 0.0)
                         @php ($total = 0.0)
                         @php ($jan = 0.0)
@@ -188,7 +188,7 @@
                         @php ($dec = 0.0)
                         @php ($no = 1)
                     @else
-                        @php ($prev_category = $item->category)
+                        @php ($prev_object_of_expenditure = $item->obj_exp_name)
                     @endif
 
                     @php ($price += $item->price)
@@ -287,7 +287,7 @@
                         
                         <td class="text-center">{{ $no++ }}</td>
                         <td class="text-center">{{ $item->itemname }}</td>
-                        <td class="text-center">{{ $item->uom }}</td>
+                        <td class="text-center">{{ $item->description }}</td>
                         <td class="text-center">{{ $item->quantity }}</td>
                         <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
                         <td class="numerical-cols">{{ number_format($item->price * $item->quantity, 2) }}</td>
@@ -363,30 +363,36 @@
             Approved by:
         </div>
     </div>
+    
     <div class="row">
         <div class="col-lg-3 col-3 center">
             <br><br><br>
-            <strong>{{ strtoupper($signatories['head']) }}</strong><br>
-            Department Head
+            <strong>{{ strtoupper($signatories['head']->office_head) }}</strong><br>
+            Department Head<br><br><br><br>
+
+            @if ($signatories['subhead']->sub_office)
+            <strong>{{ strtoupper($signatories['subhead']->sub_office_in_charge) }}</strong><br>
+            {{ $signatories['subhead']->sub_office.'-in-Charge / Head' }}
+            @endif
         </div>
         <div class="col-lg-3 col-3 center">
             <br><br><br>
-            <strong>{{ strtoupper($signatories['gso']) }}</strong><br>
+            <strong>{{ strtoupper($signatories['gso']->office_head) }}</strong><br>
             General Services Officer
         </div>
         <div class="col-lg-3 col-3 center">
             <br><br><br>
-            <strong>{{ strtoupper($signatories['mbo']) }}</strong><br>
+            <strong>{{ strtoupper($signatories['mbo']->office_head) }}</strong><br>
             Municipal Budget Officer
         </div>
         <div class="col-lg-3 col-3 center">
             <br><br><br>
-            <strong>{{ strtoupper($signatories['mayor']) }}</strong><br>
+            <strong>{{ strtoupper($signatories['mayor']->office_head) }}</strong><br>
             Municipal Mayor
         </div>
     </div>
 </div>
-
+<br><br><br>
 
 <script>
 //     var tbl_proc_list = $('#tbl_procurement_list').DataTable({

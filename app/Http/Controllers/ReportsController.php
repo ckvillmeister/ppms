@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Reports;
 use App\Models\Settings;
 use App\Models\Departments;
-use App\Models\ItemCategory;
+use App\Models\ObjectExpenditure;
+use App\Models\Categories;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -108,7 +109,9 @@ class ReportsController extends Controller
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
-            ->select('procurement_items.*', 'items.uom', 'items.category')
+            ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+            ->join('units', 'units.id', '=', 'items.uom')
+            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description')
             ->where('procurement_info.department', '=', $dept)
             ->where('procurement_info.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)
@@ -117,24 +120,25 @@ class ReportsController extends Controller
             ->get();
 
         $months = Lists::$months;
-        $categories = ItemCategory::all();
+        $objectexpenditures = ObjectExpenditure::all();
         $depts = Departments::all();
         
         $deptinfo = DB::table('departments')
-            ->where('id', '=', Auth::user()->department)
+            ->where('id', '=', $dept)
             ->get();
-
-        $head = $this->gethead($depts, 'Trinidad Municipal College');
+        
+        $head = $this->gethead($depts, $deptinfo[0]->description);
+        $subhead = $this->getSubHead($depts, $deptinfo[0]->sub_office);
         $gso = $this->gethead($depts, 'General Services Office');
         $mbo = $this->gethead($depts, 'Municipal Budget Office');
         $mayor = $this->gethead($depts, 'Office of the Municipal Mayor');
-
+        
         return view('reports\ppmp', array('months' => $months,
                                             'items' => $items,
-                                            'categories' => $categories,
+                                            'objectexpenditures' => $objectexpenditures,
                                             'settings' => $settings,
                                             'deptinfo' => $deptinfo,
-                                            'signatories' => array('head' => $head, 'gso' => $gso, 'mbo' => $mbo, 'mayor' => $mayor)));
+                                            'signatories' => array('head' => $head, 'subhead' => $subhead, 'gso' => $gso, 'mbo' => $mbo, 'mayor' => $mayor)));
     }
 
     public function retrieveAPP(Request $request){
@@ -144,7 +148,15 @@ class ReportsController extends Controller
     public function getHead($depts, $office){
         foreach($depts as $dept){
             if ($dept->description == $office){
-                return $dept->head;
+                return $dept;
+            }
+        }
+    }
+
+    public function getSubHead($depts, $sub_office){
+        foreach($depts as $dept){
+            if ($dept->sub_office == $sub_office){
+                return $dept;
             }
         }
     }

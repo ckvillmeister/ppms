@@ -14,91 +14,24 @@ use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $settings = Settings::all();
-        $departments = Departments::all();
-
         if(!(Auth::check()))
         {
             return redirect('/');
         }
         else{
-            return view('reports\index', array('settings' => $settings,
+            $settings = Settings::all();
+            $departments = Departments::all();
+            
+            if ($this::isAuthorized(Auth::user()->role, 'sidebarReports')){
+                return view('reports\index', array('settings' => $settings,
                                                 'departments' => $departments));
+            }
+            else{
+                return view('forbidden\index', array('settings' => $settings));
+            }
         }
-        
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Reports  $reports
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reports $reports)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Reports  $reports
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reports $reports)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Reports  $reports
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Reports $reports)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Reports  $reports
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Reports $reports)
-    {
-        //
     }
 
     public function retrieveDeptPPMP(Request $request){

@@ -32,14 +32,20 @@ class ProcurementController extends Controller
             $departments = Departments::all();
             
             if ($request->path() == 'myprocurement'){
-                return view('myprocurement\index', array('settings' => $settings, 
+                if ($this::isAuthorized(Auth::user()->role, 'sidebarMyProcurement')){
+                    return view('myprocurement\index', array('settings' => $settings, 
                                                     'months' => $months,
                                                     'modes' => $modes,
                                                     'categories' => $categories,
                                                     'objexpenditures' => $objexpenditures,
                                                     'uom' => $uom));
+                }
+                else{
+                    return view('forbidden\index', array('settings' => $settings));
+                }
             }
             elseif ($request->path() == 'manageprocurement'){
+                if ($this::isAuthorized(Auth::user()->role, 'sidebarManageProcurement')){
                 return view('manageprocurement\index', array('settings' => $settings,
                                                     'departments' => $departments,
                                                     'modes' => $modes,
@@ -47,6 +53,10 @@ class ProcurementController extends Controller
                                                     'uom' => $uom,
                                                     'categories' => $categories,
                                                     'objexpenditures' => $objexpenditures,));
+                }
+                else{
+                    return view('forbidden\index', array('settings' => $settings));
+                }
             }
             
         }

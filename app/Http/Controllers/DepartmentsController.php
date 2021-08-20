@@ -11,89 +11,64 @@ use Illuminate\Support\Facades\DB;
 
 class DepartmentsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $settings = Settings::all();
-
         if(!(Auth::check()))
         {
             return redirect('/');
         }
         else{
-            return view('departments\index', array('settings' => $settings));
+            $settings = Settings::all();
+
+            if ($this::isAuthorized(Auth::user()->role, 'sidebarDepartments')){
+                return view('departments\index', array('settings' => $settings));
+            }
+            else{
+                return view('forbidden\index', array('settings' => $settings));
+            }
+        }
+    }
+
+    public function create(Request $request)
+    {
+        $id = $request->input('id');
+
+        if ($id){
+            $data = ['office_name' => $request->input('office_name'),
+                        'description' => $request->input('description'),
+                        'office_head' => $request->input('office_head'),
+                        'sub_office' => $request->input('sub_office'),
+                        'sub_office_in_charge' => $request->input('sub_office_in_charge'),
+                        'position' => $request->input('position'),
+                        'updatedby' => Auth::user()->id,
+                        'dateupdated' => date('Y-m-d H:i:s'),
+                        'status' => 1];
+                        
+            $result = Departments::where('id', $id)
+                            ->update($data);
+
+            return array('result' => 'Success',
+                            'color' => 'green',
+                            'message' => 'Office updated successfully!');
+        }
+        else{
+            $data = ['office_name' => $request->input('office_name'),
+                        'description' => $request->input('description'),
+                        'office_head' => $request->input('office_head'),
+                        'sub_office' => $request->input('sub_office'),
+                        'sub_office_in_charge' => $request->input('sub_office_in_charge'),
+                        'position' => $request->input('position'),
+                        'createdby' => Auth::user()->id,
+                        'datecreated' => date('Y-m-d H:i:s'),
+                        'status' => 1];
+        
+            $result = Departments::create($data);
+
+            return array('result' => 'Success',
+                            'color' => 'green',
+                            'message' => 'New deparment / office added!');
         }
         
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Departments  $departments
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Departments $departments)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Departments  $departments
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Departments $departments)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Departments  $departments
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Departments $departments)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Departments  $departments
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Departments $departments)
-    {
-        //
     }
 
     public function retrieveDepartments(Request $request){
@@ -106,12 +81,37 @@ class DepartmentsController extends Controller
     }
 
     public function getForm(Request $request){
-        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
+        $id = ($request->input('id')) ? $request->input('id') : 0;
 
         $deptinfo = DB::table('departments')
-                        ->where('id', '=', $deptid)
+                        ->where('id', '=', $id)
                         ->get();
 
         return view('departments\departmentform', array('deptinfo' => $deptinfo));
+    }
+
+    public function toggleStatus(Request $request){
+        $id = $request->input('id');
+        $status = $request->input('status');
+        $message = '';
+
+        $data = [
+            'updatedby' => Auth::user()->id,
+            'dateupdated' => date('Y-m-d H:i:s'),
+            'status' => $status
+        ];
+        
+        $result = Departments::where('id', $id)
+                            ->update($data);
+        
+        if ($status){
+            $message = 'Department / office successfully re-activated!';
+        }
+        else{
+            $message = 'Department / office successfully removed!';
+        }
+        return array('result' => 'Success',
+                        'color' => 'green',
+                        'message' => $message);
     }
 }

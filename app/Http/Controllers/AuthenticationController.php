@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use App\Models\Settings;
-//use App\Models\User;
 
 class AuthenticationController extends Controller
 {
@@ -19,7 +19,12 @@ class AuthenticationController extends Controller
             return view('authentication\login', array('settings' => $settings));
         }
         else{
-            return redirect('dashboard');
+            if (Authentication::isAuthorized(Auth::user()->role, 'sidebarDashboard')){
+                return redirect('dashboard');
+            }
+            else{
+                return view('forbidden\index', array('settings' => $settings));
+            }
         }
     }
 
@@ -44,8 +49,11 @@ class AuthenticationController extends Controller
         
     }
 
-    function logout(){
+    function logout(Request $request){
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/');
     }
+
 }

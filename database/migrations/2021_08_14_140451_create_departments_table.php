@@ -18,9 +18,10 @@ class CreateDepartmentsTable extends Migration
             $table->id();
             $table->string('office_name');
             $table->string('description')->nullable(true);
-            $table->string('sub_office')->nullable(true);
             $table->string('office_head')->nullable(true);
+            $table->string('sub_office')->nullable(true);
             $table->string('sub_office_in_charge')->nullable(true);
+            $table->string('position')->nullable(true);
             $table->string('createdby')->nullable(true);
             $table->datetime('datecreated')->nullable(true);
             $table->string('updatedby')->nullable(true);

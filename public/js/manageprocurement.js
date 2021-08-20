@@ -334,7 +334,7 @@ $('#save_procurement').on('click', function(){
 });
 
 function getItems(){
-    request('items.displayItemList', 'GET', 
+    request('manageprocurementRetrieveItems', 'POST', 
                 null,
                 'HTML',
                 '#item_list',

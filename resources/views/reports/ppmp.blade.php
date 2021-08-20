@@ -372,7 +372,7 @@
 
             @if ($signatories['subhead']->sub_office)
             <strong>{{ strtoupper($signatories['subhead']->sub_office_in_charge) }}</strong><br>
-            {{ $signatories['subhead']->sub_office.'-in-Charge / Head' }}
+            {{ $signatories['subhead']->position }}
             @endif
         </div>
         <div class="col-lg-3 col-3 center">

@@ -8,11 +8,11 @@
         <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_item_list">
             <thead>
                 <tr>
-                    <th class="text-center">No.</th>
-                    <th class="text-center">General Description</th>
-                    <th class="text-center">UOM</th>
-                    <th class="text-center">Price</th>
-                    <th class="text-center">Control</th>
+                    <th class="text-center col-header">No.</th>
+                    <th class="text-center col-header">General Description</th>
+                    <th class="text-center col-header">UOM</th>
+                    <th class="text-center col-header">Price</th>
+                    <th class="text-center col-header">Control</th>
                 </tr>
             </thead>
             <tbody>

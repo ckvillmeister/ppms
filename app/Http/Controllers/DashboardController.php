@@ -16,14 +16,19 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $settings = Settings::all();
-
         if(!(Auth::check()))
         {
             return redirect('/');
         }
         else{
-            return view('dashboard\index', array('settings' => $settings));
+            $settings = Settings::all();
+
+            if ($this::isAuthorized(Auth::user()->role, 'sidebarDashboard')){
+                return view('dashboard\index', array('settings' => $settings));
+            }
+            else{
+                return view('forbidden\index', array('settings' => $settings));
+            }
         }
     }
 

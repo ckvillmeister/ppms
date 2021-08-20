@@ -8,6 +8,9 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ItemsController;
+use App\Http\Controllers\ObjectExpenditureController;
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\UnitsController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 
@@ -29,10 +32,10 @@ Route::get('authenticate/logout', [AuthenticationController::class, 'logout']);
 Route::get('dashboard', [DashboardController::class, 'index']);
 
 Route::get('myprocurement', [ProcurementController::class, 'index']);
+Route::get('manageprocurement', [ProcurementController::class, 'index']);
 Route::post('procurement.create', [ProcurementController::class, 'create']);
 Route::post('procurement.retrieveProcurementList', [ProcurementController::class, 'retrieveProcurementList']);
 Route::post('procurement.toggleProcurementItem', [ProcurementController::class, 'toggleProcurementItem']);
-Route::get('manageprocurement', [ProcurementController::class, 'index']);
 Route::post('procurement.updateProcItems', [ProcurementController::class, 'updateProcItems']);
 Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProcurements']);
 Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
@@ -44,18 +47,46 @@ Route::post('reports.retrieveAPP', [ReportsController::class, 'retrieveAPP']);
 Route::get('departments', [DepartmentsController::class, 'index']);
 Route::post('departments.retrieveDepartments', [DepartmentsController::class, 'retrieveDepartments']);
 Route::post('departments.getForm', [DepartmentsController::class, 'getForm']);
+Route::post('departments.create', [DepartmentsController::class, 'create']);
+Route::post('departments.toggleStatus', [DepartmentsController::class, 'toggleStatus']);
 
 Route::get('items', [ItemsController::class, 'index']);
-Route::post('items.retrieveItems', [ItemsController::class, 'retrieveItems']);
+Route::post('{route}', [ItemsController::class, 'retrieveItems'])->where('route', '(myprocurementRetrieveItems|manageprocurementRetrieveItems|itemsRetrieveItems)');
 Route::post('items.getForm', [ItemsController::class, 'getForm']);
 Route::post('items.create', [ItemsController::class, 'create']);
-Route::get('items.displayItemList', [ItemsController::class, 'displayItemList']);
+Route::post('items.toggleStatus', [ItemsController::class, 'toggleStatus']);
 Route::post('items.getQueriedItems', [ItemsController::class, 'getQueriedItemName']);
 
+Route::get('object_expenditures', [ObjectExpenditureController::class, 'index']);
+Route::post('object_expenditures.retrieveObjectExpenditures', [ObjectExpenditureController::class, 'retrieveObjectExpenditures']);
+Route::post('object_expenditures.getForm', [ObjectExpenditureController::class, 'getForm']);
+Route::post('object_expenditures.create', [ObjectExpenditureController::class, 'create']);
+Route::post('object_expenditures.toggleStatus', [ObjectExpenditureController::class, 'toggleStatus']);
+
+Route::get('categories', [CategoriesController::class, 'index']);
+Route::post('categories.retrieveCategories', [CategoriesController::class, 'retrieveCategories']);
+Route::post('categories.getForm', [CategoriesController::class, 'getForm']);
+Route::post('categories.create', [CategoriesController::class, 'create']);
+Route::post('categories.toggleStatus', [CategoriesController::class, 'toggleStatus']);
+
+Route::get('units', [UnitsController::class, 'index']);
+Route::post('units.retrieveUnits', [UnitsController::class, 'retrieveUnits']);
+Route::post('units.getForm', [UnitsController::class, 'getForm']);
+Route::post('units.create', [UnitsController::class, 'create']);
+Route::post('units.toggleStatus', [UnitsController::class, 'toggleStatus']);
+
 Route::get('roles', [RolesController::class, 'index']);
+Route::get('roles.managepermissions', [RolesController::class, 'managePermissions']);
 Route::post('roles.retrieveRoles', [RolesController::class, 'retrieveRoles']);
 Route::post('roles.getForm', [RolesController::class, 'getForm']);
+Route::post('roles.create', [RolesController::class, 'create']);
+Route::post('roles.toggleStatus', [RolesController::class, 'toggleStatus']);
+Route::post('roles.saveRolePermissions', [RolesController::class, 'saveRolePermissions']);
 
 Route::get('accounts', [UserController::class, 'index']);
 Route::post('accounts.retrieveAccounts', [UserController::class, 'retrieveAccounts']);
 Route::post('accounts.getForm', [UserController::class, 'getForm']);
+Route::post('accounts.create', [UserController::class, 'create']);
+Route::post('accounts.toggleStatus', [UserController::class, 'toggleStatus']);
+Route::post('accounts.resetpass', [UserController::class, 'resetPassword']);
+

@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Categories extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'category',
+        'createdby',
+        'datecreated',
+        'updatedby',
+        'dateupdated',
+        'status'
+    ];
 }

@@ -23,6 +23,8 @@ class User extends Authenticatable{
         'extension',
         'username',
         'password',
+        'department',
+        'role',
         'createdby',
         'datecreated',
         'updatedby',

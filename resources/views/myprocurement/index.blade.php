@@ -11,7 +11,7 @@
     text-align: right
   }
 
-  .font {
+  .font, .col-header {
     font-size: 10pt
   }
 </style>
@@ -97,16 +97,16 @@
                             <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width:100px">Control</th>
-                                        <th class="text-center">No.</th>
-                                        <th class="text-center" style="width: 150px">General Description</th>
-                                        <th class="text-center">Unit</th>
-                                        <th class="text-center">Quantity</th>
-                                        <th class="text-center">Price</th>
-                                        <th class="text-center">Estimated Budget</th>
-                                        <th class="text-center">Procurement Mode</th>
+                                        <th class="text-center col-header" style="width:100px">Control</th>
+                                        <th class="text-center col-header">No.</th>
+                                        <th class="text-center col-header" style="width: 150px">General Description</th>
+                                        <th class="text-center col-header">Unit</th>
+                                        <th class="text-center col-header">Quantity</th>
+                                        <th class="text-center col-header">Price</th>
+                                        <th class="text-center col-header">Estimated Budget</th>
+                                        <th class="text-center col-header">Procurement Mode</th>
                                         @foreach ($months as $month)
-                                        <th class="text-center" width="">{{ $month }}</th>
+                                        <th class="text-center col-header" width="">{{ $month }}</th>
                                         @endforeach
                                         
                                     </tr>
@@ -138,7 +138,7 @@
 </html>
 
 <div class="modal fade" id="modal_create_new_item" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header card-primary card-outline">
         <h5 class="modal-title" id="modal_title">Create New Item</h5>

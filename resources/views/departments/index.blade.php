@@ -3,12 +3,16 @@
 <head>
 @include('components.header')
 <style>
-  #tbl_deparment_list{
+  #tbl_list{
     font-size: 10pt
   }
 
   .numerical-cols {
     text-align: right
+  }
+  
+  .font, .col-header {
+    font-size: 10pt
   }
 </style>
 </head>
@@ -41,7 +45,7 @@
 
       <div class="row m-3">
         <div class="col-sm-12">
-            <button class="btn btn-sm btn-success" id="newDepartment"><i class="fas fa-plus mr-2"></i>New Dept</button>
+            <button class="btn btn-sm btn-success" id="new"><i class="fas fa-plus mr-2"></i>New Dept</button>
             <button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>
             <button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>
         </div>
@@ -49,7 +53,7 @@
 
       <div class="row m-3 bg-white">
         <div class="col-sm-12 pt-4">
-          <div id="departmentlist"></div>
+          <div id="list"></div>
         </div>
       </div>
 
@@ -61,8 +65,8 @@
 </body>
 </html>
 
-<div class="modal fade" id="modal_new_department" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="modal_new" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header card-primary card-outline">
         <h5 class="modal-title" id="modal_title">Department Information Form</h5>
@@ -72,7 +76,7 @@
         <div class="overlay-wrapper" id="form_loading"></div>
       </div>
       <div class="modal-body">
-        <div id="new_department_form"></div>
+        <div id="form"></div>
       </div>
     </div>
   </div>

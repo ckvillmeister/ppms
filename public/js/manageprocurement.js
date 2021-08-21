@@ -183,7 +183,7 @@ $('#additemtolist').on('click', function(){
     if (qty === 0 | qty === '' | parseInt(qty) < 1){
         message('Error', 'red', 'Please enter a valid quantity!');
     }
-    else if (mode === ''){
+    else if (mode === '' | mode === null){
         message('Error', 'red', 'Please select mode of procurement!');
     }
     else if (isItemExist(id)){
@@ -250,17 +250,20 @@ $('#frm_create_new_item').on('submit', function(e){
         objexp = $('#objexp').val(),
         category = $('#category').val();
         
-    if (name === ''){
+    if (name === '' | name === null){
         message('Error', 'red', 'Please provide item name!');
     }
-    else if (price === ''){
+    else if (price === '' | price === null){
         message('Error', 'red', 'Please provide item price!');
     }
-    else if (uom === ''){
+    else if (uom === '' | uom === null){
         message('Error', 'red', 'Please select unit of measurement!');
     }
-    else if (objexp === ''){
+    else if (objexp === '' | objexp === null){
         message('Error', 'red', "Please select item's object of expenditure!");
+    }
+    else if (category === '' | category === null){
+        message('Error', 'red', "Please select item's category!");
     }
     else{
         request('items.create', 'POST', $(this).serialize(), 'JSON');

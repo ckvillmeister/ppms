@@ -59,6 +59,14 @@
         }
     }
 </style>
+<br>
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <h2 style="font-size: 14pt"><strong>Annual Procurement Plan (APP)</strong></h2>
+        <h2 style="font-size: 14pt"><strong>FY {{ $settings[1]->setting_description }}</strong></h2>
+    </div>
+</div>
+<br>
 <div class="row" id="container">
     <div class="col-sm-12 align-self-center">
         <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list" style="width:100%">

@@ -1,8 +1,11 @@
-displayAPP();
-
-$('#go').on('click', function(){
+$('#displayppmp').on('click', function(){
     var dept = $('#cbo_departments').val();
     retrieveProcurementList(dept);
+})
+
+$('#displayapp').on('click', function(){
+    var app = $('#app_format').val();
+    displayAPP(app);
 })
 
 $('#print').on('click', function(){
@@ -19,13 +22,13 @@ function retrieveProcurementList(dept){
                 '#page_loading');
 }
 
-function displayAPP(){
-    request('reports.retrieveAPP',
-                'POST', 
-                null,
-                'HTML',
-                '#display_app',
-                '#page_loading');
+function displayAPP(link){
+    request(link,
+            'POST', 
+            null,
+            'HTML',
+            '#display_app',
+            '#page_loading');
 }
 
 function printPPMP(dept){

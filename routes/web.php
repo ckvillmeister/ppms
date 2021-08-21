@@ -41,8 +41,10 @@ Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProc
 Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
 
 Route::get('reports', [ReportsController::class, 'index']);
-Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']); 
-Route::post('reports.retrieveAPP', [ReportsController::class, 'retrieveAPP']); 
+Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']);
+Route::post('APPDILG', [ReportsController::class, 'retrieveAPP']);
+Route::post('APPDBM', [ReportsController::class, 'retrieveAPP']);
+Route::post('APPCSE', [ReportsController::class, 'retrieveAPP']);
 
 Route::get('departments', [DepartmentsController::class, 'index']);
 Route::post('departments.retrieveDepartments', [DepartmentsController::class, 'retrieveDepartments']);

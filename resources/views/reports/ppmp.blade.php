@@ -68,7 +68,7 @@
     <div class="col-lg-1 col-1">
         @php ($total_budget = 0.0)
         @foreach ($items as $item)
-        @php ($total_budget += ($item->price * $item->quantity))
+        @php ($total_budget += ($item->price * $item->total_qty))
         @endforeach
         <div class="float-right">
             <br>
@@ -141,7 +141,7 @@
                 @php ($totoct = 0.0)
                 @php ($totnov = 0.0)
                 @php ($totdec = 0.0)
-
+                
                 @foreach ($items as $item)
                     @php ($count = 0)
                     
@@ -192,7 +192,7 @@
                     @endif
 
                     @php ($price += $item->price)
-                    @php ($total += ($item->price * $item->quantity))
+                    @php ($total += ($item->price * $item->total_qty))
 
                     <tr>
                         @if ($item->january)
@@ -232,9 +232,9 @@
                             @php ($count += 1)
                         @endif
 
-                        @php ($quot = ($item->price * $item->quantity) / $count)
+                        @php ($quot = ($item->price * $item->total_qty) / $count)
                         @php ($totprice += $item->price)
-                        @php ($totitem += ($item->price * $item->quantity))
+                        @php ($totitem += ($item->price * $item->total_qty))
 
                         @if ($item->january)
                             @php ($jan += $quot)
@@ -288,9 +288,9 @@
                         <td class="text-center">{{ $no++ }}</td>
                         <td class="text-center">{{ $item->itemname }}</td>
                         <td class="text-center">{{ $item->description }}</td>
-                        <td class="text-center">{{ $item->quantity }}</td>
+                        <td class="text-center">{{ $item->total_qty }}</td>
                         <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
-                        <td class="numerical-cols">{{ number_format($item->price * $item->quantity, 2) }}</td>
+                        <td class="numerical-cols">{{ number_format($item->price * $item->total_qty, 2) }}</td>
                         <td class="text-center">{{ $item->mode }}</td>
                         <td class="numerical-cols">{{ ($item->january) ? number_format($quot, 2) : '' }}</td>
                         <td class="numerical-cols">{{ ($item->february) ? number_format($quot, 2) : '' }}</td>
@@ -371,8 +371,12 @@
             Department Head<br><br><br><br>
 
             @if ($signatories['subhead']->sub_office)
-            <strong>{{ strtoupper($signatories['subhead']->sub_office_in_charge) }}</strong><br>
-            {{ $signatories['subhead']->position }}
+
+                @if ($signatories['subhead']->sub_office_in_charge != $signatories['head']->office_head)
+                <strong>{{ strtoupper($signatories['subhead']->sub_office_in_charge) }}</strong><br>
+                {{ $signatories['subhead']->position }}
+                @endif
+                
             @endif
         </div>
         <div class="col-lg-3 col-3 center">

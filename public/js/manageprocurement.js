@@ -335,6 +335,7 @@ $('#save_procurement').on('click', function(){
                     'JSON',
                     null,
                     '#page_loading');
+        retrieveProcurementList(dept);
     }
 });
 

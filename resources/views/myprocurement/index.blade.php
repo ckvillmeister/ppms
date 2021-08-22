@@ -123,7 +123,7 @@
                     </div>
                     <div class="card-footer">
                       <div class="float-right">
-                        <button type="button" class="btn btn-sm btn-primary" id="save_procurement">
+                        <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description == 1) ? "s" : (in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled' }}>
                           <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
                         </button>
                       </div>

@@ -322,6 +322,7 @@ $('#save_procurement').on('click', function(){
                     'JSON',
                     null,
                     '#page_loading');
+        retrieveProcurementList(0);
     }
 });
 
@@ -387,7 +388,7 @@ function retrieveProcurementList(year){
                     oct = "<input type='checkbox' id='October'>",
                     nov = "<input type='checkbox' id='November'>",
                     dec = "<input type='checkbox' id='December'>";
-
+                
                 if (value.january == 1){
                     jan = "<input type='checkbox' id='January' checked='checked'>";
                 }
@@ -425,7 +426,13 @@ function retrieveProcurementList(year){
                     dec = "<input type='checkbox' id='December' checked='checked'>";
                 }
 
-                tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + value.id + '" id="permanently_delete" data-toggle="tooltip" data-placement="top" title="Permanently Remove Item"><i class="fas fa-trash"></i></button>' +
+                var button_delete = '';
+
+                if (value.is_allowed_to_remove){
+                    button_delete = '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + value.id + '" id="permanently_delete" data-toggle="tooltip" data-placement="top" title="Permanently Remove Item"><i class="fas fa-trash"></i></button>';
+                }
+
+                tbl_proc_list.row.add( [ button_delete +
                                     '<button class="btn btn-sm btn-warning" value="' + value.itemid + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
                                     ctr, 
                                     value.itemname,

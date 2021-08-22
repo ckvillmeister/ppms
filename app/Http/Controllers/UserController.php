@@ -132,13 +132,15 @@ class UserController extends Controller
     }
 
     public function resetPassword(Request $request){
+        $id = ($request->input('resetpassid')) ? $request->input('resetpassid') : Auth::user()->id;
+        
         $data = ['password' => \Hash::make($request->input('newpassword'))];
-                        
-        $result = User::where('id', $request->input('resetpassid'))
+        $result = User::where('id', $id)
                         ->update($data);
 
         return array('result' => 'Success',
                         'color' => 'green',
-                        'message' => 'Password reset successfully!');
+                        'message' => 'Password changed!');
+        
     }
 }

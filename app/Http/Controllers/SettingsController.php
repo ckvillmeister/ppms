@@ -44,4 +44,37 @@ class SettingsController extends Controller
                 'color' => 'green',
                 'message' => 'New settings applied!');
     }
+
+    public function toggleProcurementStatus(Request $request){
+        $status = ($request->input('status') == true) ? 1 : 0;
+
+        DB::table('settings')
+                ->where('setting_name', '=', 'Procurement Status')
+                ->update([
+                    'setting_description' => $status
+                ]);
+
+    }
+
+    public function backupDatabase(){
+        $date = date('m-d-Y');
+		$filename = 'backup_db_'.$date.'.sql';
+		$res = exec('c:\xampp\mysql\bin\mysqldump -uroot -hlocalhost --database budget_system_db > '.$filename, $a, $b);
+		$file = $filename;
+		if(file_exists($file)) {
+            header('Content-Description: File Transfer');
+			header('Content-Type: application/octet-stream');
+			header("Cache-Control: no-cache, must-revalidate");
+			header("Expires: 0");
+			header('Content-Disposition: attachment; filename="'.basename($file).'"');
+			header('Content-Length: ' . filesize($file));
+			header('Pragma: public');
+            flush();
+			readfile($file);
+		}
+		
+        return array('result' => 'Success',
+                'color' => 'green',
+                'message' => 'Back-up Successful!');
+	}
 }

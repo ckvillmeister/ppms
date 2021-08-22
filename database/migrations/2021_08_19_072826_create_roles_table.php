@@ -25,7 +25,10 @@ class CreateRolesTable extends Migration
         });
 
         $date = date('Y-m-d H:i:s');
-        $inputs = ['role' => 'System Administrator', 'createdby' => 1, 'datecreated' => $date];
+        $inputs = [
+            ['role' => 'System Administrator', 'createdby' => 1, 'datecreated' => $date],
+            ['role' => 'Budget Officer', 'createdby' => 1, 'datecreated' => $date]
+        ];
         Roles::insert($inputs);
     }
 

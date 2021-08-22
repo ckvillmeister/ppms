@@ -13,18 +13,18 @@
   </ul>
 
   <!-- SEARCH FORM -->
-  <!-- <form action="" method="POST">
-    <div class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" name="text_search_supporter" type="search" placeholder="Quick Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
+      <!-- <form action="" method="POST">
+        <div class="form-inline ml-3">
+          <div class="input-group input-group-sm">
+            <input class="form-control form-control-navbar" name="text_search_supporter" type="search" placeholder="Quick Search" aria-label="Search">
+            <div class="input-group-append">
+              <button class="btn btn-navbar" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </form> -->
+      </form> -->
 
   <ul class="navbar-nav ml-auto">
    
@@ -70,31 +70,36 @@
       </div>
 
       <div class="modal-body">
-        <div class="row mt-3 password_row">
-          <div class="col-lg-4 align-self-center">
-              New Password:
+        <form id="frmChangePass">
+
+          <div class="row mt-3 password_row">
+            <div class="col-lg-4 align-self-center">
+                New Password:
+            </div>
+            <div class="col-lg-8">
+                <input type="password" class="form-control form-control-sm" id="newpass" name="newpassword">
+            </div>
           </div>
-          <div class="col-lg-8">
-              <input type="password" class="form-control form-control-sm" id="text_newpassword">
+
+          <div class="row mt-3 password_row">
+            <div class="col-lg-4 align-self-center">
+                Confirm New Password:
+            </div>
+            <div class="col-lg-8">
+                <input type="password" class="form-control form-control-sm" id="cnewpass" name="cnewpassword">
+            </div>
           </div>
         </div>
 
-        <div class="row mt-3 password_row">
-          <div class="col-lg-4 align-self-center">
-              Confirm New Password:
-          </div>
-          <div class="col-lg-8">
-              <input type="password" class="form-control form-control-sm" id="text_cnewpassword">
+        <div class="modal-footer">
+          <div class="float-right">
+            <button class="btn btn-sm btn-primary btn_submit_change_pass" value="">Submit</button>
+            <button class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
-      </div>
 
-      <div class="modal-footer">
-        <div class="float-right">
-          <button class="btn btn-sm btn-primary btn_submit_change_pass" value="">Submit</button>
-          <button class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
-        </div>
-      </div>
+      </form>
+
     </div>
   </div>
 </div>

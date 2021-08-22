@@ -15,9 +15,7 @@
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td>{{ $role->role }}</td>
                         <td class="text-center">
-                          @if ($role->id != 1)
                           <a class="btn btn-sm btn-secondary" id="permissions" href="roles.managepermissions?id={{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Manage Permissions"><i class="fas fa-list"></i></a>
-                          @endif
                           <button class="btn btn-sm btn-warning" id="edit" value="{{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Edit Role"><i class="fas fa-edit"></i></button>
                           @if ($role->status == 1)
                           <button class="btn btn-sm btn-danger" id="delete" value="{{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Delete Role"><i class="fas fa-trash"></i></button>

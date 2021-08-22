@@ -88,7 +88,7 @@
                               Procurement Status
                           </div>
                           <div class="col-lg-6">
-                              <input type="number" class="form-control" value="{{ ($settings[2]->setting_description) ? $settings[2]->setting_description : '' }}" id="proc_status" name="proc_status">
+                            <input type="checkbox" name="proc_status" id="proc_status" {{ ($settings[2]->setting_description) ? 'checked' : '' }} data-bootstrap-switch>  
                           </div>
                         </div>
 
@@ -103,7 +103,10 @@
                     </form>
                   </div>
                   <div class="tab-pane fade" id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
-                      
+                    <br><br>
+                    <div class="text-center">
+                        <a class="btn btn-md btn-success" href="settings.backupDatabase"><i class="fas fa-database mr-2"></i>Click Me to Back-up Database</a>
+                    </div>
                   </div>
                   <div class="tab-pane fade" id="vert-tabs-messages" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">
                     
@@ -124,22 +127,39 @@
 </div>
 </body>
 </html>
+<script src="{{ 'adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' }}"></script>
 <script>
-  $('#frm').on('submit', function(e){
-    e.preventDefault();
+$('#frm').on('submit', function(e){
+  e.preventDefault();
 
-    var sys_name = $('#system_name').val(),
-        proc_year = $('#proc_year').val(),
-        status = $('#proc_status').val();
-        
-    if (sys_name === '' | sys_name === null){
-        message('Error', 'red', 'Please system name!');
-    }
-    else if (proc_year === '' | proc_year === null){
-        message('Error', 'red', 'Please provide procurement year!');
-    }
-    else{
-        request('save.settings', 'POST', $(this).serialize(), 'JSON');
-    }
+  var sys_name = $('#system_name').val(),
+      proc_year = $('#proc_year').val(),
+      status = $('#proc_status').val();
+      
+  if (sys_name === '' | sys_name === null){
+      message('Error', 'red', 'Please system name!');
+  }
+  else if (proc_year === '' | proc_year === null){
+      message('Error', 'red', 'Please provide procurement year!');
+  }
+  else{
+      request('settings.save', 'POST', $(this).serialize(), 'JSON');
+  }
 });
+
+$("#proc_status").bootstrapSwitch();
+
+$("#proc_status").on('switchChange.bootstrapSwitch', function(e, state){
+  var status = 0;
+
+  if (state == true){
+    status = 1
+  }
+
+  request('settings.toggleStatus', 'POST', {'status': status}, 'HTML');
+})
+
+$("#backupDB").on('click', function(){
+  request('settings.backupDatabase', 'POST', null, 'JSON');
+})
 </script>

@@ -159,6 +159,9 @@ class ProcurementController extends Controller
         $deptid = ($request->input('deptid')) ? ($request->input('deptid')) :Auth::user()->department;
         $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
 
+        $new_items = [];
+        $ctr = 0;
+
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
@@ -169,7 +172,14 @@ class ProcurementController extends Controller
             ->where('procurement_items.status', '<>', 0)
             ->get();
 
-        return json_encode($items);
+        foreach($items as $item){
+            $new_item = (array) $item;
+            $new_item['is_allowed_to_remove'] = ($settings[2]->setting_description) ? 1 : (in_array(Auth::user()->role, [1, 2])) ? 1 : 0;
+            $new_items[$ctr] = (object) $new_item;
+            $ctr++;
+        }
+
+        return json_encode($new_items);
     }
 
     public function toggleProcurementItem(Request $request){

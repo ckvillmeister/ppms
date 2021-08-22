@@ -94,5 +94,7 @@ Route::post('accounts.toggleStatus', [UserController::class, 'toggleStatus']);
 Route::post('accounts.resetpass', [UserController::class, 'resetPassword']);
 
 Route::get('settings', [SettingsController::class, 'index']);
-Route::post('save.settings', [SettingsController::class, 'saveSettings']);
+Route::post('settings.save', [SettingsController::class, 'saveSettings']);
+Route::get('settings.backupDatabase', [SettingsController::class, 'backupDatabase']);
+Route::post('settings.toggleStatus', [SettingsController::class, 'toggleProcurementStatus']);
 

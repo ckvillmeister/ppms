@@ -2,7 +2,7 @@
     #container {
         overflow-x: auto;
     }
-    #tbl_procurement_list, .footer, .header{
+    #tbl_ppmp, .footer, .header{
         font-size: 8pt
     }
     .center{
@@ -68,7 +68,7 @@
     <div class="col-lg-1 col-1">
         @php ($total_budget = 0.0)
         @foreach ($items as $item)
-        @php ($total_budget += ($item->price * $item->total_qty))
+        @php ($total_budget += ($item->unit_price * $item->total_qty))
         @endforeach
         <div class="float-right">
             <br>
@@ -93,7 +93,7 @@
 <br>
 <div class="row" id="container">
     <div class="col-sm-12 align-self-center">
-        <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list" style="width:100%">
+        <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_ppmp" style="width:100%">
             <thead>
                 <tr>
                     <th class="text-center">No.</th>
@@ -191,8 +191,8 @@
                         @php ($prev_object_of_expenditure = $item->obj_exp_name)
                     @endif
 
-                    @php ($price += $item->price)
-                    @php ($total += ($item->price * $item->total_qty))
+                    @php ($price += $item->unit_price)
+                    @php ($total += ($item->unit_price * $item->total_qty))
 
                     <tr>
                         @if ($item->january)
@@ -232,9 +232,9 @@
                             @php ($count += 1)
                         @endif
 
-                        @php ($quot = ($item->price * $item->total_qty) / $count)
-                        @php ($totprice += $item->price)
-                        @php ($totitem += ($item->price * $item->total_qty))
+                        @php ($quot = ($item->unit_price * $item->total_qty) / $count)
+                        @php ($totprice += $item->unit_price)
+                        @php ($totitem += ($item->unit_price * $item->total_qty))
 
                         @if ($item->january)
                             @php ($jan += $quot)
@@ -289,8 +289,8 @@
                         <td class="text-center">{{ $item->itemname }}</td>
                         <td class="text-center">{{ $item->description }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>
-                        <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
-                        <td class="numerical-cols">{{ number_format($item->price * $item->total_qty, 2) }}</td>
+                        <td class="numerical-cols">{{ number_format($item->unit_price, 2) }}</td>
+                        <td class="numerical-cols">{{ number_format($item->unit_price * $item->total_qty, 2) }}</td>
                         <td class="text-center">{{ $item->mode }}</td>
                         <td class="numerical-cols">{{ ($item->january) ? number_format($quot, 2) : '' }}</td>
                         <td class="numerical-cols">{{ ($item->february) ? number_format($quot, 2) : '' }}</td>

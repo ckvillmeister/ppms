@@ -175,10 +175,10 @@ class ProcurementController extends Controller
     public function toggleProcurementItem(Request $request){
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
-        $current_user_dept = Auth::user()->department;
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
 
         $procurement = DB::table('procurement_info')
-                ->where('department', '=', $current_user_dept)
+                ->where('department', '=', $deptid)
                 ->where('year', '=', $year)
                 ->get();
 

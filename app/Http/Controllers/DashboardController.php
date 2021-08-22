@@ -6,6 +6,7 @@ use App\Models\Dashboard;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -24,7 +25,39 @@ class DashboardController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarDashboard')){
-                return view('dashboard\index', array('settings' => $settings));
+                $new_departments = [];
+                $depts = array();
+                $colors = array();
+                $procured_items = array();
+                $ctr = 0;
+                $departments = DB::table('procurement_info')
+                                ->join('departments', 'departments.id', '=', 'procurement_info.department')
+                                ->select('departments.*')
+                                ->where('procurement_info.status', '=', 1)
+                                ->where('departments.status', '=', 1)
+                                ->orderBy('departments.office_name', 'asc')
+                                ->get();
+
+                foreach($departments as $department){
+                    $department = (array) $department;
+                    $department['color'] = $this->randomHex();
+                    $depts[$ctr] = ($department['sub_office']) ? $department['description'].'-'.$department['sub_office'] : $department['description'];
+                    $colors[$ctr] = $this->randomHex();
+                    $procured_items[$ctr] = $this->getTotalAmountPerDept($department['id']);
+                    $new_departments[$ctr] = (object) $department;
+                    $ctr++;
+                }
+
+                $users = DB::table('users')
+                                ->where('status', '=', 1)
+                                ->get();
+
+                return view('dashboard\index', array('settings' => $settings,
+                                                        'departments' => $new_departments,
+                                                        'colors' => $colors,
+                                                        'procured_items' => $procured_items,
+                                                        'depts' => $depts,
+                                                        'users' => $users));
             }
             else{
                 return view('forbidden\index', array('settings' => $settings));
@@ -32,69 +65,29 @@ class DashboardController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    function getTotalAmountPerDept($id){
+        $total = 0.0;
+        $procured_info = DB::table('procurement_items')
+                            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+                            ->select('procurement_items.price', 'procurement_items.quantity')
+                            ->where('procurement_info.department', '=', $id)
+                            ->where('procurement_items.status', '=', 1)
+                            ->get();
+
+        foreach($procured_info as $proc){
+            $total += ($proc->price * $proc->quantity);
+        }
+
+        return $total;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Dashboard  $dashboard
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Dashboard $dashboard)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Dashboard  $dashboard
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Dashboard $dashboard)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Dashboard  $dashboard
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Dashboard $dashboard)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Dashboard  $dashboard
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Dashboard $dashboard)
-    {
-        //
-    }
+    function randomHex() {
+        $chars = 'ABCDEF0123456789';
+        $color = '#';
+        for ( $i = 0; $i < 6; $i++ ) {
+           $color .= $chars[rand(0, strlen($chars) - 1)];
+        }
+        return $color;
+     }
+     
 }

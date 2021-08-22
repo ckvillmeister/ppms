@@ -34,16 +34,18 @@ $('#departments').on('change', function(){
     var id = $(this).val();
     tbl_proc_list.clear().draw();
 
-    if (id){
+    $('#itemlist_table').addClass('overlay');
+});
+
+$('#go').on('click', function(){
+    var deptid = $('#departments').val();
+    
+    if (deptid){
         $('#itemlist_table').removeClass('overlay');
     }
     else{
         $('#itemlist_table').addClass('overlay');
     }
-});
-
-$('#go').on('click', function(){
-    var deptid = $('#departments').val();
 
     retrieveProcurementList(deptid);
 });
@@ -130,7 +132,7 @@ $('body').on('click', '#permanently_delete', function(){
                 ctr--;
                 
                 request('procurement.toggleProcurementItem', 'POST', 
-                            {'itemid' : item.val(), 'status' : 0},
+                            {'itemid' : item.val(), 'status' : 0, 'deptid' : $('#departments').val()},
                             'HTML', 'dummy');
             },
             cancel: function () {

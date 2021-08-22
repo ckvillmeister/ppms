@@ -66,7 +66,7 @@ class ReportsController extends Controller
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
             ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
             ->join('units', 'units.id', '=', 'items.uom')
-            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', 'procurement_items.quantity AS total_qty')
+            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', 'procurement_items.quantity AS total_qty', 'procurement_items.price AS unit_price')
             ->where('procurement_info.department', '=', $dept)
             ->where('procurement_info.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)
@@ -81,7 +81,7 @@ class ReportsController extends Controller
             ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
             ->join('units', 'units.id', '=', 'items.uom')
             ->join('departments', 'departments.id', '=', 'procurement_info.department')
-            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', DB::raw('SUM(procurement_items.quantity) AS total_qty'))
+            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('AVG(procurement_items.price) AS unit_price'))
             ->where('departments.office_name', '=', $dept)
             ->where('procurement_info.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)
@@ -128,27 +128,54 @@ class ReportsController extends Controller
     public function retrieveAPP(Request $request){
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
-        $items = DB::table('procurement_items')
-            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
-            ->join('items', 'items.id', '=', 'procurement_items.itemid')
-            ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
-            ->join('units', 'units.id', '=', 'items.uom')
-            ->join('departments', 'departments.id', '=', 'procurement_info.department')
-            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('AVG(procurement_items.price) AS avg_price'))
-            ->where('procurement_info.year', '=', $year)
-            ->where('procurement_items.status', '<>', 0)
-            ->groupBy('items.itemname')
-            ->orderBy('items.object_of_expenditure', 'asc')
-            ->orderBy('procurement_items.itemname', 'asc')
-            ->get();
-
+        
         if ($request->path() == 'APPDILG'){
+            $items = DB::table('procurement_items')
+                            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+                            ->join('items', 'items.id', '=', 'procurement_items.itemid')
+                            ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+                            ->join('units', 'units.id', '=', 'items.uom')
+                            ->join('departments', 'departments.id', '=', 'procurement_info.department')
+                            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('AVG(procurement_items.price) AS avg_price'))
+                            ->where('procurement_info.year', '=', $year)
+                            ->where('procurement_items.status', '<>', 0)
+                            ->groupBy('items.itemname')
+                            ->orderBy('items.object_of_expenditure', 'asc')
+                            ->orderBy('procurement_items.itemname', 'asc')
+                            ->get();
             return view('reports\app_dilg', array('settings' => $settings, 'items' => $items));
         }
         elseif ($request->path() == 'APPDBM'){
+            $items = DB::table('procurement_items')
+                            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+                            ->join('items', 'items.id', '=', 'procurement_items.itemid')
+                            ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+                            ->join('units', 'units.id', '=', 'items.uom')
+                            ->join('departments', 'departments.id', '=', 'procurement_info.department')
+                            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('AVG(procurement_items.price) AS avg_price'))
+                            ->where('procurement_info.year', '=', $year)
+                            ->where('procurement_items.status', '<>', 0)
+                            ->groupBy('items.itemname')
+                            ->orderBy('items.object_of_expenditure', 'asc')
+                            ->orderBy('procurement_items.itemname', 'asc')
+                            ->get();
             return view('reports\app_dbm', array('settings' => $settings, 'items' => $items));
         }
         elseif ($request->path() == 'APPCSE'){
+            $items = DB::table('procurement_items')
+                            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+                            ->join('items', 'items.id', '=', 'procurement_items.itemid')
+                            ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+                            ->join('units', 'units.id', '=', 'items.uom')
+                            ->join('departments', 'departments.id', '=', 'procurement_info.department')
+                            ->join('categories', 'categories.id', '=', 'items.category')
+                            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', 'items.category', 'categories.category', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('AVG(procurement_items.price) AS avg_price'))
+                            ->where('procurement_info.year', '=', $year)
+                            ->where('procurement_items.status', '<>', 0)
+                            ->groupBy('items.itemname')
+                            ->orderBy('categories.category', 'asc')
+                            ->orderBy('procurement_items.itemname', 'asc')
+                            ->get();
             return view('reports\app_cse', array('settings' => $settings, 'items' => $items));
         }
     }

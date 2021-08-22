@@ -22,6 +22,9 @@
 <div class="wrapper">
     @include('components.navbar')
     @include('components.sidebar')
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__shake" src="{{ asset('images/TrinidadLogo.png') }}" alt="DBMLogo" height="500" width="480">
+    </div>
 
     <div class="content-wrapper">
 
@@ -35,7 +38,7 @@
                 </div>
                 <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="home">Home</a></li>
+                    <li class="breadcrumb-item"><a href="myprocurement">Home</a></li>
                     <li class="breadcrumb-item active">Manage Procurement</li>
                 </ol>
                 </div>

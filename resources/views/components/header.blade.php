@@ -1,5 +1,5 @@
 <title>{{ $settings[0]->setting_description }}</title>
-<link rel="icon" href="{{ asset('images/DBMlogo.png') }}">
+<link rel="icon" href="{{ asset('images/TrinidadLogo.png') }}">
 <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}"> 
 <link rel="stylesheet" href="{{ asset('adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
 <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">

@@ -2,11 +2,11 @@
     #container {
         overflow-x: auto;
     }
-    #tbl_procurement_list, .footer, .header{
+    #tbl_app, .footer, .header{
         font-size: 8pt
     }
 
-    #tbl_procurement_list td {
+    #tbl_app td {
         vertical-align: center;
     }
     .center{
@@ -69,7 +69,7 @@
 <br>
 <div class="row" id="container">
     <div class="col-sm-12 align-self-center">
-        <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_procurement_list" style="width:100%">
+        <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_app" style="width:100%">
             <thead>
                 <tr>
                     <th rowspan="2" class="text-center">Item No.</th>
@@ -100,11 +100,11 @@
                 @php ($ctr = 1)
                 @php ($prev_object_of_expenditure = '')
                 @php ($row_count = count($items))
-                @php ($total = 0.0)
-                @php ($totalqtr1 = 0.0)
-                @php ($totalqtr2 = 0.0)
-                @php ($totalqtr3 = 0.0)
-                @php ($totalqtr4 = 0.0)
+                @php ($subtotal = 0.0)
+                @php ($subtotalqtr1 = 0.0)
+                @php ($subtotalqtr2 = 0.0)
+                @php ($subtotalqtr3 = 0.0)
+                @php ($subtotalqtr4 = 0.0)
                 @php ($grandtotal = 0.0)
                 @php ($grandtotalqtr1 = 0.0)
                 @php ($grandtotalqtr2 = 0.0)
@@ -118,86 +118,112 @@
                         @if ($prev_object_of_expenditure)
                             <tr>
                                 <td colspan="5"><strong>SUBTOTAL</strong></td>
-                                <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($totalqtr1) ? number_format($totalqtr1, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ number_format($subtotal, 2) }}</strong></td>
                                 <td class="numerical-cols"><strong></strong></td>
-                                <td class="numerical-cols"><strong>{{ ($totalqtr2) ? number_format($totalqtr2, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotalqtr1) ? number_format($subtotalqtr1, 2) : '' }}</strong></td>
                                 <td class="numerical-cols"><strong></strong></td>
-                                <td class="numerical-cols"><strong>{{ ($totalqtr3) ? number_format($totalqtr3, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotalqtr2) ? number_format($subtotalqtr2, 2) : '' }}</strong></td>
                                 <td class="numerical-cols"><strong></strong></td>
-                                <td class="numerical-cols"><strong>{{ ($totalqtr4) ? number_format($totalqtr4, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotalqtr3) ? number_format($subtotalqtr3, 2) : '' }}</strong></td>
                                 <td class="numerical-cols"><strong></strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotalqtr4) ? number_format($subtotalqtr4, 2) : '' }}</strong></td>
                             </tr>
                         @endif
 
                         <tr>
                             <td></td>
-                            <td colspan="18"><strong>{{ $item->obj_exp_name }}</strong></td>
+                            <td colspan="14"><strong>{{ $item->obj_exp_name }}</strong></td>
                         </tr>
                         
                         @php ($prev_object_of_expenditure = $item->obj_exp_name)
-                        @php ($total = 0.0)
-                        @php ($totalqtr1 = 0.0)
-                        @php ($totalqtr2 = 0.0)
-                        @php ($totalqtr3 = 0.0)
-                        @php ($totalqtr4 = 0.0)
-                        @php ($grandtotal = 0.0)
+                        @php ($subtotal = 0.0)
+                        @php ($subtotalqtr1 = 0.0)
+                        @php ($subtotalqtr2 = 0.0)
+                        @php ($subtotalqtr3 = 0.0)
+                        @php ($subtotalqtr4 = 0.0)
                     @else
                         @php ($prev_object_of_expenditure = $item->obj_exp_name)
                     @endif
 
-                    @php ($total += ($item->avg_price * $item->total_qty))
-
                     <tr>
-                        @if ($item->january | $item->february | $item->march)
-                            
-                        @endif
-                        @if ($item->april | $item->may | $item->june)
-                            
-                        @endif
-                        @if ($item->july | $item->august | $item->september)
-                            
-                        @endif
-                        @if ($item->october | $item->november | $item->december)
-                            
-                        @endif
+                        @php ($qty1_qty = 0)
+                        @php ($qty2_qty = 0)
+                        @php ($qty3_qty = 0)
+                        @php ($qty4_qty = 0)
+                        @php ($rem_qty = $item->total_qty)
 
-                        @php ($total += ($item->avg_price * $item->total_qty))
+                        @for($i = 0; $i < $rem_qty; $i)
+                            @if ($item->january | $item->february | $item->march)
+                                @php ($qty1_qty += 1)
+                                @php ($rem_qty -= 1)
+                            @endif
+                            @if ($rem_qty)
+                                @if ($item->april | $item->may | $item->june)
+                                    @php ($qty2_qty += 1)
+                                    @php ($rem_qty -= 1)
+                                @endif
+                            @endif
+                            @if ($rem_qty)
+                                @if ($item->july | $item->august | $item->september)
+                                    @php ($qty3_qty += 1)
+                                    @php ($rem_qty -= 1)
+                                @endif
+                            @endif
+                            @if ($rem_qty)
+                                @if ($item->october | $item->november | $item->december)
+                                    @php ($qty4_qty += 1)
+                                    @php ($rem_qty -= 1)
+                                @endif
+                            @endif
 
+                        @endfor
+                        
+                        @php ($subtotalqtr1 += ($item->avg_price * $qty1_qty))
+                        @php ($subtotalqtr2 += ($item->avg_price * $qty2_qty))
+                        @php ($subtotalqtr3 += ($item->avg_price * $qty3_qty))
+                        @php ($subtotalqtr4 += ($item->avg_price * $qty4_qty))
+                        @php ($subtotal += ($item->avg_price * $item->total_qty))
+                        @php ($grandtotalqtr1 += ($item->avg_price * $qty1_qty))
+                        @php ($grandtotalqtr2 += ($item->avg_price * $qty2_qty))
+                        @php ($grandtotalqtr3 += ($item->avg_price * $qty3_qty))
+                        @php ($grandtotalqtr4 += ($item->avg_price * $qty4_qty))
+                        @php ($grandtotal += ($item->avg_price * $item->total_qty))
+                        
                         <td class="text-center">{{ $no++ }}</td>
                         <td class="text-center">{{ $item->itemname }}</td>
                         <td class="numerical-cols">{{ number_format($item->avg_price, 2) }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>
                         <td class="text-center">{{ $item->description }}</td>
                         <td class="numerical-cols">{{ number_format($item->avg_price * $item->total_qty, 2) }}</td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
-                        <td class="numerical-cols"></td>
+                        <td class="text-center">{{ $qty1_qty }}</td>
+                        <td class="numerical-cols">{{ number_format(($item->avg_price * $qty1_qty), 2) }}</td>
+                        <td class="text-center">{{ $qty2_qty }}</td>
+                        <td class="numerical-cols">{{ number_format(($item->avg_price * $qty2_qty), 2) }}</td>
+                        <td class="text-center">{{ $qty3_qty }}</td>
+                        <td class="numerical-cols">{{ number_format(($item->avg_price * $qty3_qty), 2) }}</td>
+                        <td class="text-center">{{ $qty4_qty }}</td>
+                        <td class="numerical-cols">{{ number_format(($item->avg_price * $qty4_qty), 2) }}</td>
                     </tr>
                     @php ($ctr++)
                     @if ($row_count < $ctr)
                     <tr>
                         <td colspan="5"><strong>SUBTOTAL</strong></td>
-                        <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($totalqtr1) ? number_format($totalqtr1, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ number_format($subtotal, 2) }}</strong></td>
                         <td class="numerical-cols"><strong></strong></td>
-                        <td class="numerical-cols"><strong>{{ ($totalqtr2) ? number_format($totalqtr2, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotalqtr1) ? number_format($subtotalqtr1, 2) : '' }}</strong></td>
                         <td class="numerical-cols"><strong></strong></td>
-                        <td class="numerical-cols"><strong>{{ ($totalqtr3) ? number_format($totalqtr3, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotalqtr2) ? number_format($subtotalqtr2, 2) : '' }}</strong></td>
                         <td class="numerical-cols"><strong></strong></td>
-                        <td class="numerical-cols"><strong>{{ ($totalqtr4) ? number_format($totalqtr4, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotalqtr3) ? number_format($subtotalqtr3, 2) : '' }}</strong></td>
                         <td class="numerical-cols"><strong></strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotalqtr4) ? number_format($subtotalqtr4, 2) : '' }}</strong></td>
                     </tr>
                     @endif
                 @endforeach
                 <tr>
                     <td colspan="5"><strong>GRANDTOTAL</strong></td>
-                    <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ number_format($grandtotal, 2) }}</strong></td>
+                    <td class="numerical-cols"><strong></strong></td>
                     <td class="numerical-cols"><strong>{{ ($grandtotalqtr1) ? number_format($grandtotalqtr1, 2) : '' }}</strong></td>
                     <td class="numerical-cols"><strong></strong></td>
                     <td class="numerical-cols"><strong>{{ ($grandtotalqtr2) ? number_format($grandtotalqtr2, 2) : '' }}</strong></td>
@@ -205,7 +231,6 @@
                     <td class="numerical-cols"><strong>{{ ($grandtotalqtr3) ? number_format($grandtotalqtr3, 2) : '' }}</strong></td>
                     <td class="numerical-cols"><strong></strong></td>
                     <td class="numerical-cols"><strong>{{ ($grandtotalqtr4) ? number_format($grandtotalqtr4, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong></strong></td>
                 </tr>
             </tbody>
         </table>

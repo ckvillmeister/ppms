@@ -3,7 +3,7 @@
 <head>
 @include('components.header')
 <style>
-  #tbl_procurement_list{
+  #tbl_ppmp, #tbl_app{
     font-size: 10pt
   }
 
@@ -22,6 +22,9 @@
 <div class="wrapper">
     @include('components.navbar')
     @include('components.sidebar')
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__shake" src="{{ asset('images/TrinidadLogo.png') }}" alt="DBMLogo" height="500" width="480">
+    </div>
 
     <div class="content-wrapper">
 
@@ -35,7 +38,7 @@
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="home">Home</a></li>
+                <li class="breadcrumb-item"><a href="myprocurement">Home</a></li>
                 <li class="breadcrumb-item active">Reports</li>
               </ol>
             </div>
@@ -74,8 +77,8 @@
                   </div>
                   <div class="col-lg-5">
                     <div class="float-right">
-                      <button class="btn btn-sm btn-success" id="export"><i class="fas fa-file-excel mr-2"></i>Export</button>
-                      <button class="btn btn-sm btn-secondary" id="print"><i class="fas fa-print mr-2"></i>Print</button>
+                      <button class="btn btn-sm btn-success" id="export_ppmp"><i class="fas fa-file-excel mr-2"></i>Export</button>
+                      <button class="btn btn-sm btn-secondary" id="print_ppmp"><i class="fas fa-print mr-2"></i>Print</button>
                     </div>
                   </div>  
                 </div>
@@ -100,8 +103,8 @@
                   </div>
                   <div class="col-lg-5">
                     <div class="float-right">
-                      <button class="btn btn-sm btn-success" id="export"><i class="fas fa-file-excel mr-2"></i>Export</button>
-                      <button class="btn btn-sm btn-secondary" id="print"><i class="fas fa-print mr-2"></i>Print</button>
+                      <button class="btn btn-sm btn-success" id="export_app"><i class="fas fa-file-excel mr-2"></i>Export</button>
+                      <button class="btn btn-sm btn-secondary" id="print_app"><i class="fas fa-print mr-2"></i>Print</button>
                     </div>
                   </div>  
                 </div>
@@ -122,6 +125,7 @@
 </html>
 
 <script src="{{ asset('js/report.js') }}"></script>
+<script src="{{ asset('adminlte/plugins/table2excel/js/table2excel.js') }}"></script>
 <script type="text/javascript">
   $('#cbo_departments').select2({ dropdownCssClass: "font" });
 </script>

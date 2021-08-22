@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\UnitsController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,4 +92,7 @@ Route::post('accounts.getForm', [UserController::class, 'getForm']);
 Route::post('accounts.create', [UserController::class, 'create']);
 Route::post('accounts.toggleStatus', [UserController::class, 'toggleStatus']);
 Route::post('accounts.resetpass', [UserController::class, 'resetPassword']);
+
+Route::get('settings', [SettingsController::class, 'index']);
+Route::post('save.settings', [SettingsController::class, 'saveSettings']);
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
   <!-- Brand Logo -->
   <a href="dashboard" class="brand-link"> 
     <!-- <div class="text-center"> -->
-      <img src="{{ asset('images/DBMlogo.png') }}" class="brand-image img-circle elevation-3 mr-3">
+      <img src="{{ asset('images/TrinidadLogo.png') }}" class="brand-image img-circle elevation-3 mr-3">
       <span class="brand-text font-weight-light">
         <?php
               $sys_title_arr = explode(' ', $settings[0]['setting_description']);

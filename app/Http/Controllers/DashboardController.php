@@ -38,7 +38,7 @@ class DashboardController extends Controller
                     $department['color'] = $this->randomHex();
                     $depts[$ctr] = ($department['sub_office']) ? $department['description'].'-'.$department['sub_office'] : $department['description'];
                     $colors[$ctr] = $this->randomHex();
-                    $procured_items[$ctr] = $this->getTotalAmountPerDept($department['id']);
+                    $procured_items[$ctr] = $this->getTotalAmountPerDept($department['id'], $settings[1]->setting_description);
                     $new_departments[$ctr] = (object) $department;
                     $ctr++;
                 }
@@ -52,7 +52,8 @@ class DashboardController extends Controller
                                                         'colors' => $colors,
                                                         'procured_items' => $procured_items,
                                                         'depts' => $depts,
-                                                        'users' => $users));
+                                                        'users' => $users,
+                                                        'total_procured' => $this->getTotalProcuredPerYear($settings[1]->setting_description)));
             }
             else{
                 return view('forbidden\index', array('settings' => $settings));
@@ -60,17 +61,36 @@ class DashboardController extends Controller
         }
     }
 
-    function getTotalAmountPerDept($id){
+    function getTotalAmountPerDept($id, $year){
+        
         $total = 0.0;
         $procured_info = DB::table('procurement_items')
                             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
                             ->select('procurement_items.price', 'procurement_items.quantity')
                             ->where('procurement_info.department', '=', $id)
+                            ->where('procurement_info.year', '=', $year)
                             ->where('procurement_items.status', '=', 1)
                             ->get();
 
         foreach($procured_info as $proc){
             $total += ($proc->price * $proc->quantity);
+        }
+
+        return $total;
+    }
+
+    function getTotalProcuredPerYear($year){
+        $total = 0.0;
+        $procured_info = DB::table('procurement_items')
+                            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+                            ->select('procurement_items.price', 'procurement_items.quantity', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('AVG(procurement_items.price) AS avg_price'))
+                            ->where('procurement_info.year', '=', $year)
+                            ->where('procurement_items.status', '=', 1)
+                            ->groupBy('procurement_items.itemname')
+                            ->get();
+
+        foreach($procured_info as $proc){
+            $total += ($proc->avg_price * $proc->total_qty);
         }
 
         return $total;

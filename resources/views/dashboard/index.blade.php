@@ -38,7 +38,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Total Amount</span>
-                <span class="info-box-number">{{ number_format(array_sum($procured_items), 2) }}</span>
+                <span class="info-box-number">{{ number_format($total_procured, 2) }}</span>
               </div>
             </div>
           </div>

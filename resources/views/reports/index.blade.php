@@ -68,16 +68,16 @@
                     <select id="cbo_departments" class="form-control form-control-sm mr-2 mb-2" {{  (!(in_array(Auth::user()->role, [1, 2]))) ? 'disabled' : '' }}>
                       <option value="">- Select Office / Department -</option>
                       @foreach ($departments as $department)
-                      <option value="{{ $department->id }}" {{  (in_array(Auth::user()->role, [1, 2])) ? '' : ($department->id == Auth::user()->department) ? 'selected="selected"' : '' }}> {{ ($department->sub_office) ? $department->description.' ('.$department->sub_office.')' : $department->description }}</option>
+                      <option value="{{ $department->id }}" {{  (in_array(Auth::user()->role, [1, 2])) ? '' : (($department->id == Auth::user()->department) ? 'selected="selected"' : '') }}> {{ ($department->sub_office) ? $department->description.' ('.$department->sub_office.')' : $department->description }}</option>
                       @endforeach
                     </select>
                   </div>
                   <div class="col-lg-2">
-                    <button class="btn btn-sm btn-success" id="displayppmp"><i class="fas fa-paper-plane mr-2"></i>GO</button>
+                    <button class="btn btn-sm btn-primary" id="displayppmp"><i class="fas fa-paper-plane mr-2"></i>GO</button>
                   </div>
                   <div class="col-lg-5">
                     <div class="float-right">
-                      <button class="btn btn-sm btn-success" id="export_ppmp"><i class="fas fa-file-excel mr-2"></i>Export</button>
+                      <button class="btn btn-sm btn-success" id="export_ppmp"><i class="fas fa-file-excel mr-2"></i>Excel</button>
                       <button class="btn btn-sm btn-secondary" id="print_ppmp"><i class="fas fa-print mr-2"></i>Print</button>
                     </div>
                   </div>  

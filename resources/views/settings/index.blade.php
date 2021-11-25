@@ -105,7 +105,7 @@
                   <div class="tab-pane fade" id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
                     <br><br>
                     <div class="text-center">
-                        <a class="btn btn-md btn-success" href="settings.backupDatabase"><i class="fas fa-database mr-2"></i>Click Me to Back-up Database</a>
+                        <a class="btn btn-md btn-primary" href="settings.backupDatabase"><i class="fas fa-database mr-2"></i>Click Me to Back-up Database</a>
                     </div>
                   </div>
                   <div class="tab-pane fade" id="vert-tabs-messages" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">

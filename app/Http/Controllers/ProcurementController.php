@@ -67,6 +67,15 @@ class ProcurementController extends Controller
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
         $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
+        $selected_year = ($request->input('year')) ? $request->input('deptid') : 0;
+
+        if ($selected_year){
+            if ($selected_year == $year){
+                return array('result' => 'Warning',
+                        'color' => 'yellow',
+                        'message' => 'Procurement list successfully saved!');
+            }
+        }
 
         $procurement = DB::table('procurement_info')
                 ->where('department', '=', $deptid)
@@ -174,7 +183,7 @@ class ProcurementController extends Controller
 
         foreach($items as $item){
             $new_item = (array) $item;
-            $new_item['is_allowed_to_remove'] = ($settings[2]->setting_description) ? 1 : (in_array(Auth::user()->role, [1, 2])) ? 1 : 0;
+            $new_item['is_allowed_to_remove'] = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
             $new_items[$ctr] = (object) $new_item;
             $ctr++;
         }
@@ -269,5 +278,93 @@ class ProcurementController extends Controller
         return array('result' => 'Success',
                         'color' => 'green',
                         'message' => 'Procurement list successfully updated!');
+    }
+
+    public function replicateProcurement(Request $request){
+        $settings = Settings::all();
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
+        $year = $request->input('year');
+        $procurement_year = $settings[1]->setting_description;
+
+        $items = DB::table('procurement_items')
+            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+            ->join('items', 'items.id', '=', 'procurement_items.itemid')
+            ->join('units', 'units.id', '=', 'items.uom')
+            ->select('procurement_items.*')
+            ->where('procurement_info.department', '=', $deptid)
+            ->where('procurement_info.year', '=', $year)
+            ->where('procurement_items.status', '<>', 0)
+            ->get();
+
+        if(count($items)){
+            $procid = 0;
+            $procurement = DB::table('procurement_info')
+                    ->where('department', '=', $deptid)
+                    ->where('year', '=', $procurement_year)
+                    ->first();
+                    
+            if ($procurement){
+                $procid = $procurement->id;
+            }
+            else{
+                $procid = DB::table('procurement_info')->insertGetId([
+                    'department' => $deptid,
+                    'year' => $procurement_year,
+                    'createdby' => Auth::user()->id,
+                    'datecreated' => date('Y-m-d H:i:s'),
+                    'status' => 1
+                ]);
+            }
+
+            foreach($items as $item){
+                $checkItem = DB::table('procurement_items AS pitem')
+                    ->join('procurement_info AS pinfo', 'pinfo.id', '=', 'pitem.procurement_id')
+                    ->select('pinfo.*', 'pitem.*', 'pitem.id AS proc_item_id')
+                    ->where('pitem.itemid', '=', $item->itemid)
+                    ->where('pinfo.year', '=', $procurement_year)
+                    ->first();
+    
+                if($checkItem){
+                    $quantity = $checkItem->quantity + $item->quantity;
+                    DB::table('procurement_items')
+                        ->where('id', '=', $checkItem->proc_item_id)
+                        ->update([
+                            'quantity' => $quantity,
+                            'status' => 1
+                        ]);
+                }
+                else{
+                    DB::table('procurement_items')->insert([
+                        'procurement_id' => $procid,
+                        'itemid' => $item->itemid,
+                        'itemname' => $item->itemname,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'mode' => $item->mode,
+                        'january' => $item->january,
+                        'february' => $item->february,
+                        'march' => $item->march,
+                        'april' => $item->april,
+                        'may' => $item->may,
+                        'june' => $item->june,
+                        'july' => $item->july,
+                        'august' => $item->august,
+                        'september' => $item->september,
+                        'october' => $item->october,
+                        'november' => $item->november,
+                        'december' => $item->december,
+                        'addedby' => Auth::user()->id,
+                        'dateadded' => date('Y-m-d H:i:s'),
+                        'status' => 1
+                    ]); 
+                }
+            }
+        }
+        else{
+            return 2;
+        }
+
+        return 1;
+        
     }
 }

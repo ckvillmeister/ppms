@@ -33,7 +33,7 @@ var tbl_proc_list = $('#tbl_procurement_list').DataTable({
 
 $('#go').on('click', function(){
     var year = $('#cbo_year').val();
-
+    
     retrieveProcurementList(year);
 });
 
@@ -261,7 +261,7 @@ $('#frm_create_new_item').on('submit', function(e){
 });
 
 $('#save_procurement').on('click', function(){
-    var procurementlist = [], i = 0;
+    var procurementlist = [], i = 0, year = $('#cbo_year').val();
 
     if (tbl_proc_list.rows().count() <= 0){
         message("Error", "red", "Procurement list is empty!");
@@ -318,7 +318,7 @@ $('#save_procurement').on('click', function(){
         //console.log(procurementlist);
         request('procurement.create',
                     'POST', 
-                    {'list': procurementlist},
+                    {'list': procurementlist, 'year': year},
                     'JSON',
                     null,
                     '#page_loading');

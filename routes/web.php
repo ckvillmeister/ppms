@@ -40,6 +40,7 @@ Route::post('procurement.toggleProcurementItem', [ProcurementController::class, 
 Route::post('procurement.updateProcItems', [ProcurementController::class, 'updateProcItems']);
 Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProcurements']);
 Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
+Route::post('procurement.replicateprocurement', [ProcurementController::class, 'replicateProcurement']);
 
 Route::get('reports', [ReportsController::class, 'index']);
 Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']);
@@ -54,7 +55,7 @@ Route::post('departments.create', [DepartmentsController::class, 'create']);
 Route::post('departments.toggleStatus', [DepartmentsController::class, 'toggleStatus']);
 
 Route::get('items', [ItemsController::class, 'index']);
-Route::post('{route}', [ItemsController::class, 'retrieveItems'])->where('route', '(myprocurementRetrieveItems|manageprocurementRetrieveItems|itemsRetrieveItems)');
+Route::post('{route}', [ItemsController::class, 'retrieveItems'])->where('route', '(myprocurementRetrieveItems|manageprocurementRetrieveItems|manageprocurementRetrieveItemsUpdate|itemsRetrieveItems)');
 Route::post('items.getForm', [ItemsController::class, 'getForm']);
 Route::post('items.create', [ItemsController::class, 'create']);
 Route::post('items.toggleStatus', [ItemsController::class, 'toggleStatus']);

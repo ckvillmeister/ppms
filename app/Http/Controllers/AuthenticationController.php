@@ -19,7 +19,7 @@ class AuthenticationController extends Controller
             return view('authentication\login', array('settings' => $settings));
         }
         else{
-            if (Authentication::isAuthorized(Auth::user()->role, 'sidebarDashboard')){
+            if ($this::isAuthorized(Auth::user()->role, 'sidebarDashboard')){
                 return redirect('dashboard');
             }
             else{

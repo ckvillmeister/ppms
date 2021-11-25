@@ -47,6 +47,12 @@
         </section>
         
         <div class="row m-3">
+          <div class="col-lg-12 text-center">
+            <h4>Procurement Year <br><strong>{{ $settings[1]->setting_description }}</strong></h4>
+          </div>
+        </div>
+        
+        <div class="row m-3">
             <div class="col-lg-1">Navigate to:</div>
             <div class="col-lg-1">
                 <select id="cbo_year" class="form-control form-control-sm mr-2 mb-2">
@@ -56,12 +62,12 @@
                 </select>
             </div>
             <div class="col-lg-1">
-              <button class="btn btn-sm btn-success" id="go"><i class="fas fa-paper-plane mr-2"></i>GO</button>
+              <button class="btn btn-sm btn-primary" id="go"><i class="fas fa-paper-plane mr-2"></i>GO</button>
             </div>
-            <div class="col-lg-7">
-            </div>
-            <div class="col-lg-2">
-              Procurement for Year: <strong>{{ $settings[1]->setting_description }}</strong>
+            <div class="col-lg-9">
+              <div class="float-right">
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy Procurement</button> 
+                </div>
             </div>
         </div>
 
@@ -71,8 +77,8 @@
                 <div class="card card-primary card-outline direct-chat direct-chat-primary shadow-none">
                     <div class="card-header">
                         <h3 class="card-title"><i class="fas fa-list mr-2"></i>Item List</h3>
-                        <div class="card-tools mt-2">
-                            <button type="button" class="btn btn-tool" id="btn_create_new_item"><i class="fas fa-plus mr-2"> Create New Item</i>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-sm btn-secondary" id="btn_create_new_item"><i class="fas fa-plus mr-2"></i> Create New Item
                             </button>
                         </div>
                         <div class="overlay-wrapper" id="itemlist_loading">
@@ -123,7 +129,7 @@
                     </div>
                     <div class="card-footer">
                       <div class="float-right">
-                        <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description == 1) ? "s" : (in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled' }}>
+                        <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description == 1) ? "s" : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
                           <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
                         </button>
                       </div>
@@ -303,8 +309,50 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal_copy_procurement" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog modal-xs modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header card-primary card-outline">
+        <h5 class="modal-title" id="modal_title">Replicate Procurement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          <div class="row mt-3">
+            <div class="col-lg-6 align-self-center">
+                Select year to replicate
+            </div>
+            <div class="col-lg-6">
+              <select id="cbo_year_copy" name="year" class="form-control form-control-sm mr-2 mb-2">
+                  @for ($i = (date('Y') - 5); $i < (date('Y') + 5); $i++)
+                      <option value="{{ $i }}" {{ (($settings[1]->setting_description - 1) == $i) ? "selected" : ""; }}>{{ $i }}</option>
+                  @endfor
+              </select>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-lg-8">
+              <span id="message"></span>
+            </div>
+            <div class="col-lg-4">
+              <div class="float-right">
+                <button id="btn-replicate" class="btn btn-sm btn-primary"><i class="fas fa-copy mr-2"></i>Copy</button>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="{{ asset('js/myprocurement.js') }}"></script>
 <script type="text/javascript">
+  var tkn = $('meta[name="csrf-token"]').attr('content');
+
   $('#uom').select2({
     dropdownParent: $("#modal_create_new_item"),
     dropdownCssClass: "font"
@@ -321,5 +369,33 @@
   $('#mode').select2({
     dropdownParent: $("#modal_add_to_list"),
     dropdownCssClass: "font"
+  });
+
+  $('#btn-replicate').on('click', function(){
+    $.ajax({
+        headers: {
+            'x-csrf-token': tkn
+        },
+        url: '/procurement.replicateprocurement',
+        method: 'POST',
+        data: {'year': $('#cbo_year_copy').val()},
+        dataType: 'HTML',
+        success: function(result) {
+          if (result == 1){
+            message('Success', 'green', 'Procurement from year ' + $('#cbo_year_copy').val() + ' successfully replicated!');
+            $('#modal_copy_procurement').modal('hide');
+            retrieveProcurementList(0);
+          }
+          else if(result == 2){
+            message('<i class="fas fa-info mr-2"></i>Info', 'blue', 'No procurement from year ' + $('#cbo_year_copy').val() + '.');
+          }
+          else{
+            message('Error', 'red', 'Error during processing!');
+          }
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
   });
 </script>

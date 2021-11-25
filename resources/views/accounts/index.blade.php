@@ -45,7 +45,7 @@
 
       <div class="row m-3">
         <div class="col-sm-12">
-            <button class="btn btn-sm btn-success" id="new"><i class="fas fa-plus mr-2"></i>New Account</button>
+            <button class="btn btn-sm btn-primary" id="new"><i class="fas fa-plus mr-4"></i>New</button>
             <button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>
             <button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>
         </div>

@@ -51,6 +51,9 @@ class ItemsController extends Controller
         elseif ($request->path() == 'manageprocurementRetrieveItems'){
             return view('manageprocurement\itemlist', array('items' => $items));
         }
+        elseif ($request->path() == 'manageprocurementRetrieveItemsUpdate'){
+            return view('manageprocurement\itemlistforupdate', array('items' => $items));
+        }
         elseif ($request->path() == 'itemsRetrieveItems'){
             $items = DB::table('items')
                         ->join('units', 'units.id', '=', 'items.uom')

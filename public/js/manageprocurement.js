@@ -1,4 +1,5 @@
 getItems();
+var index, old_id;
 var id, general_desc, uom, price, ctr = 1;
 var tbl_proc_list = $('#tbl_procurement_list').DataTable({
     "scrollX": true,
@@ -142,28 +143,66 @@ $('body').on('click', '#permanently_delete', function(){
     });
 });
 
-$('body').on('click', '#edit_qty', function(){
-    var rowindex = $(this).parent().parent().index();
+$('body').on('click', '#edit', function(){
     var row = $(this).parent().parent();
+    index = $(this).closest('td').parent()[0].sectionRowIndex;
     
-    $.confirm({
-        title: 'New Quantity',
-        type: 'blue',
-        content: '<input type="text" class="form-control form-control-sm" id="new_qty">',
-        buttons: {
-            ok: function () {
-                var newqty = $('#new_qty').val();
-                var price = row.find('td:eq(5)').text();
-
-                var total = parseFloat(newqty) * parseFloat(price);
-                row.find('td:eq(4)').text(newqty);
-                row.find('td:eq(6)').text(numericFormat(total));
-            },
-            cancel: function () {
-                
-            }
-        }
+    $('#eid').val($(this).val());
+    $('#eitemname').val(row.find('td:eq(2)').text());
+    $('#euom').val(row.find('td:eq(3)').text());
+    $('#eqty').val(row.find('td:eq(4)').text());
+    $('#eprice').val(row.find('td:eq(5)').text());
+    $('#emode').val(row.find('td:eq(7)').text());
+    old_id = $(this).val();
+    
+    $('#modal_edit_procured_item').modal({
+        backdrop: 'static',
+        keyboard: true, 
+        show: true
     });
+
+    // $.confirm({
+    //     title: 'New Quantity',
+    //     type: 'blue',
+    //     content: '<input type="text" class="form-control form-control-sm" id="new_qty">',
+    //     buttons: {
+    //         ok: function () {
+    //             var newqty = $('#new_qty').val();
+    //             var price = row.find('td:eq(5)').text();
+
+    //             var total = parseFloat(newqty) * parseFloat(price);
+    //             row.find('td:eq(4)').text(newqty);
+    //             row.find('td:eq(6)').text(numericFormat(total));
+    //         },
+    //         cancel: function () {
+                
+    //         }
+    //     }
+    // });
+});
+
+$('#open_item_list').on('click', function(){
+    request('manageprocurementRetrieveItemsUpdate', 'POST', 
+                null,
+                'HTML',
+                '#eitem_list',
+                '#eitemlist_loading');
+
+    $('#modal_item_list').modal({
+        backdrop: 'static',
+        keyboard: true, 
+        show: true
+    });
+});
+
+$('body').on('click', '#selectitem', function(){
+    var row = $(this).parent().parent();
+
+    $('#eid').val($(this).val());
+    $('#eitemname').val(row.find('td:eq(1)').text());
+    $('#euom').val(row.find('td:eq(2)').text());
+    $('#eprice').val(row.find('td:eq(3)').text());
+    $('#modal_item_list').modal('hide');
 });
 
 $('#additemtolist').on('click', function(){
@@ -234,11 +273,125 @@ $('#additemtolist').on('click', function(){
         });
         
         var total = parseFloat(qty) * parseFloat(price.replace(/,/g, ''));
+
         tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + id + '" id="remove_from_list" data-toggle="tooltip" data-placement="top" title="Remove Item"><i class="fas fa-minus"></i></button>' +
-                                    '<button class="btn btn-sm btn-warning" value="' + id + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
+                                    '<button class="btn btn-sm btn-warning" value="' + id + '" id="edit" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
                                     ctr, general_desc, uom, qty, numericFormat(price), numericFormat(total), mode, jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec ] ).draw();
         ctr++;
         $('#modal_add_to_list').modal('hide');
+    }
+});
+
+$('#updateitemfromlist').on('click', function(){
+    var itemid = $('#eid').val(),
+        item_desc = $('#eitemname').val(),
+        uom = $('#euom').val(),
+        unit_price = $('#eprice').val(),
+        qty = $('#eqty').val(),
+        proc_mode = $('#emode').val(),
+        jan = "<input type='checkbox' id='January'>", 
+        feb = "<input type='checkbox' id='February'>",
+        mar = "<input type='checkbox' id='March'>",
+        apr = "<input type='checkbox' id='April'>",
+        may = "<input type='checkbox' id='May'>",
+        jun = "<input type='checkbox' id='June'>",
+        jul = "<input type='checkbox' id='July'>",
+        aug = "<input type='checkbox' id='August'>",
+        sep = "<input type='checkbox' id='September'>",
+        oct = "<input type='checkbox' id='October'>",
+        nov = "<input type='checkbox' id='November'>",
+        dec = "<input type='checkbox' id='December'>";
+
+    if (qty === 0 | qty === '' | parseInt(qty) < 1){
+        message('Error', 'red', 'Please enter a valid quantity!');
+    }
+    else if (mode === '' | mode === null){
+        message('Error', 'red', 'Please select mode of procurement!');
+    }
+    else if (isItemExist(id)){
+        message('Error', 'red', 'Item already in the list!');
+    }
+    else{
+        $('#EMonthsList input[type=checkbox]').each(function() {
+            if ($(this).is(":checked")) {
+                if ($(this).val() == 'January'){
+                    jan = "<input type='checkbox' id='January' checked='checked'>";
+                }
+                else if ($(this).val() == 'February'){
+                    feb = "<input type='checkbox' id='February' checked='checked'>";
+                }
+                else if ($(this).val() == 'March'){
+                    mar = "<input type='checkbox' id='March' checked='checked'>";
+                }
+                else if ($(this).val() == 'April'){
+                    apr = "<input type='checkbox' id='April' checked='checked'>";
+                }
+                else if ($(this).val() == 'May'){
+                    may = "<input type='checkbox' id='May' checked='checked'>";
+                }
+                else if ($(this).val() == 'June'){
+                    jun = "<input type='checkbox' id='June' checked='checked'>";
+                }
+                else if ($(this).val() == 'July'){
+                    jul = "<input type='checkbox' id='July' checked='checked'>";
+                }
+                else if ($(this).val() == 'August'){
+                    aug = "<input type='checkbox' id='August' checked='checked'>";
+                }
+                else if ($(this).val() == 'September'){
+                    sep = "<input type='checkbox' id='September' checked='checked'>";
+                }
+                else if ($(this).val() == 'October'){
+                    oct = "<input type='checkbox' id='October' checked='checked'>";
+                }
+                else if ($(this).val() == 'November'){
+                    nov = "<input type='checkbox' id='November' checked='checked'>";
+                }
+                else if ($(this).val() == 'December'){
+                    dec = "<input type='checkbox' id='December' checked='checked'>";
+                }
+            }
+        });
+
+        var button = '';
+
+        if (old_id == itemid){
+            button = '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + itemid + '" id="permanently_delete" data-toggle="tooltip" data-placement="top" title="Permanently Remove Item"><i class="fas fa-trash"></i></button>' +
+                    '<button class="btn btn-sm btn-warning" value="' + itemid + '" id="edit" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>';
+        }
+        else{
+            button = '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + itemid + '" id="remove_from_list" data-toggle="tooltip" data-placement="top" title="Remove Item"><i class="fas fa-minus"></i></button>' +
+                    '<button class="btn btn-sm btn-warning" value="' + itemid + '" id="edit" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>';
+        }
+
+        var total = parseFloat(qty) * parseFloat(unit_price.replace(/,/g, ''));
+        tbl_proc_list.cell(index, 0).data(button).draw();
+        tbl_proc_list.cell(index, 2).data(item_desc).draw();
+        tbl_proc_list.cell(index, 3).data(uom).draw();
+        tbl_proc_list.cell(index, 4).data(qty).draw();
+        tbl_proc_list.cell(index, 5).data(numericFormat(unit_price)).draw();
+        tbl_proc_list.cell(index, 6).data(numericFormat(total)).draw();
+        tbl_proc_list.cell(index, 7).data(proc_mode).draw();
+        tbl_proc_list.cell(index, 8).data(jan).draw();
+        tbl_proc_list.cell(index, 9).data(feb).draw();
+        tbl_proc_list.cell(index, 10).data(mar).draw();
+        tbl_proc_list.cell(index, 11).data(apr).draw();
+        tbl_proc_list.cell(index, 12).data(may).draw();
+        tbl_proc_list.cell(index, 13).data(jun).draw();
+        tbl_proc_list.cell(index, 14).data(jul).draw();
+        tbl_proc_list.cell(index, 15).data(aug).draw();
+        tbl_proc_list.cell(index, 16).data(sep).draw();
+        tbl_proc_list.cell(index, 17).data(oct).draw();
+        tbl_proc_list.cell(index, 18).data(nov).draw();
+        tbl_proc_list.cell(index, 19).data(dec).draw();
+
+        if (old_id != itemid){
+            request('procurement.toggleProcurementItem', 'POST', 
+                                {'itemid' : old_id, 'status' : 0, 'deptid' : $('#departments').val()},
+                                'HTML', null);
+        }
+
+        $('#modal_edit_procured_item').modal('hide');
     }
 });
 
@@ -281,7 +434,7 @@ $('#save_procurement').on('click', function(){
     }
     else{
         $('#tbl_procurement_list tbody').find('tr').each(function(){
-            var itemid = $(this).closest('tr').find('#edit_qty').val(),
+            var itemid = $(this).closest('tr').find('#edit').val(),
                 itemname = $(this).closest('tr').find('td:eq(2)').text(),
                 qty = $(this).closest('tr').find('td:eq(4)').text(),
                 price = $(this).closest('tr').find('td:eq(5)').text(),
@@ -350,7 +503,7 @@ function getItems(){
 function isItemExist(itemid){
 	var flag = false;
 
-	$('#tbl_procurement_list #edit_qty').each(function(){
+	$('#tbl_procurement_list #edit').each(function(){
 	    if(itemid == $(this).val()){
 	        flag = true;
 	    }
@@ -440,7 +593,7 @@ function retrieveProcurementList(deptid){
                 }
 
                 tbl_proc_list.row.add( [ '<button class="btn btn-sm btn-danger mr-2 remove_btn" value="' + value.id + '" id="permanently_delete" data-toggle="tooltip" data-placement="top" title="Permanently Remove Item"><i class="fas fa-trash"></i></button>' +
-                                    '<button class="btn btn-sm btn-warning" value="' + value.itemid + '" id="edit_qty" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
+                                    '<button class="btn btn-sm btn-warning" value="' + value.itemid + '" id="edit" data-toggle="tooltip" data-placement="top" title="Edit Quantity"><i class="fas fa-edit"></i></button>',
                                     ctr, 
                                     value.itemname,
                                     value.description, 

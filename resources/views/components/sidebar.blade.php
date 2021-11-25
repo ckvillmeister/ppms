@@ -2,7 +2,7 @@
 use App\Http\Controllers\AuthenticationController as Authentication; 
 @endphp
 
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-secondary elevation-4">
   <!-- Brand Logo -->
   <a href="dashboard" class="brand-link"> 
     <!-- <div class="text-center"> -->
@@ -70,16 +70,8 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         @endif
 
         @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSetup'))
-        <li class="nav-item has-treeview {{ (Request::path() == 'departments') ? 'menu-open' : 
-                                                      (Request::path() == 'items') ? 'menu-open' : 
-                                                      (Request::path() == 'categories') ? 'menu-open' : 
-                                                      (Request::path() == 'object_expenditures') ? 'menu-open' : 
-                                                      (Request::path() == 'units') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (Request::path() == 'departments') ? 'active' : 
-                                                      (Request::path() == 'items') ? 'active' : 
-                                                      (Request::path() == 'categories') ? 'active' : 
-                                                      (Request::path() == 'object_expenditures') ? 'active' : 
-                                                      (Request::path() == 'units') ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'object_expenditures', 'units'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'object_expenditures', 'units'])) ? 'active' : '' }}">
             <i class="nav-icon fas fa-sliders-h"></i>
             <p>Setup<i class="right fas fa-angle-left"></i></p>
           </a>
@@ -136,14 +128,8 @@ use App\Http\Controllers\AuthenticationController as Authentication;
          @endif
          
         @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSettings'))
-        <li class="nav-item has-treeview {{ (Request::path() == 'roles') ? 'menu-open' : 
-                                            (Request::path() == 'accounts') ? 'menu-open' : 
-                                            (Request::path() == 'settings') ? 'menu-open' : 
-                                            (Request::path() == 'roles.managepermissions') ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{  (Request::path() == 'roles') ? 'active' : 
-                                          (Request::path() == 'accounts') ? 'active' : 
-                                          (Request::path() == 'settings') ? 'active' :
-                                          (Request::path() == 'roles.managepermissions') ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles.managepermissions'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles.managepermissions'])) ? 'active' : '' }}">
             <i class="nav-icon fas fa-tools"></i>
             <p>
               Settings

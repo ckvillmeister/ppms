@@ -106,21 +106,43 @@ $('body').on('click', '#permanently_delete', function(){
         content: 'This is an irreversible action. Are you sure you want to permanently remove this item?',
         buttons: {
             confirm: function () {
-                tbl_proc_list.row( $(item).parents('tr') )
-                    .remove()
-                    .draw();
+                $.ajax({
+                    headers: {
+                        'x-csrf-token': tkn
+                    },
+                    url: '/procurement.toggleProcurementItem',
+                    method: 'POST',
+                    data: {'itemid' : item.val(), 'status' : 0, 'deptid' : 0},
+                    dataType: 'HTML',
+                    success: function(result) {
+                      if (result == 1){
+                        tbl_proc_list.row( $(item).parents('tr') )
+                            .remove()
+                            .draw();
 
-                var no = 1;
-                $('#tbl_procurement_list tbody').find('tr').each(function(){
-                    var $this = $(this);
-                    $('td:eq(1)', $this).text(no);
-                    no++;
-                });
-                ctr--;
-                
-                request('procurement.toggleProcurementItem', 'POST', 
-                            {'itemid' : item.val(), 'status' : 0},
-                            'HTML', 'dummy');
+                        var no = 1;
+                        $('#tbl_procurement_list tbody').find('tr').each(function(){
+                            var $this = $(this);
+                            $('td:eq(1)', $this).text(no);
+                            no++;
+                        });
+                        ctr--;
+                      }
+                      else if(result == 2){
+                        message('Warning', 'red', 'This procurement was already approved! Therefore it cannot be modified.');
+                      }
+                      else if(result == 3){
+                        message('Warning', 'red', 'Procurement planning for this year is already close!');
+                      }
+                      else{
+                        message('Error', 'red', 'Error during processing!');
+                      }
+                    },
+                    error: function(obj, msg, exception){
+                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                    }
+                })
+
             },
             cancel: function () {
                 
@@ -261,7 +283,7 @@ $('#frm_create_new_item').on('submit', function(e){
 });
 
 $('#save_procurement').on('click', function(){
-    var procurementlist = [], i = 0, year = $('#cbo_year').val();
+    var procurementlist = [], i = 0;
 
     if (tbl_proc_list.rows().count() <= 0){
         message("Error", "red", "Procurement list is empty!");
@@ -318,7 +340,7 @@ $('#save_procurement').on('click', function(){
         //console.log(procurementlist);
         request('procurement.create',
                     'POST', 
-                    {'list': procurementlist, 'year': year},
+                    {'list': procurementlist},
                     'JSON',
                     null,
                     '#page_loading');

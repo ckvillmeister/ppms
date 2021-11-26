@@ -63,9 +63,16 @@
                 </select>
             </div>
             <div class="col-lg-1">
+              <select id="cbo_year" class="form-control form-control-sm mr-2 mb-2">
+                  @for ($i = (date('Y') - 5); $i < (date('Y') + 5); $i++)
+                      <option value="{{ $i }}" {{ ($settings[1]->setting_description == $i) ? "selected" : ""; }}>{{ $i }}</option>
+                  @endfor
+              </select>
+            </div>
+            <div class="col-lg-1">
               <button class="btn btn-sm btn-primary" id="go"><i class="fas fa-paper-plane mr-2"></i>GO</button>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-5">
               <div class="float-right">
                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy Procurement</button> 
               </div>
@@ -133,6 +140,9 @@
                       <div class="float-right">
                         <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
                           <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
+                        </button>
+                        <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
+                          <i class="fas fa-thumbs-up mr-2"></i>Approve Procurement
                         </button>
                       </div>
                     </div>
@@ -474,8 +484,46 @@
   $('#mode').select2({dropdownParent: $("#modal_add_to_list")});
   $('#departments').select2({dropdownCssClass: "font"});
 
+  $('#approve_procurement').on('click', function(){
+    var dept = $('#departments').val(), year = $('#cbo_year').val(), dept_desc = $( "#departments option:selected" ).text(), status = $(this).val();
+
+    if (dept == ""){
+      message('Empty', 'red', 'Please select a department first!');
+    }
+    else if (year == ""){
+      message('Empty', 'red', 'Please select a department first!');
+    }
+    else{
+      $.ajax({
+        headers: {
+            'x-csrf-token': tkn
+        },
+        url: '/procurement.approveprocurement',
+        method: 'POST',
+        data: {'year': $('#cbo_year').val(), 'deptid': dept, 'status': status},
+        dataType: 'HTML',
+        success: function(result) {
+          if (result == 1){
+            message('Info', 'blue', dept_desc + ' procurement approval for year ' + year + ' has been reverted to unapproved status!');
+          }
+          else if (result == 2){
+            message('Success', 'green', dept_desc + ' procurement for year ' + year + ' has been approved!');
+          }
+          else{
+            message('Error', 'red', 'Error during processing!');
+          }
+          setApprovalStatus(dept, year);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+      })
+    }
+    
+  });
+
   $('#btn-replicate').on('click', function(){
-    var dept = $('#departments').val();
+    var dept = $('#departments').val(), year = $('#cbo_year').val();
 
     if (dept == ""){
       message('Empty', 'red', 'Please select a department first!');
@@ -493,7 +541,7 @@
           if (result == 1){
             message('Success', 'green', 'Procurement from year ' + $('#cbo_year_copy').val() + ' successfully replicated!');
             $('#modal_copy_procurement').modal('hide');
-            retrieveProcurementList(dept);
+            retrieveProcurementList(dept, year);
           }
           else if(result == 2){
             message('<i class="fas fa-info mr-2"></i>Info', 'blue', 'No procurement from year ' + $('#cbo_year_copy').val() + '.');

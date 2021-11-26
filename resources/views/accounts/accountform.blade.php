@@ -37,7 +37,7 @@
             <select class="form-control form-control-sm" style="width: 100%;" id="extension" name="extension">
                 <option value="">- Name Extension -</option>
                 @foreach ($extensions as $key => $extension)
-                <option value="{{ $key }}" {{ (!(isset($accountinfo[0]))) ? '' : ($accountinfo[0]->extension == $key) ? 'selected=:"selected"' : '' }}>{{ $extension }}</option>
+                <option value="{{ $key }}" {{ (!(isset($accountinfo[0]))) ? '' : (($accountinfo[0]->extension == $key) ? 'selected=:"selected"' : '') }}>{{ $extension }}</option>
                 @endforeach
             </select>
         </div>
@@ -69,7 +69,7 @@
             <select class="form-control form-control-sm" style="width: 100%;" id="department" name="department">
                 <option value="">- Select Department -</option>
                 @foreach ($departments as $key => $department)
-                <option value="{{ $department->id }}" {{ (!(isset($accountinfo[0]))) ? '' : ($accountinfo[0]->department == $department->id) ? 'selected=:"selected"' : '' }}>{{ ($department->sub_office) ? $department->description.' ('.$department->sub_office.')' : $department->description }}</option>
+                <option value="{{ $department->id }}" {{ (!(isset($accountinfo[0]))) ? '' : (($accountinfo[0]->department == $department->id) ? 'selected=:"selected"' : '') }}>{{ ($department->sub_office) ? $department->description.' ('.$department->sub_office.')' : $department->description }}</option>
                 @endforeach
             </select>
         </div>
@@ -83,7 +83,7 @@
             <select class="form-control form-control-sm" style="width: 100%;" id="role" name="role">
                 <option value="">- Select Role -</option>
                 @foreach ($roles as $key => $role)
-                <option value="{{ $role->id }}" {{ (!(isset($accountinfo[0]))) ? '' : ($accountinfo[0]->role == $role->id) ? 'selected=:"selected"' : '' }}>{{ $role->role }}</option>
+                <option value="{{ $role->id }}" {{ (!(isset($accountinfo[0]))) ? '' : (($accountinfo[0]->role == $role->id) ? 'selected=:"selected"' : '') }}>{{ $role->role }}</option>
                 @endforeach
             </select>
         </div>

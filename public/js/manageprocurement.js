@@ -39,7 +39,8 @@ $('#departments').on('change', function(){
 });
 
 $('#go').on('click', function(){
-    var deptid = $('#departments').val();
+    var deptid = $('#departments').val(),
+        year = $('#cbo_year').val();
     
     if (deptid){
         $('#itemlist_table').removeClass('overlay');
@@ -48,7 +49,8 @@ $('#go').on('click', function(){
         $('#itemlist_table').addClass('overlay');
     }
 
-    retrieveProcurementList(deptid);
+    retrieveProcurementList(deptid, year);
+    setApprovalStatus(deptid, year);
 });
 
 $('#btn_create_new_item').on('click', function(){
@@ -120,21 +122,57 @@ $('body').on('click', '#permanently_delete', function(){
         content: 'This is an irreversible action. Are you sure you want to permanently remove this item?',
         buttons: {
             confirm: function () {
-                tbl_proc_list.row( $(item).parents('tr') )
-                    .remove()
-                    .draw();
+                $.ajax({
+                    headers: {
+                        'x-csrf-token': tkn
+                    },
+                    url: '/procurement.toggleProcurementItem',
+                    method: 'POST',
+                    data: {'itemid' : item.val(), 'status' : 0, 'deptid' : $('#departments').val()},
+                    dataType: 'HTML',
+                    success: function(result) {
+                      if (result == 1){
+                        tbl_proc_list.row( $(item).parents('tr') )
+                            .remove()
+                            .draw();
 
-                var no = 1;
-                $('#tbl_procurement_list tbody').find('tr').each(function(){
-                    var $this = $(this);
-                    $('td:eq(1)', $this).text(no);
-                    no++;
-                });
-                ctr--;
+                        var no = 1;
+                        $('#tbl_procurement_list tbody').find('tr').each(function(){
+                            var $this = $(this);
+                            $('td:eq(1)', $this).text(no);
+                            no++;
+                        });
+                        ctr--;
+                      }
+                      else if(result == 2){
+                        message('Warning', 'red', 'This procurement was already approved! Therefore it cannot be modified.');
+                      }
+                      else if(result == 3){
+                        message('Warning', 'red', 'Procurement planning for this year is already close!');
+                      }
+                      else{
+                        message('Error', 'red', 'Error during processing!');
+                      }
+                    },
+                    error: function(obj, msg, exception){
+                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                    }
+                })
+                // tbl_proc_list.row( $(item).parents('tr') )
+                //     .remove()
+                //     .draw();
+
+                // var no = 1;
+                // $('#tbl_procurement_list tbody').find('tr').each(function(){
+                //     var $this = $(this);
+                //     $('td:eq(1)', $this).text(no);
+                //     no++;
+                // });
+                // ctr--;
                 
-                request('procurement.toggleProcurementItem', 'POST', 
-                            {'itemid' : item.val(), 'status' : 0, 'deptid' : $('#departments').val()},
-                            'HTML', 'dummy');
+                // request('procurement.toggleProcurementItem', 'POST', 
+                //             {'itemid' : item.val(), 'status' : 0, 'deptid' : $('#departments').val()},
+                //             'HTML', 'dummy');
             },
             cancel: function () {
                 
@@ -427,7 +465,7 @@ $('#frm_create_new_item').on('submit', function(e){
 });
 
 $('#save_procurement').on('click', function(){
-    var procurementlist = [], i = 0, dept = $('#departments').val();
+    var procurementlist = [], i = 0, dept = $('#departments').val(), year = $('#cbo_year').val();
     
     if (tbl_proc_list.rows().count() <= 0){
         message("Error", "red", "Procurement list is empty!");
@@ -488,7 +526,7 @@ $('#save_procurement').on('click', function(){
                     'JSON',
                     null,
                     '#page_loading');
-        retrieveProcurementList(dept);
+        retrieveProcurementList(dept, year);
     }
 });
 
@@ -517,7 +555,7 @@ function isItemExist(itemid){
 	}
 }
 
-function retrieveProcurementList(deptid){
+function retrieveProcurementList(deptid, year){
     ctr = 1;
     var token = $('meta[name="csrf-token"]').attr('content');
 
@@ -527,7 +565,7 @@ function retrieveProcurementList(deptid){
         },
         url: 'procurement.retrieveProcurementList',
         method: 'POST',
-        data: {"deptid": deptid},
+        data: {"deptid": deptid, 'year': year},
         setCookies: token,
         dataType: 'JSON',
         beforeSend: function() {
@@ -616,6 +654,35 @@ function retrieveProcurementList(deptid){
                 ctr++;
             });
             
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function setApprovalStatus(dept, year){
+    $.ajax({
+        headers: {
+            'x-csrf-token': tkn
+        },
+        url: '/procurement.getprocurementinfo',
+        method: 'POST',
+        data: {'year': year, 'deptid': dept},
+        dataType: 'JSON',
+        success: function(result) {
+            if (result.status == 1){
+                $('#approve_procurement').removeClass('btn-danger');
+                $('#approve_procurement').addClass('btn-success');
+                $('#approve_procurement').html('<i class="fas fa-thumbs-up mr-2"></i>Approve Procurement');
+                $('#approve_procurement').val(2);
+            }
+            else if(result.status == 2){
+                $('#approve_procurement').removeClass('btn-success');
+                $('#approve_procurement').addClass('btn-danger');
+                $('#approve_procurement').html('<i class="fas fa-history mr-2"></i>Revert Approval');
+                $('#approve_procurement').val(1);
+            }
         },
         error: function(obj, msg, exception){
             message('Error', 'red', msg + ": " + obj.status + " " + exception);

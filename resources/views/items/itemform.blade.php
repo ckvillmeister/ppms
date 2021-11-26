@@ -28,7 +28,7 @@
                 <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom">
                 <option value=""></option>
                 @foreach ($uom as $key => $unit)
-                <option value="{{ $unit->id }}" {{ (!(isset($iteminfo[0]))) ? '' : ($iteminfo[0]->uom == $unit->id) ? 'selected=:"selected"' : '' }}>{{ $unit->uom.' ('.$unit->description.')' }}</option>
+                <option value="{{ $unit->id }}" {{ (!(isset($iteminfo[0]))) ? '' : (($iteminfo[0]->uom == $unit->id) ? 'selected=:"selected"' : '') }}>{{ $unit->uom.' ('.$unit->description.')' }}</option>
                 @endforeach
                 </select>
             </div>
@@ -42,7 +42,7 @@
                 <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
                 <option value=""></option>
                 @foreach ($objexpenditures as $key => $objexpenditure)
-                <option value="{{ $objexpenditure->id }}" {{ (!(isset($iteminfo[0]))) ? '' : ($iteminfo[0]->object_of_expenditure == $objexpenditure->id) ? 'selected=:"selected"' : '' }}>{{ $objexpenditure->obj_exp_name }}</option>
+                <option value="{{ $objexpenditure->id }}" {{ (!(isset($iteminfo[0]))) ? '' : (($iteminfo[0]->object_of_expenditure == $objexpenditure->id) ? 'selected=:"selected"' : '') }}>{{ $objexpenditure->obj_exp_name }}</option>
                 @endforeach
                 </select>
             </div>
@@ -56,7 +56,7 @@
                 <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
                     <option value=""></option>
                     @foreach ($categories as $key => $category)
-                    <option value="{{ $category->id }}" {{ (!(isset($iteminfo[0]))) ? '' : ($iteminfo[0]->category == $category->id) ? 'selected=:"selected"' : '' }}>{{ $category->category }}</option>
+                    <option value="{{ $category->id }}" {{ (!(isset($iteminfo[0]))) ? '' : (($iteminfo[0]->category == $category->id) ? 'selected=:"selected"' : '') }}>{{ $category->category }}</option>
                     @endforeach
                 </select>
             </div>

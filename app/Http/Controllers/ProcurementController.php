@@ -66,15 +66,13 @@ class ProcurementController extends Controller
     {
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
+        $proc_status = $settings[2]->setting_description;
         $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
-        $selected_year = ($request->input('year')) ? $request->input('deptid') : 0;
 
-        if ($selected_year){
-            if ($selected_year == $year){
-                return array('result' => 'Warning',
-                        'color' => 'yellow',
-                        'message' => 'Procurement list successfully saved!');
-            }
+        if ($proc_status == 0){
+            return array('result' => 'Warning',
+                    'color' => 'red',
+                    'message' => 'Procurement planning for year '.$year.' is already close!');
         }
 
         $procurement = DB::table('procurement_info')
@@ -90,6 +88,13 @@ class ProcurementController extends Controller
                 'datecreated' => date('Y-m-d H:i:s'),
                 'status' => 1
             ]);
+        }
+        else{
+            if ($procurement[0]->status == 2){
+                return array('result' => 'Warning',
+                        'color' => 'red',
+                        'message' => 'This procurement was already approved! Therefore it cannot be modified.');
+            }
         }
 
         $procurement = DB::table('procurement_info')
@@ -194,20 +199,29 @@ class ProcurementController extends Controller
     public function toggleProcurementItem(Request $request){
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
+        $proc_status = $settings[2]->setting_description;
         $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
 
+        if ($proc_status == 0){
+            return 3;
+        }
+        
         $procurement = DB::table('procurement_info')
                 ->where('department', '=', $deptid)
                 ->where('year', '=', $year)
-                ->get();
-
+                ->first();
+        
+        if ($procurement->status == 2){
+            return 2;
+        }
+        
         DB::table('procurement_items')
-                ->where('procurement_id', '=', $procurement[0]->id)
-                ->where('itemid', '=', $request->input('itemid'))
+                ->where('id', '=', $request->input('itemid'))
                 ->update([
                     'status' => $request->input('status')
                 ]);
-        
+
+        return 1;
     }
 
     public function retrieveProcurements(Request $request){
@@ -367,4 +381,32 @@ class ProcurementController extends Controller
         return 1;
         
     }
+
+    public function approveprocurement(Request $request){
+        $deptid = $request->input('deptid');
+        $year = $request->input('year');
+        $status = $request->input('status');
+
+        DB::table('procurement_info')
+                        ->where('department', '=', $deptid)
+                        ->where('year', '=', $year)
+                        ->update([
+                            'status' => $status
+                        ]);
+
+        return $status;
+    }
+
+    public function getProcurementInfo(Request $request){
+        $deptid = $request->input('deptid');
+        $year = $request->input('year');
+
+        $info = DB::table('procurement_info')
+                        ->where('department', '=', $deptid)
+                        ->where('year', '=', $year)
+                        ->first();
+
+        return json_encode($info);
+    }
+    
 }

@@ -41,6 +41,8 @@ Route::post('procurement.updateProcItems', [ProcurementController::class, 'updat
 Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProcurements']);
 Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
 Route::post('procurement.replicateprocurement', [ProcurementController::class, 'replicateProcurement']);
+Route::post('procurement.approveprocurement', [ProcurementController::class, 'approveProcurement']);
+Route::post('procurement.getprocurementinfo', [ProcurementController::class, 'getProcurementInfo']);
 
 Route::get('reports', [ReportsController::class, 'index']);
 Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']);

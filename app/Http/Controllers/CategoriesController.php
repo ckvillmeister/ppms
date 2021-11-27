@@ -21,10 +21,10 @@ class CategoriesController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarCategories')){
-                return view('categories\index', array('settings' => $settings));
+                return view('categories.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
         
@@ -68,7 +68,7 @@ class CategoriesController extends Controller
                         ->orderBy('id', 'asc')
                         ->get();
 
-        return view('categories\categorylist', array('categories' => $categories));
+        return view('categories.categorylist', array('categories' => $categories));
     }
 
     public function getForm(Request $request){
@@ -78,7 +78,7 @@ class CategoriesController extends Controller
                         ->where('id', '=', $id)
                         ->get();
 
-        return view('categories\categoryform', array('categoryinfo' => $categoryinfo));
+        return view('categories.categoryform', array('categoryinfo' => $categoryinfo));
     }
 
     public function toggleStatus(Request $request){

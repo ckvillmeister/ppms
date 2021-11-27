@@ -21,10 +21,10 @@ class DepartmentsController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarDepartments')){
-                return view('departments\index', array('settings' => $settings));
+                return view('departments.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }
@@ -77,7 +77,7 @@ class DepartmentsController extends Controller
                         ->orderBy('id', 'asc')
                         ->get();
 
-        return view('departments\departmentlist', array('departments' => $departments));
+        return view('departments.departmentlist', array('departments' => $departments));
     }
 
     public function getForm(Request $request){
@@ -87,7 +87,7 @@ class DepartmentsController extends Controller
                         ->where('id', '=', $id)
                         ->get();
 
-        return view('departments\departmentform', array('deptinfo' => $deptinfo));
+        return view('departments.departmentform', array('deptinfo' => $deptinfo));
     }
 
     public function toggleStatus(Request $request){

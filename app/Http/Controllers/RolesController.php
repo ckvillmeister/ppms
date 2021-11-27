@@ -21,10 +21,10 @@ class RolesController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarRoles')){
-                return view('roles\index', array('settings' => $settings));
+                return view('roles.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }
@@ -42,11 +42,11 @@ class RolesController extends Controller
                                 ->where('status', '=', 1)
                                 ->get();
 
-                return view('roles\manage_permissions', array('settings' => $settings,
+                return view('roles.manage_permissions', array('settings' => $settings,
                                                                 'permissions' => $permissions));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }
@@ -88,7 +88,7 @@ class RolesController extends Controller
                         ->where('status', '=', $request->input('status'))
                         ->get();
 
-        return view('roles\rolelist', array('roles' => $roles));
+        return view('roles.rolelist', array('roles' => $roles));
     }
 
     public function getForm(Request $request){
@@ -98,7 +98,7 @@ class RolesController extends Controller
                         ->where('id', '=', $id)
                         ->get();
 
-        return view('roles\roleform', array('roleinfo' => $roleinfo));
+        return view('roles.roleform', array('roleinfo' => $roleinfo));
     }
 
     public function toggleStatus(Request $request){

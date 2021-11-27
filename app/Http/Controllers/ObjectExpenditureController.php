@@ -21,10 +21,10 @@ class ObjectExpenditureController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarObjectExpenditures')){
-                return view('objectexpenditures\index', array('settings' => $settings));
+                return view('objectexpenditures.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }
@@ -67,7 +67,7 @@ class ObjectExpenditureController extends Controller
                         ->orderBy('id', 'asc')
                         ->get();
 
-        return view('objectexpenditures\objectexpenditurelist', array('objectexpenditures' => $objectexpenditures));
+        return view('objectexpenditures.objectexpenditurelist', array('objectexpenditures' => $objectexpenditures));
     }
 
     public function getForm(Request $request){
@@ -77,7 +77,7 @@ class ObjectExpenditureController extends Controller
                         ->where('id', '=', $id)
                         ->get();
 
-        return view('objectexpenditures\objectexpenditureform', array('objectexpenditureinfo' => $objectexpenditureinfo));
+        return view('objectexpenditures.objectexpenditureform', array('objectexpenditureinfo' => $objectexpenditureinfo));
     }
 
     public function toggleStatus(Request $request){

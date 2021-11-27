@@ -47,7 +47,7 @@ class DashboardController extends Controller
                                 ->where('status', '=', 1)
                                 ->get();
 
-                return view('dashboard\index', array('settings' => $settings,
+                return view('dashboard.index', array('settings' => $settings,
                                                         'departments' => $new_departments,
                                                         'colors' => $colors,
                                                         'procured_items' => $procured_items,
@@ -56,7 +56,7 @@ class DashboardController extends Controller
                                                         'total_procured' => $this->getTotalProcuredPerYear($settings[1]->setting_description)));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }

@@ -33,7 +33,7 @@ class ProcurementController extends Controller
             
             if ($request->path() == 'myprocurement'){
                 if ($this::isAuthorized(Auth::user()->role, 'sidebarMyProcurement')){
-                    return view('myprocurement\index', array('settings' => $settings, 
+                    return view('myprocurement.index', array('settings' => $settings, 
                                                     'months' => $months,
                                                     'modes' => $modes,
                                                     'categories' => $categories,
@@ -41,12 +41,12 @@ class ProcurementController extends Controller
                                                     'uom' => $uom));
                 }
                 else{
-                    return view('forbidden\index', array('settings' => $settings));
+                    return view('forbidden.index', array('settings' => $settings));
                 }
             }
             elseif ($request->path() == 'manageprocurement'){
                 if ($this::isAuthorized(Auth::user()->role, 'sidebarManageProcurement')){
-                return view('manageprocurement\index', array('settings' => $settings,
+                return view('manageprocurement.index', array('settings' => $settings,
                                                     'departments' => $departments,
                                                     'modes' => $modes,
                                                     'months' => $months,
@@ -55,7 +55,7 @@ class ProcurementController extends Controller
                                                     'objexpenditures' => $objexpenditures,));
                 }
                 else{
-                    return view('forbidden\index', array('settings' => $settings));
+                    return view('forbidden.index', array('settings' => $settings));
                 }
             }
             
@@ -241,7 +241,7 @@ class ProcurementController extends Controller
             ->get();
 
         $months = Lists::$months;
-        return view('procurement\procurement_list', array('months' => $months,
+        return view('procurement.procurement_list', array('months' => $months,
                                                                     'items' => $items));
     }
 

@@ -23,10 +23,10 @@ class UserController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarAccounts')){
-                return view('accounts\index', array('settings' => $settings));
+                return view('accounts.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }
@@ -84,7 +84,7 @@ class UserController extends Controller
                         ->where('users.status', '=', $request->input('status'))
                         ->get();
 
-        return view('accounts\accountlist', array('accounts' => $accounts));
+        return view('accounts.accountlist', array('accounts' => $accounts));
     }
 
     public function getForm(Request $request){
@@ -100,7 +100,7 @@ class UserController extends Controller
                         ->where('status', '=', 1)
                         ->get();               
 
-        return view('accounts\accountform', array('accountinfo' => $accountinfo,
+        return view('accounts.accountform', array('accountinfo' => $accountinfo,
                                                     'roles' => $roles,
                                                     'departments' => $departments,
                                                     'extensions' => Lists::$extensions));

@@ -26,10 +26,10 @@ class ItemsController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarItems')){
-                return view('items\index', array('settings' => $settings));
+                return view('items.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
         
@@ -46,13 +46,13 @@ class ItemsController extends Controller
                         ->get();
         
         if ($request->path() == 'myprocurementRetrieveItems'){
-            return view('myprocurement\itemlist', array('items' => $items));
+            return view('myprocurement.itemlist', array('items' => $items));
         }
         elseif ($request->path() == 'manageprocurementRetrieveItems'){
-            return view('manageprocurement\itemlist', array('items' => $items));
+            return view('manageprocurement.itemlist', array('items' => $items));
         }
         elseif ($request->path() == 'manageprocurementRetrieveItemsUpdate'){
-            return view('manageprocurement\itemlistforupdate', array('items' => $items));
+            return view('manageprocurement.itemlistforupdate', array('items' => $items));
         }
         elseif ($request->path() == 'itemsRetrieveItems'){
             $items = DB::table('items')
@@ -62,7 +62,7 @@ class ItemsController extends Controller
                         ->select('items.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
                         ->where('items.status', '=', $request->input('status'))
                         ->get();
-            return view('items\itemlist', array('items' => $items));
+            return view('items.itemlist', array('items' => $items));
         }
     }
 
@@ -77,7 +77,7 @@ class ItemsController extends Controller
                         ->get();
                         
 
-        return view('items\itemform', array('iteminfo' => $iteminfo,
+        return view('items.itemform', array('iteminfo' => $iteminfo,
                                                 'categories' => $categories,
                                                 'objexpenditures' => $objexpenditures,
                                                 'uom' => $uom));

@@ -23,7 +23,7 @@ class AuthenticationController extends Controller
                 return redirect('dashboard');
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }

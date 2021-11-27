@@ -19,10 +19,10 @@ class SettingsController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarSystemSettings')){
-                return view('settings\index', array('settings' => $settings));
+                return view('settings.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }

@@ -21,10 +21,10 @@ class UnitsController extends Controller
             $settings = Settings::all();
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarUnits')){
-                return view('units\index', array('settings' => $settings));
+                return view('units.index', array('settings' => $settings));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
             
         }
@@ -71,7 +71,7 @@ class UnitsController extends Controller
                         ->orderBy('id', 'asc')
                         ->get();
 
-        return view('units\unitlist', array('units' => $units));
+        return view('units.unitlist', array('units' => $units));
     }
 
     public function getForm(Request $request){
@@ -81,7 +81,7 @@ class UnitsController extends Controller
                         ->where('id', '=', $id)
                         ->get();
 
-        return view('units\unitform', array('unitinfo' => $unitinfo));
+        return view('units.unitform', array('unitinfo' => $unitinfo));
     }
 
     public function toggleStatus(Request $request){

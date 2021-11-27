@@ -45,11 +45,11 @@ class ReportsController extends Controller
             $departments = (object) $depts;
             
             if ($this::isAuthorized(Auth::user()->role, 'sidebarReports')){
-                return view('reports\index', array('settings' => $settings,
+                return view('reports.index', array('settings' => $settings,
                                                 'departments' => $departments));
             }
             else{
-                return view('forbidden\index', array('settings' => $settings));
+                return view('forbidden.index', array('settings' => $settings));
             }
         }
     }
@@ -118,7 +118,7 @@ class ReportsController extends Controller
         $mbo = $this->gethead($depts, 'Municipal Budget Office');
         $mayor = $this->gethead($depts, 'Office of the Municipal Mayor');
         
-        return view('reports\ppmp', array('months' => $months,
+        return view('reports.ppmp', array('months' => $months,
                                             'items' => $items,
                                             'objectexpenditures' => $objectexpenditures,
                                             'settings' => $settings,
@@ -144,7 +144,7 @@ class ReportsController extends Controller
                             ->orderBy('items.object_of_expenditure', 'asc')
                             ->orderBy('procurement_items.itemname', 'asc')
                             ->get();
-            return view('reports\app_dilg', array('settings' => $settings, 'items' => $items));
+            return view('reports.app_dilg', array('settings' => $settings, 'items' => $items));
         }
         elseif ($request->path() == 'APPDBM'){
             $items = DB::table('procurement_items')
@@ -160,7 +160,7 @@ class ReportsController extends Controller
                             ->orderBy('items.object_of_expenditure', 'asc')
                             ->orderBy('procurement_items.itemname', 'asc')
                             ->get();
-            return view('reports\app_dbm', array('settings' => $settings, 'items' => $items));
+            return view('reports.app_dbm', array('settings' => $settings, 'items' => $items));
         }
         elseif ($request->path() == 'APPCSE'){
             $items = DB::table('procurement_items')
@@ -177,7 +177,7 @@ class ReportsController extends Controller
                             ->orderBy('categories.category', 'asc')
                             ->orderBy('procurement_items.itemname', 'asc')
                             ->get();
-            return view('reports\app_cse', array('settings' => $settings, 'items' => $items));
+            return view('reports.app_cse', array('settings' => $settings, 'items' => $items));
         }
     }
 

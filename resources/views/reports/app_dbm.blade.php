@@ -97,6 +97,8 @@
                 @php ($prev_object_of_expenditure = '')
                 @php ($row_count = count($items))
                 @php ($subtotal = 0.0)
+                @php ($totalmooe = 0.0)
+                @php ($totalcapitaloutlay = 0.0)
                 @php ($grandtotal = 0.0)
                 
                 @foreach ($items as $item)
@@ -186,6 +188,11 @@
 
                     @php ($subtotal += ($item->avg_price * $item->total_qty))
                     @php ($grandtotal += ($item->avg_price * $item->total_qty))
+                    @if ($item->class_exp_id == 1)
+                        @php ($totalmooe += (($item->avg_price * $item->total_qty)))
+                    @elseif ($item->class_exp_id == 2)
+                        @php ($totalcapitaloutlay += (($item->avg_price * $item->total_qty)))
+                    @endif
                     <tr>
                         <td class="text-center"></td>
                         <td class="text-center">{{ $item->itemname }}</td>
@@ -194,8 +201,8 @@
                         <td class="text-center" colspan="4">{{ $schedule }}</td>
                         <td class="text-center">GoP</td>
                         <td class="numerical-cols">{{ number_format(($item->avg_price * $item->total_qty), 2) }}</td>
-                        <td class="numerical-cols">{{ number_format(($item->avg_price * $item->total_qty), 2) }}</td>
-                        <td class="numerical-cols"></td>
+                        <td class="numerical-cols">{{ ($item->class_exp_id == 1) ? number_format(($item->avg_price * $item->total_qty), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->class_exp_id == 2) ? number_format(($item->avg_price * $item->total_qty), 2) : '' }}</td>
                         <td class="text-center"></td>
                     </tr>
                     @php ($ctr++)
@@ -222,8 +229,8 @@
                     <td class="text-center" colspan="4"></td>
                     <td class="text-center"></td>
                     <td class="numerical-cols"><strong>{{ number_format($grandtotal, 2) }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ number_format($grandtotal, 2) }}</strong></td>
-                    <td class="numerical-cols"></td>
+                    <td class="numerical-cols"><strong>{{ number_format($totalmooe, 2) }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ number_format($totalcapitaloutlay, 2) }}</strong></td>
                     <td class="text-center"></td>
                 </tr>
             </tbody>

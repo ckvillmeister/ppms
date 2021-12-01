@@ -4,6 +4,7 @@
             <thead>
                 <tr>
                     <th class="text-center col-header">No.</th>
+                    <th class="text-center col-header">Class of Expenditure</th>
                     <th class="text-center col-header">Object of Expenditure</th>
                     <th class="text-center col-header" style="width:120px">Control</th>
                 </tr>
@@ -13,6 +14,7 @@
                 @foreach ($objectexpenditures as $objectexpenditure)
                     <tr>
                         <td class="text-center">{{ $ctr++ }}</td>
+                        <td class="text-center">{{ $objectexpenditure->class_of_expenditure->where('id', $objectexpenditure->class_exp_id)->first()->class_exp_name  }}</td>
                         <td class="">{{ $objectexpenditure->obj_exp_name }}</td>
                         <td class="text-center">
                           <button class="btn btn-sm btn-warning" id="edit" value="{{ $objectexpenditure->id }}" data-toggle="tooltip" data-placement="top" title="Edit Object of Expenditure"><i class="fas fa-edit"></i></button>

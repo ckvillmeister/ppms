@@ -48,6 +48,9 @@
             <button class="btn btn-sm btn-primary" id="new"><i class="fas fa-plus mr-4"></i>New</button>
             <button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>
             <button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>
+            <div class="float-right">
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_items"><i class="fas fa-copy mr-2"></i> Copy All Items</button> 
+            </div>
         </div>
       </div>
 
@@ -82,4 +85,82 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal_copy_items" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog modal-xs modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header card-primary card-outline">
+        <h5 class="modal-title" id="modal_title">Replicate Items</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+          <div class="row mt-3">
+            <div class="col-lg-6 align-self-center">
+                Select year to replicate
+            </div>
+            <div class="col-lg-6">
+              <select id="year" name="year" class="form-control form-control-sm mr-2 mb-2">
+                  @for ($i = (date('Y') - 5); $i < (date('Y') + 5); $i++)
+                      <option value="{{ $i }}" {{ (($settings[1]->setting_description - 1) == $i) ? "selected" : ""; }}>{{ $i }}</option>
+                  @endfor
+              </select>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-lg-8">
+              <span id="message"></span>
+            </div>
+            <div class="col-lg-4">
+              <div class="float-right">
+                <button id="btn-replicate" class="btn btn-sm btn-primary"><i class="fas fa-copy mr-2"></i>Copy</button>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="{{ asset('js/items.js') }}"></script>
+<script>
+  var tkn = $('meta[name="csrf-token"]').attr('content');
+
+  $('#btn-replicate').on('click', function(){
+    var year = $('#year').val();
+
+    if (year == ""){
+      message('Empty', 'red', 'Please select a year!');
+    }
+    else{
+      $.ajax({
+        headers: {
+            'x-csrf-token': tkn
+        },
+        url: '/items.replicateitems',
+        method: 'POST',
+        data: {'year': year},
+        dataType: 'HTML',
+        success: function(result) {
+          if (result == 1){
+            message('Success', 'green', 'Items from year ' + year + ' successfully replicated!');
+            $('#modal_copy_items').modal('hide');
+            request('itemsRetrieveItems', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+          }
+          else if(result == 2){
+            message('<i class="fas fa-info mr-2"></i>Info', 'blue', 'No items from year ' + year + '.');
+          }
+          else{
+            message('Error', 'red', 'Error during processing!');
+          }
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+      })
+    }
+  })
+</script>

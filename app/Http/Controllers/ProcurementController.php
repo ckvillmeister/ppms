@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Procurement;
 use App\Models\Settings;
 use App\Models\Items;
+use App\Models\ClassExpenditure;
 use App\Models\ObjectExpenditure;
 use App\Models\Departments;
 use App\Models\Units;
@@ -28,8 +29,8 @@ class ProcurementController extends Controller
             $settings = Settings::all();
             $uom = Units::all();
             $categories = Categories::all();
-            $objexpenditures = ObjectExpenditure::all();
             $departments = Departments::all();
+            $classexpenditures = ClassExpenditure::where('status', 1)->get();
             
             if ($request->path() == 'myprocurement'){
                 if ($this::isAuthorized(Auth::user()->role, 'sidebarMyProcurement')){
@@ -37,7 +38,7 @@ class ProcurementController extends Controller
                                                     'months' => $months,
                                                     'modes' => $modes,
                                                     'categories' => $categories,
-                                                    'objexpenditures' => $objexpenditures,
+                                                    'classexpenditures' => $classexpenditures,
                                                     'uom' => $uom));
                 }
                 else{
@@ -52,7 +53,7 @@ class ProcurementController extends Controller
                                                     'months' => $months,
                                                     'uom' => $uom,
                                                     'categories' => $categories,
-                                                    'objexpenditures' => $objexpenditures,));
+                                                    'classexpenditures' => $classexpenditures));
                 }
                 else{
                     return view('forbidden.index', array('settings' => $settings));
@@ -168,34 +169,6 @@ class ProcurementController extends Controller
                         'message' => 'Procurement list successfully saved!');
     }
 
-    public function retrieveProcurementList(Request $request){
-        $settings = Settings::all();
-        $deptid = ($request->input('deptid')) ? ($request->input('deptid')) :Auth::user()->department;
-        $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
-
-        $new_items = [];
-        $ctr = 0;
-
-        $items = DB::table('procurement_items')
-            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
-            ->join('items', 'items.id', '=', 'procurement_items.itemid')
-            ->join('units', 'units.id', '=', 'items.uom')
-            ->select('procurement_items.*', 'units.uom', 'units.description')
-            ->where('procurement_info.department', '=', $deptid)
-            ->where('procurement_info.year', '=', $year)
-            ->where('procurement_items.status', '<>', 0)
-            ->get();
-
-        foreach($items as $item){
-            $new_item = (array) $item;
-            $new_item['is_allowed_to_remove'] = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
-            $new_items[$ctr] = (object) $new_item;
-            $ctr++;
-        }
-
-        return json_encode($new_items);
-    }
-
     public function toggleProcurementItem(Request $request){
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
@@ -224,6 +197,36 @@ class ProcurementController extends Controller
         return 1;
     }
 
+    public function retrieveProcurementList(Request $request){
+        $settings = Settings::all();
+        $deptid = ($request->input('deptid')) ? ($request->input('deptid')) :Auth::user()->department;
+        $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
+
+        $new_items = [];
+        $ctr = 0;
+
+        $items = DB::table('procurement_items')
+            ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
+            ->join('items', 'items.id', '=', 'procurement_items.itemid')
+            ->join('units', 'units.id', '=', 'items.uom')
+            ->join('item_price', 'item_price.itemid', '=', 'items.id')
+            ->select('procurement_items.*', 'units.uom', 'units.description')
+            ->where('procurement_info.department', '=', $deptid)
+            ->where('procurement_info.year', '=', $year)
+            ->where('item_price.year', '=', $year)
+            ->where('procurement_items.status', '<>', 0)
+            ->get();
+
+        foreach($items as $item){
+            $new_item = (array) $item;
+            $new_item['is_allowed_to_remove'] = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
+            $new_items[$ctr] = (object) $new_item;
+            $ctr++;
+        }
+
+        return json_encode($new_items);
+    }
+
     public function retrieveProcurements(Request $request){
         $settings = Settings::all();
         $dept = $request->input('dept');
@@ -232,6 +235,7 @@ class ProcurementController extends Controller
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
+            ->join('item_price', 'item_price.itemid', '=', 'items.id')
             ->select('procurement_items.*', 'items.uom', 'items.object_of_expenditure')
             ->where('procurement_info.department', '=', $dept)
             ->where('procurement_info.year', '=', $year)

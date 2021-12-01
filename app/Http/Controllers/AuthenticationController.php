@@ -16,7 +16,7 @@ class AuthenticationController extends Controller
 
         if(!(Auth::check()))
         {
-            return view('authentication\login', array('settings' => $settings));
+            return view('authentication.login', array('settings' => $settings));
         }
         else{
             if ($this::isAuthorized(Auth::user()->role, 'sidebarDashboard')){

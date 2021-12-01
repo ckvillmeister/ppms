@@ -154,7 +154,7 @@ class ReportsController extends Controller
                             ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
                             ->join('units', 'units.id', '=', 'items.uom')
                             ->join('departments', 'departments.id', '=', 'procurement_info.department')
-                            ->select('procurement_items.*', 'object_expenditures.obj_exp_name', 'units.description', 'procurement_info.year', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('(SELECT AVG(pi.price) FROM procurement_items pi INNER JOIN procurement_info pif ON pif.id = pi.procurement_id WHERE pi.itemname = procurement_items.itemname AND pif.year = procurement_info.year GROUP BY pi.itemname) AS avg_price'))
+                            ->select('procurement_items.*', 'object_expenditures.class_exp_id', 'object_expenditures.obj_exp_name', 'units.description', 'procurement_info.year', DB::raw('SUM(procurement_items.quantity) AS total_qty'), DB::raw('(SELECT AVG(pi.price) FROM procurement_items pi INNER JOIN procurement_info pif ON pif.id = pi.procurement_id WHERE pi.itemname = procurement_items.itemname AND pif.year = procurement_info.year GROUP BY pi.itemname) AS avg_price'))
                             ->where('procurement_info.year', '=', $year)
                             ->where('procurement_items.status', '<>', 0)
                             ->groupBy('items.itemname')

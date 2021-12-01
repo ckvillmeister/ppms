@@ -8,6 +8,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ItemsController;
+use App\Http\Controllers\ClassExpenditureController;
 use App\Http\Controllers\ObjectExpenditureController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\UnitsController;
@@ -62,9 +63,17 @@ Route::post('items.getForm', [ItemsController::class, 'getForm']);
 Route::post('items.create', [ItemsController::class, 'create']);
 Route::post('items.toggleStatus', [ItemsController::class, 'toggleStatus']);
 Route::post('items.getQueriedItems', [ItemsController::class, 'getQueriedItemName']);
+Route::post('items.replicateitems', [ItemsController::class, 'replicateItems']);
+
+Route::get('class_expenditures', [ClassExpenditureController::class, 'index']);
+Route::post('class_expenditures.retrieveClassExpenditures', [ClassExpenditureController::class, 'retrieveClassExpenditures']);
+Route::post('class_expenditures.getForm', [ClassExpenditureController::class, 'getForm']);
+Route::post('class_expenditures.create', [ClassExpenditureController::class, 'create']);
+Route::post('class_expenditures.toggleStatus', [ClassExpenditureController::class, 'toggleStatus']);
 
 Route::get('object_expenditures', [ObjectExpenditureController::class, 'index']);
 Route::post('object_expenditures.retrieveObjectExpenditures', [ObjectExpenditureController::class, 'retrieveObjectExpenditures']);
+Route::post('object_expenditures.retrievobjectsbyclass', [ObjectExpenditureController::class, 'retrieveObjectExpendituresByClass']);
 Route::post('object_expenditures.getForm', [ObjectExpenditureController::class, 'getForm']);
 Route::post('object_expenditures.create', [ObjectExpenditureController::class, 'create']);
 Route::post('object_expenditures.toggleStatus', [ObjectExpenditureController::class, 'toggleStatus']);

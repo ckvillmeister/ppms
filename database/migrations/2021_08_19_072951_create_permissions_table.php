@@ -34,6 +34,7 @@ class CreatePermissionsTable extends Migration
                     ['permission_code' => 'sidebarSetup', 'description' => 'Setup', 'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarDepartments', 'description' => 'Manage Departments', 'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarItems', 'description' => 'Manage Items', 'createdby' => 1, 'datecreated' => $date],
+                    ['permission_code' => 'sidebarClassExpenditures', 'description' => 'Manage Class of Expenditures', 'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarObjectExpenditures', 'description' => 'Manage Object of Expenditures', 'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarCategories', 'description' => 'Manage Categories', 'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarUnits', 'description' => 'ManageUnits', 'createdby' => 1, 'datecreated' => $date],

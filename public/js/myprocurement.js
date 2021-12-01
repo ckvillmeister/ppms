@@ -39,6 +39,7 @@ $('#go').on('click', function(){
 
 $('#btn_create_new_item').on('click', function(){
     $('#reset').click(); 
+    $('#classexp').val([]).trigger('change');
     $('#uom').val([]).trigger('change');
     $('#mode').val([]).trigger('change');
     $('#objexp').val([]).trigger('change');
@@ -51,6 +52,7 @@ $('#btn_create_new_item').on('click', function(){
 
 $('#reset').on('click', function(){
     $('#uom').val([]).trigger('change');
+    $('#classexp').val([]).trigger('change');
     $('#objexp').val([]).trigger('change');
     $('#category').val([]).trigger('change');
 });

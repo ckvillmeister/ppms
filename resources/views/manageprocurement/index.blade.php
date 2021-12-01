@@ -179,6 +179,35 @@
           </div>
 
           <div class="row mt-3">
+
+            <div class="col-lg-4 align-self-center">
+                Class of Expenditure:
+            </div>
+            <div class="col-lg-4">
+              <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp">
+                <option value=""></option>
+                @foreach ($classexpenditures as $key => $classexpenditure)
+                <option value="{{ $classexpenditure->id }}">{{ $classexpenditure->class_exp_name }}</option>
+                @endforeach
+              </select>
+            </div>
+
+          </div>
+
+          <div class="row mt-3">
+
+            <div class="col-lg-4 align-self-center">
+                Object of Expenditure:
+            </div>
+            <div class="col-lg-4">
+              <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
+                <option value=""></option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="row mt-3">
             <div class="col-lg-4 align-self-center">
                 Unit Price:
             </div>
@@ -199,22 +228,6 @@
                 @endforeach
               </select>
             </div>
-          </div>
-
-          <div class="row mt-3">
-
-            <div class="col-lg-4 align-self-center">
-                Object of Expenditure:
-            </div>
-            <div class="col-lg-4">
-              <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
-                <option value=""></option>
-              @foreach ($objexpenditures as $key => $objexpenditure)
-                <option value="{{ $objexpenditure->id }}">{{ $objexpenditure->obj_exp_name }}</option>
-                @endforeach
-              </select>
-            </div>
-
           </div>
 
           <div class="row mt-3">
@@ -477,12 +490,59 @@
 <script type="text/javascript">
   var tkn = $('meta[name="csrf-token"]').attr('content');
   
-  $('#uom').select2({dropdownParent: $("#modal_create_new_item")});
-  $('#objexp').select2({dropdownParent: $("#modal_create_new_item")});
-  $('#category').select2({dropdownParent: $("#modal_create_new_item")});
+  $('#uom').select2({
+    dropdownParent: $("#modal_create_new_item"),
+    dropdownCssClass: "font"
+  });
+  $('#classexp').select2({
+    dropdownParent: $("#modal_create_new_item"),
+    dropdownCssClass: "font"
+  });
+  $('#objexp').select2({
+    dropdownParent: $("#modal_create_new_item"),
+    dropdownCssClass: "font"
+  });
+  $('#category').select2({
+    dropdownParent: $("#modal_create_new_item"),
+    dropdownCssClass: "font"
+  });
 
-  $('#mode').select2({dropdownParent: $("#modal_add_to_list")});
+  $('#mode').select2({
+    dropdownParent: $("#modal_add_to_list"),
+    dropdownCssClass: "font"
+  });
+
   $('#departments').select2({dropdownCssClass: "font"});
+
+  $('#classexp').on('change', function(){
+    var classid = $(this).val();
+
+    $.ajax({
+      headers: {
+          'x-csrf-token': tkn
+      },
+      url: '/object_expenditures.retrievobjectsbyclass',
+      method: 'POST',
+      data: {'classid': classid},
+      dataType: 'JSON',
+      success: function(result) {
+        $('#objexp').empty();
+        $('#objexp').append('<option value=""></option>');
+
+        $.each(result, function( index, value ) {
+            $('#objexp').append('<option value="' + value.id + '">' + value.obj_exp_name + '</option>');
+        })
+
+        $('#objexp').select2({
+          dropdownParent: $("#modal_create_new_item"),
+          dropdownCssClass: "font"
+        });
+      },
+      error: function(obj, msg, exception){
+          message('Error', 'red', msg + ": " + obj.status + " " + exception);
+      }
+    })
+  });
 
   $('#approve_procurement').on('click', function(){
     var dept = $('#departments').val(), year = $('#cbo_year').val(), dept_desc = $( "#departments option:selected" ).text(), status = $(this).val();

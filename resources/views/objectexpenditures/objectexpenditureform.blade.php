@@ -4,6 +4,20 @@
 
     <div class="row mt-3">
         <div class="col-lg-3 align-self-center">
+            Class of Expenditure:
+        </div>
+        <div class="col-lg-9">
+            <select class="form-control form-control-sm" id="class_exp" name="class_exp">
+                <option value=""></option>
+                @foreach ($class_exp as $class)
+                    <option value="{{ $class->id }}" {{ (isset($objectexpenditureinfo[0])) ? (($objectexpenditureinfo[0]->class_exp_id == $class->id) ? 'selected="selected"' : '') : '' }}>{{ $class->class_exp_name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-lg-3 align-self-center">
             Object of Expenditure:
         </div>
         <div class="col-lg-9">

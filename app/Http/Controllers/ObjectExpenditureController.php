@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Settings;
 use App\Models\ObjectExpenditure;
+use App\Models\ClassExpenditure;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class ObjectExpenditureController extends Controller
 
         if ($id){
             $data = ['obj_exp_name' => $request->input('obj_exp_name'),
+                        'class_exp_id' => $request->input('class_exp'),
                         'updatedby' => Auth::user()->id,
                         'dateupdated' => date('Y-m-d H:i:s'),
                         'status' => 1];
@@ -48,6 +50,7 @@ class ObjectExpenditureController extends Controller
         }
         else{
             $data = ['obj_exp_name' => $request->input('obj_exp_name'),
+                        'class_exp_id' => $request->input('class_exp'),
                         'createdby' => Auth::user()->id,
                         'datecreated' => date('Y-m-d H:i:s'),
                         'status' => 1];
@@ -62,12 +65,20 @@ class ObjectExpenditureController extends Controller
     }
 
     public function retrieveObjectExpenditures(Request $request){
-        $objectexpenditures = DB::table('object_expenditures')
-                        ->where('status', '=', $request->input('status'))
-                        ->orderBy('id', 'asc')
-                        ->get();
+        $objectexpenditures = ObjectExpenditure::with('class_of_expenditure')
+                                                ->where('status', '=', $request->input('status'))
+                                                ->orderBy('id', 'asc')
+                                                ->get();
 
         return view('objectexpenditures.objectexpenditurelist', array('objectexpenditures' => $objectexpenditures));
+    }
+
+    public function retrieveObjectExpendituresByClass(Request $request){
+        $objectexpenditures = ObjectExpenditure::where('class_exp_id', $request->input('classid'))
+                                                ->orderBy('id', 'asc')
+                                                ->get();
+
+        return json_encode($objectexpenditures);
     }
 
     public function getForm(Request $request){
@@ -77,7 +88,11 @@ class ObjectExpenditureController extends Controller
                         ->where('id', '=', $id)
                         ->get();
 
-        return view('objectexpenditures.objectexpenditureform', array('objectexpenditureinfo' => $objectexpenditureinfo));
+        $class_exp = ClassExpenditure::where('status', 1)->get();
+
+        return view('objectexpenditures.objectexpenditureform', array('objectexpenditureinfo' => $objectexpenditureinfo,
+                                                                        'class_exp' => $class_exp
+                                                                    ));
     }
 
     public function toggleStatus(Request $request){

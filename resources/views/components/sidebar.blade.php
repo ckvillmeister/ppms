@@ -70,8 +70,8 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         @endif
 
         @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSetup'))
-        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'object_expenditures', 'units'])) ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'object_expenditures', 'units'])) ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'class_expenditures', 'object_expenditures', 'units'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'class_expenditures', 'object_expenditures', 'units'])) ? 'active' : '' }}">
             <i class="nav-icon fas fa-sliders-h"></i>
             <p>Setup<i class="right fas fa-angle-left"></i></p>
           </a>
@@ -92,6 +92,15 @@ use App\Http\Controllers\AuthenticationController as Authentication;
               <a href="items" class="nav-link {{ (Request::path() == 'items') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Manage Items</p>
+              </a>
+            </li>
+            @endif
+
+            @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarClassExpenditures'))
+            <li class="nav-item">
+              <a href="class_expenditures" class="nav-link {{ (Request::path() == 'class_expenditures') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Class of Expenditures</p>
               </a>
             </li>
             @endif

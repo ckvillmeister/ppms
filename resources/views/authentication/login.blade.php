@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 @include('components.header')
 </head>
-<body class="hold-transition login-page" style="background-image: url({{ asset('images/login.jpg') }}); background-size:100% 100%;">
+<body class="hold-transition login-page" style="background-image: url({{ asset('/images/login.jpg') }}); background-size:100% 100%;">
 <div class="overlay-wrapper"></div>
 
   <div class="login-box">
     <div class="text-center">
-      <img src="{{ asset('images/trinidadlogo.png') }}" height="150" width="150">
+      <img src="{{ asset('/images/trinidadlogo.png') }}" height="150" width="150">
     </div>
     <div class="login-logo">
       <strong><a href="#" class="text-light" style="text-shadow: 2px 3px #000000;">{{ $settings[0]->setting_description }}</a></strong>

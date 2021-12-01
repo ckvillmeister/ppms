@@ -71,9 +71,13 @@ $('body').on('click', '#reactivate', function(){
 $('body').on('submit', '#frm', function(e){
     e.preventDefault();
 
-    var obj_exp_name = $('#obj_exp_name').val();
+    var obj_exp_name = $('#obj_exp_name').val(),
+    class_exp = $('#class_exp').val();
         
-    if (obj_exp_name === ''){
+    if (class_exp === ''){
+        message('Error', 'red', 'Please select class of expenditure!');
+    }
+    else if (obj_exp_name === ''){
         message('Error', 'red', 'Please provide object of expenditure name!');
     }
     else{

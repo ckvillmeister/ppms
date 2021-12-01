@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Items;
 use App\Models\Settings;
 use App\Models\Units;
+use App\Models\ItemPrice;
+use App\Models\ClassExpenditure;
 use App\Models\ObjectExpenditure;
 use App\Models\Categories;
 use App\Enums\Lists;
@@ -37,12 +39,16 @@ class ItemsController extends Controller
 
     public function retrieveItems(Request $request){
         $status = ($request->input('status')) ? $request->input('status') : 1;
+        $year = date('Y');
+
         $items = DB::table('items')
                         ->join('units', 'units.id', '=', 'items.uom')
                         ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
                         ->join('categories', 'categories.id', '=', 'items.category')
-                        ->select('items.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
+                        ->join('item_price', 'item_price.itemid', '=', 'items.id')
+                        ->select('items.*', 'item_price.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
                         ->where('items.status', '=', $status)
+                        ->where('item_price.year', '=', $year)
                         ->get();
         
         if ($request->path() == 'myprocurementRetrieveItems'){
@@ -59,8 +65,10 @@ class ItemsController extends Controller
                         ->join('units', 'units.id', '=', 'items.uom')
                         ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
                         ->join('categories', 'categories.id', '=', 'items.category')
-                        ->select('items.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
+                        ->join('item_price', 'item_price.itemid', '=', 'items.id')
+                        ->select('items.*', 'item_price.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
                         ->where('items.status', '=', $request->input('status'))
+                        ->where('item_price.year', '=', $year)
                         ->get();
             return view('items.itemlist', array('items' => $items));
         }
@@ -68,18 +76,32 @@ class ItemsController extends Controller
 
     public function getForm(Request $request){
         $id = ($request->input('id')) ? $request->input('id') : 0;
+        $year = date('Y');
 
-        $uom = Units::all();
-        $categories = Categories::all();
-        $objexpenditures = ObjectExpenditure::all();
-        $iteminfo = DB::table('items')
-                        ->where('id', '=', $id)
-                        ->get();
-                        
+        $uom = Units::where('status', 1)->get();
+        $categories = Categories::where('status', 1)->get();
+        $classexpenditures = ClassExpenditure::where('status', 1)->get();
+        
+        $iteminfo = Items::with(['object_of_expenditure', 'item_price'])->where('items.id', $id)->get();
+        $objinfo = (count($iteminfo) > 0) ? ObjectExpenditure::where('id', $iteminfo[0]->object_of_expenditure)->first() : '';
+        $classinfo = [];
+        $objects = [];
+
+        if ($objinfo){
+            foreach($classexpenditures as $class){
+                if ($class->id == $objinfo->class_exp_id){
+                    $classinfo = $class;
+                }
+            }
+
+            $objects = ObjectExpenditure::where('class_exp_id', $classinfo->id)->get();
+        }
 
         return view('items.itemform', array('iteminfo' => $iteminfo,
                                                 'categories' => $categories,
-                                                'objexpenditures' => $objexpenditures,
+                                                'classexpenditures' => $classexpenditures,
+                                                'classinfo' => $classinfo,
+                                                'objects' => $objects,
                                                 'uom' => $uom));
     }
 
@@ -89,15 +111,22 @@ class ItemsController extends Controller
 
         if ($id){
             $data = ['itemname' => $request->input('itemname'),
-                        'price' => $request->input('itemprice'),
                         'uom' => $request->input('uom'),
                         'object_of_expenditure' => $request->input('objexp'),
                         'updatedby' => Auth::user()->id,
                         'dateupdated' => date('Y-m-d H:i:s'),
                         'status' => 1];
                         
-            $result = Items::where('id', $id)
-                            ->update($data);
+            $result = Items::where('id', $id)->update($data);
+
+            $data = ['itemid' => $id,
+                        'price' => $request->input('itemprice'),
+                        'year' => date('Y'),
+                        'updatedby' => Auth::user()->id,
+                        'dateupdated' => date('Y-m-d H:i:s'),
+                        'status' => 1];
+            
+            ItemPrice::where('id', $id)->update($data);
 
             return array('result' => 'Success',
                             'color' => 'green',
@@ -105,7 +134,6 @@ class ItemsController extends Controller
         }
         else{
             $data = ['itemname' => $request->input('itemname'),
-                            'price' => $request->input('itemprice'),
                             'uom' => $request->input('uom'),
                             'object_of_expenditure' => $request->input('objexp'),
                             'category' => $request->input('category'),
@@ -113,7 +141,17 @@ class ItemsController extends Controller
                             'datecreated' => date('Y-m-d H:i:s'),
                             'status' => 1];
             
-            $result = Items::create($data);
+            $itemid = Items::insertGetId($data);
+
+            $data = ['itemid' => $itemid,
+                            'price' => $request->input('itemprice'),
+                            'year' => date('Y'),
+                            'createdby' => Auth::user()->id,
+                            'datecreated' => date('Y-m-d H:i:s'),
+                            'status' => 1];
+
+            ItemPrice::create($data);
+
             return array('result' => 'Success',
                             'color' => 'green',
                             'message' => 'New item created!');
@@ -150,6 +188,48 @@ class ItemsController extends Controller
                         ->where("itemname", "LIKE", "%" . trim($request->input('itemname')) . "%")
                         ->get();
         return $items;
+    }
+
+    public function replicateItems(Request $request){
+        $year = ($request->input('year')) ? $request->input('year') : 0;
+        $year_now = date('Y');
+        
+        $items = DB::table('items')
+                        ->join('units', 'units.id', '=', 'items.uom')
+                        ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
+                        ->join('categories', 'categories.id', '=', 'items.category')
+                        ->join('item_price', 'item_price.itemid', '=', 'items.id')
+                        ->select('items.id', 'items.status', 'item_price.year', 'item_price.price')
+                        ->where('items.status', '=', 1)
+                        ->where('item_price.year', '=', $year)
+                        ->get();
+
+        if (count($items) > 0){
+            foreach($items as $item){
+                $chkItem = Items::join('item_price', 'item_price.itemid', '=', 'items.id')
+                                ->select('items.id', 'item_price.year')
+                                ->where('items.id', '=', $item->id)
+                                ->where('item_price.year', '=', $year_now)
+                                ->first();
+                
+                if (!($chkItem)){
+                    $data = ['itemid' => $item->id,
+                            'price' => $item->price,
+                            'year' => $year_now,
+                            'createdby' => Auth::user()->id,
+                            'datecreated' => date('Y-m-d H:i:s'),
+                            'status' => 1];
+                    
+                    ItemPrice::create($data);
+                }
+            }
+
+            return 1;
+        }
+        else{
+            return 2;
+        }
+        
     }
     
 }

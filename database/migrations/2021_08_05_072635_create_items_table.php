@@ -17,6 +17,7 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->string('itemname');
             $table->string('description')->nullable(true);
+            $table->double('price');
             $table->integer('uom');
             $table->integer('object_of_expenditure');
             $table->integer('category')->nullable(true);

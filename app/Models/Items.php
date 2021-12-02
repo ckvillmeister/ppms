@@ -25,10 +25,6 @@ class Items extends Model
                             'dateupdated',
                             'status'];
 
-    public function item_price(){
-        return $this->hasMany(ItemPrice::class, 'itemid', 'id');
-    }
-
     public function object_of_expenditure(){
         return $this->belongsTo(ObjectExpenditure::class, 'object_of_expenditure', 'id');
     }

@@ -47,7 +47,7 @@
             </div>
             <div class="col-lg-4">
                 @php ($year = date('Y'))
-                <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" value="{{ (isset($iteminfo[0])) ? $iteminfo[0]->item_price()->where('year', $year)->first()->price : '' }}">
+                <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" value="{{ (isset($iteminfo[0])) ? $iteminfo[0]->price : '' }}">
             </div>
         </div>
 

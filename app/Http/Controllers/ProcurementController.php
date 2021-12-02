@@ -209,11 +209,9 @@ class ProcurementController extends Controller
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
             ->join('units', 'units.id', '=', 'items.uom')
-            ->join('item_price', 'item_price.itemid', '=', 'items.id')
             ->select('procurement_items.*', 'units.uom', 'units.description')
             ->where('procurement_info.department', '=', $deptid)
             ->where('procurement_info.year', '=', $year)
-            ->where('item_price.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)
             ->get();
 

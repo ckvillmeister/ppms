@@ -10,7 +10,6 @@
                 <tr>
                     <th class="text-center col-header">No.</th>
                     <th class="text-center col-header">General Description</th>
-                    <th class="text-center col-header">UOM</th>
                     <th class="text-center col-header">Price</th>
                     <th class="text-center col-header">Control</th>
                 </tr>
@@ -21,9 +20,8 @@
                     <tr>
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td>{{ $item->itemname }}</td>
-                        <td>{{ $item->description }}</td>
                         <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
-                        <td class="text-center"><button class="btn btn-sm btn-primary" id="addtolist" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Add Item to Procurement List"><i class="fas fa-long-arrow-alt-right"></i></button></td>
+                        <td class="text-center"><button class="btn btn-xs btn-primary" id="addtolist" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Add Item to Procurement List"><i class="fas fa-mouse-pointer mr-2"></i>Select</button></td>
                     </tr> 
                 @endforeach
             </tbody>
@@ -31,14 +29,14 @@
     </div>
 </div>
 <script type="text/javascript">
-  var table = $('#tbl_item_list').DataTable({
+  $('#tbl_item_list').DataTable({
     "scrollX": true,
     "ordering": false,
-    lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+    lengthMenu: [5],
     styles: {
       tableHeader: {
         fontSize: 8
       }
     }
-  });
+  }).columns.adjust();
 </script>

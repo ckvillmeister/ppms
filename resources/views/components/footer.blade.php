@@ -1,4 +1,5 @@
 @if (Request::path() != '/')
+<br><br>
 <footer class="main-footer text-center">
     <strong>Copyright &copy; 2021 <a href="#">{{ $settings[0]->setting_description }}</a></strong>
     All rights reserved.

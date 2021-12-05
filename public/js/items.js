@@ -1,4 +1,4 @@
-request('itemsRetrieveItems', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+request('itemsRetrieveItems', 'POST', {'status' : 1, 'limit': 100}, 'HTML', '#list', '#page_loading');
 
 $('#new').on('click', function(){
     $('#reset').click(); 

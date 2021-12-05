@@ -8,9 +8,35 @@ $('#btn_signin').on('click', function(){
         message("Empty", 'red', "Please provide user credentials!");
     }
     else{
-        request('authenticate', 'POST', 
-                {"username": username, "password": password},
-                'JSON');
+        $.ajax({
+            headers: {
+                'x-csrf-token': token
+            },
+            url: '/authenticate',
+            method: 'POST',
+            data: {'username': username,
+                    'password': password
+                    },
+            setCookies: token,
+            dataType: "JSON",
+            beforeSend: function() {
+                $('#basicloader').show();
+            },
+            complete: function(){
+                $('#basicloader').hide();
+            },
+            success: function(result) {
+                if (result.redirect){
+                    window.location = result.redirect;
+                }
+                else{
+                    message(result.result, result.color, result.message);
+                }
+            },
+            error: function(obj, msg, exception){
+                message('Error', 'red', msg + ": " + obj.status + " " + exception);
+            }
+        })
     }
 })
 

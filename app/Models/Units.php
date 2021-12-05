@@ -10,7 +10,8 @@ class Units extends Model
     use HasFactory;
 
     public $timestamps = false;
-
+    protected $primaryKey = "id";
+    protected $table = "units";
     protected $fillable = [
         'uom',
         'description',

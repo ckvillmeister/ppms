@@ -5,7 +5,7 @@
                 <tr>
                     <th class="text-center col-header">No.</th>
                     <th class="text-center col-header">Role</th>
-                    <th class="text-center col-header">Control</th>
+                    <th class="text-center col-header" style="width:120px">Control</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,7 +15,7 @@
                         <td class="text-center">{{ $ctr++ }}</td>
                         <td>{{ $role->role }}</td>
                         <td class="text-center">
-                          <a class="btn btn-sm btn-secondary" id="permissions" href="roles.managepermissions?id={{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Manage Permissions"><i class="fas fa-list"></i></a>
+                          <a class="btn btn-sm btn-secondary" id="permissions" href="/roles/managepermissions?id={{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Manage Permissions"><i class="fas fa-list"></i></a>
                           <button class="btn btn-sm btn-warning" id="edit" value="{{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Edit Role"><i class="fas fa-edit"></i></button>
                           @if ($role->status == 1)
                           <button class="btn btn-sm btn-danger" id="delete" value="{{ $role->id }}" data-toggle="tooltip" data-placement="top" title="Delete Role"><i class="fas fa-trash"></i></button>

@@ -1,4 +1,4 @@
-getItems();
+//getItems();
 var index, old_id;
 var id, general_desc, uom, price, ctr = 1;
 var tbl_proc_list = $('#tbl_procurement_list').DataTable({
@@ -51,19 +51,6 @@ $('#go').on('click', function(){
 
     retrieveProcurementList(deptid, year);
     setApprovalStatus(deptid, year);
-});
-
-$('#btn_create_new_item').on('click', function(){
-    $('#reset').click(); 
-    $('#classexp').val([]).trigger('change');
-    $('#uom').val([]).trigger('change');
-    $('#mode').val([]).trigger('change');
-    $('#objexp').val([]).trigger('change');
-    $('#category').val([]).trigger('change');
-    $('#modal_create_new_item').modal({
-                                    backdrop: 'static',
-                                    keyboard: true, 
-                                    show: true});
 });
 
 $('#reset').on('click', function(){

@@ -3,8 +3,8 @@
         <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_list">
             <thead>
                 <tr>
-                    <th class="text-center col-header">No.</th>
-                    <th class="text-center col-header">Unit of Measurement</th>
+                    <th class="text-center col-header" style="width:100px">No.</th>
+                    <th class="text-center col-header" style="width:200px">Unit of Measurement</th>
                     <th class="text-center col-header">Description</th>
                     <th class="text-center col-header" style="width:120px">Control</th>
                 </tr>

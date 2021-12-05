@@ -1,3 +1,4 @@
+var token = $('meta[name="csrf-token"]').attr('content');
 function message(title, color, content){
     $.alert({
         title: title,
@@ -7,8 +8,6 @@ function message(title, color, content){
 }
 
 function request(link, met, data, type, container = '', loading = ''){
-    var token = $('meta[name="csrf-token"]').attr('content');
-
     $.ajax({
         headers: {
             'x-csrf-token': token

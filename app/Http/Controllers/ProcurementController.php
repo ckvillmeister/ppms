@@ -26,10 +26,10 @@ class ProcurementController extends Controller
         else{
             $months = Lists::$months;
             $modes = Lists::$modes;
-            $settings = Settings::all();
-            $uom = Units::all();
-            $categories = Categories::all();
-            $departments = Departments::all();
+            $settings = Settings::where('status', 1)->get();
+            $uom = Units::where('status', 1)->get();
+            $categories = Categories::where('status', 1)->get();
+            $departments = Departments::where('status', 1)->orderBy('office_name', 'ASC')->orderBy('sub_office', 'ASC')->get();
             $classexpenditures = ClassExpenditure::where('status', 1)->get();
             
             if ($request->path() == 'myprocurement'){
@@ -45,7 +45,7 @@ class ProcurementController extends Controller
                     return view('forbidden.index', array('settings' => $settings));
                 }
             }
-            elseif ($request->path() == 'manageprocurement'){
+            elseif ($request->path() == 'ppmp'){
                 if ($this::isAuthorized(Auth::user()->role, 'sidebarManageProcurement')){
                 return view('manageprocurement.index', array('settings' => $settings,
                                                     'departments' => $departments,
@@ -61,6 +61,12 @@ class ProcurementController extends Controller
             }
             
         }
+    }
+
+    public function itemList(Request $request){
+        $status = $request->input('status');
+        $items = Items::where('status', $status)->get();
+        return view('manageprocurement.itemlist', ['items' => $items]);
     }
 
     public function create(Request $request)

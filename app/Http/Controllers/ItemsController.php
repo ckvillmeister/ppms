@@ -106,38 +106,65 @@ class ItemsController extends Controller
 
     public function create(Request $request)
     {
-        $id = $request->input('id');
+        $confirm = ($request->input('confirm')) ? $request->input('confirm') : 0;
+        $id = ($request->input('id')) ? $request->input('id') : 0;
+        $itemname = $request->input('itemname');
+        $uom = $request->input('uom');
+        $price = $request->input('itemprice');
+        $objexp = $request->input('objexp');
+        $itemlist = Items::where('status', 1)->get();
+        $identical_items = [];
 
+        if ($confirm){
+            goto add_item;
+        }
+        
+        foreach($itemlist as $item){
+            $compare = similar_text($itemname, $item->itemname, $perc);
+
+            if ($perc >= 50){
+                $identical_items[] = $item;
+            }
+        }
+        
+        if (count($identical_items) > 0){
+            return view('items.identical_items', ['identical_items' => $identical_items]);
+        }
+        else{
+            goto add_item;
+        }
+
+        add_item:
         if ($id){
-            $data = ['itemname' => $request->input('itemname'),
-                        'uom' => $request->input('uom'),
-                        'price' => $request->input('itemprice'),
-                        'object_of_expenditure' => $request->input('objexp'),
-                        'updatedby' => Auth::user()->id,
-                        'dateupdated' => date('Y-m-d H:i:s'),
-                        'status' => 1];
+            $data = [   
+                    'itemname' => $itemname,
+                    'uom' => $uom,
+                    'price' => floatval($price),
+                    'object_of_expenditure' => $objexp,
+                    'updatedby' => Auth::user()->id,
+                    'dateupdated' => date('Y-m-d H:i:s'),
+                    'status' => 1
+                ];
                         
             $result = Items::where('id', $id)->update($data);
 
-            return array('result' => 'Success',
-                            'color' => 'green',
-                            'message' => 'Office updated successfully!');
+            return 2;
         }
         else{
-            $data = ['itemname' => $request->input('itemname'),
-                            'uom' => $request->input('uom'),
-                            'price' => $request->input('itemprice'),
-                            'object_of_expenditure' => $request->input('objexp'),
-                            'category' => $request->input('category'),
-                            'createdby' => Auth::user()->id,
-                            'datecreated' => date('Y-m-d H:i:s'),
-                            'status' => 1];
+            $data = [
+                    'itemname' => $itemname,
+                    'uom' => $uom,
+                    'price' => floatval($price),
+                    'object_of_expenditure' => $objexp,
+                    'category' => $request->input('category'),
+                    'createdby' => Auth::user()->id,
+                    'datecreated' => date('Y-m-d H:i:s'),
+                    'status' => 1
+                ];
             
             Items::insert($data);
 
-            return array('result' => 'Success',
-                            'color' => 'green',
-                            'message' => 'New item created!');
+            return 1;
         }
     }
 

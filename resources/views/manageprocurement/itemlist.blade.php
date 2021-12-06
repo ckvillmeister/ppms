@@ -4,7 +4,7 @@
   }
 </style>
 <div class="row m-3">
-    <div class="col-sm-12 align-self-center">
+    <div class="col-sm-12 align-self-center" style="font-size: 10pt">
         <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_item_list">
             <thead>
                 <tr>

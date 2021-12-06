@@ -88,7 +88,7 @@
                     <div class="card-body">
                       <div class="row m-3">
                         <div class="col-sm-12 align-self-center">
-                            <table class="table table-sm table-striped display bg-white" id="tbl_procurement_list">
+                            <table class="table table-sm table-striped display bg-white" id="tbl_procurement_list" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center col-header" style="width:100px">Control</th>
@@ -134,17 +134,19 @@
 
 <div class="modal fade" id="modal_create_new_item" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content" id="frm_create_new_item">
+      <div class="modal-header card-primary card-outline">
+        <h5 class="modal-title" id="modal_title">Create Item</h5>
+      </div>
       <div class="modal-body">
-        <form id="frm_create_new_item">
           <div class="row mt-3">
             <div class="col-lg-4">
               <label class="text-xs">Item General Description:</label>
-              <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname" style="padding-left: 20px">
+              <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname" style="padding-left: 20px" required>
             </div>
             <div class="col-lg-4">
               <label class="text-xs">Class of Expenditure:</label>
-              <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp">
+              <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp" required>
                 <option value=""></option>
                 @foreach ($classexpenditures as $key => $classexpenditure)
                 <option value="{{ $classexpenditure->id }}">{{ $classexpenditure->class_exp_name }}</option>
@@ -153,7 +155,7 @@
             </div>
             <div class="col-lg-4">
               <label class="text-xs">Object of Expenditure:</label>
-              <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
+              <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp" required>
                 <option value=""></option>
               </select>
             </div>
@@ -162,11 +164,11 @@
           <div class="row mt-3">
             <div class="col-lg-4">
               <label class="text-xs">Unit Price:</label>
-              <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'">
+              <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" required>
             </div>
             <div class="col-lg-4">
               <label class="text-xs">Unit Price:</label>
-              <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom">
+              <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom" required>
                 <option value=""></option>
                 @foreach ($uom as $key => $unit)
                 <option value="{{ $unit->id }}">{{ $unit->uom.' ('.$unit->description.')' }}</option>
@@ -175,7 +177,7 @@
             </div>
             <div class="col-lg-4">
               <label class="text-xs">Category:</label>
-              <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
+              <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category" required>
                 <option value=""></option>
                 @foreach ($categories as $key => $category)
                 <option value="{{ $category->id }}">{{ $category->category }}</option>
@@ -183,15 +185,15 @@
               </select>
             </div>
           </div>
-        </form>
       </div>
       <div class="modal-footer">
         <div class="float-right">
-          <button type="button" class="btn btn-sm btn-primary" id="btn-save-item"><i class="fas fa-save mr-2"></i>Save</button>
-          <button type="button" class="btn btn-sm btn-secondary" id="btn-close-item" data-dismiss="modal"><i class="fas fa-window-close mr-2"></i>Close</button>
+          <button type="submit" class="btn btn-sm btn-primary" id="btn-save-item"><i class="fas fa-save mr-2"></i>Save</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="btn-back"><i class="fas fa-backward mr-2"></i>Back</button>
+          <button type="button" class="btn btn-sm btn-danger" id="btn-close-item" data-dismiss="modal"><i class="fas fa-window-close mr-2"></i>Close</button>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
@@ -247,8 +249,8 @@
       <div class="modal-footer">
         <div class="float-right">
           <button type="button" class="btn btn-sm btn-primary" id="btn-add-procurement"><i class="fas fa-cart-plus mr-2"></i>Add Procurement</button>
-          <button type="button" class="btn btn-sm btn-success" id="btn-add-procurement-close"><i class="fas fa-cart-arrow-down mr-2"></i>Add Procurement & Close</button>
-          <button type="button" class="btn btn-sm btn-secondary" id="btn-close-procurement" data-dismiss="modal" style="width:150px"><i class="fas fa-window-close mr-2"></i>Close</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="btn-add-procurement-close"><i class="fas fa-cart-arrow-down mr-2"></i>Add Procurement & Close</button>
+          <button type="button" class="btn btn-sm btn-danger" id="btn-close-procurement" data-dismiss="modal" style="width:150px"><i class="fas fa-window-close mr-2"></i>Close</button>
         </div>
       </div>
     </div>
@@ -327,7 +329,20 @@
   $('#itemprice').inputmask();
   $('#price').inputmask();
 
+  $('#departments').on('change', function(){
+    // alert($('#departments option:selected').text());
+  });
+
   $('#btn_add_procurement_item').on('click', function(){
+    $('#modal_add_procurement').modal({
+        backdrop: 'static',
+        keyboard: true, 
+        show: true
+    });
+  })
+
+  $('#btn-back').on('click', function(){
+    $('#modal_create_new_item').modal('hide');
     $('#modal_add_procurement').modal({
         backdrop: 'static',
         keyboard: true, 
@@ -351,6 +366,78 @@
 
   $('#modal_add_procurement').on('shown.bs.modal', function(){
     $('#tbl_item_list').DataTable().columns.adjust();
+  });
+
+  $('#frm_create_new_item').on('submit', function(e){
+    e.preventDefault();
+
+    $.ajax({
+      headers: {
+          'x-csrf-token': token
+      },
+      url: '/items.create',
+      method: 'POST',
+      data: $(this).serialize(),
+      dataType: 'HTML',
+      success: function(result) {
+        if (result == 1){
+          message('Saved', 'green', "Item successfully saved!");
+          retrieveItems(1);
+          $('#modal_create_new_item').modal('hide');
+          $('#modal_add_procurement').modal({
+              backdrop: 'static',
+              keyboard: true, 
+              show: true
+          });
+        }
+        else{
+          $.confirm({
+            boxWidth: '30%',
+            useBootstrap: false,
+            title: 'Similar Items',
+            type: 'blue',
+            content: result,
+            buttons: {
+              confirm: function () {
+                $.ajax({
+                  headers: {
+                      'x-csrf-token': token
+                  },
+                  url: '/items.create',
+                  method: 'POST',
+                  data: $("#frm_create_new_item").serialize() + '&confirm=1',
+                  dataType: 'HTML',
+                  success: function(result) {
+                    if (result == 1){
+                      message('Saved', 'green', "Item successfully saved!");
+                      retrieveItems(1);
+                      $('#modal_create_new_item').modal('hide');
+                      $('#modal_add_procurement').modal({
+                          backdrop: 'static',
+                          keyboard: true, 
+                          show: true
+                      });
+                    }
+                    else{
+                      message('Error', 'red', "Error during processing!");
+                    }
+                  },
+                  error: function(obj, msg, exception){
+                      message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                  }
+                })
+              },
+              cancel: function () {
+                  
+              }
+            }
+          });
+        }
+      },
+      error: function(obj, msg, exception){
+          message('Error', 'red', msg + ": " + obj.status + " " + exception);
+      }
+    })
   });
   
 

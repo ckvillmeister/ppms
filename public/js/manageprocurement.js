@@ -423,34 +423,34 @@ $('#updateitemfromlist').on('click', function(){
 });
 
 $('#frm_create_new_item').on('submit', function(e){
-    e.preventDefault();
+    // e.preventDefault();
 
-    var name = $('#itemname').val(),
-        desc = $('#itemdesc').val(),
-        price = $('#itemprice').val(),
-        uom = $('#uom').val(),
-        objexp = $('#objexp').val(),
-        category = $('#category').val();
+    // var name = $('#itemname').val(),
+    //     desc = $('#itemdesc').val(),
+    //     price = $('#itemprice').val(),
+    //     uom = $('#uom').val(),
+    //     objexp = $('#objexp').val(),
+    //     category = $('#category').val();
         
-    if (name === '' | name === null){
-        message('Error', 'red', 'Please provide item name!');
-    }
-    else if (price === '' | price === null){
-        message('Error', 'red', 'Please provide item price!');
-    }
-    else if (uom === '' | uom === null){
-        message('Error', 'red', 'Please select unit of measurement!');
-    }
-    else if (objexp === '' | objexp === null){
-        message('Error', 'red', "Please select item's object of expenditure!");
-    }
-    else if (category === '' | category === null){
-        message('Error', 'red', "Please select item's category!");
-    }
-    else{
-        request('items.create', 'POST', $(this).serialize(), 'JSON');
-        getItems();
-    }
+    // if (name === '' | name === null){
+    //     message('Error', 'red', 'Please provide item name!');
+    // }
+    // else if (price === '' | price === null){
+    //     message('Error', 'red', 'Please provide item price!');
+    // }
+    // else if (uom === '' | uom === null){
+    //     message('Error', 'red', 'Please select unit of measurement!');
+    // }
+    // else if (objexp === '' | objexp === null){
+    //     message('Error', 'red', "Please select item's object of expenditure!");
+    // }
+    // else if (category === '' | category === null){
+    //     message('Error', 'red', "Please select item's category!");
+    // }
+    // else{
+    //     request('items.create', 'POST', $(this).serialize(), 'JSON');
+    //     getItems();
+    // }
 });
 
 $('#save_procurement').on('click', function(){

@@ -27,7 +27,14 @@ $('#btn_signin').on('click', function(){
             },
             success: function(result) {
                 if (result.redirect){
-                    window.location = result.redirect;
+                    $.alert({
+                        title: 'Successful!',
+                        type: 'green',
+                        content: 'Login successful!',
+                        autoClose: 'ok|2000'
+                    });
+                    setTimeout(function(){ $('#basicloader').show(); }, 2100);
+                    setTimeout(function(){ window.location = result.redirect; }, 3000);
                 }
                 else{
                     message(result.result, result.color, result.message);

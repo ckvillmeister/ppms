@@ -38,6 +38,7 @@
         </table>
     </div>
 </div>
+<br><br><br>
 <script type="text/javascript">
   var table = $('#tbl_list').DataTable({
     "scrollX": true,

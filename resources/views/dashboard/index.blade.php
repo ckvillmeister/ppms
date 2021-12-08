@@ -62,7 +62,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Departments</span>
-                <span class="info-box-number">760</span>
+                <span class="info-box-number"></span>
               </div>
             </div>
           </div>

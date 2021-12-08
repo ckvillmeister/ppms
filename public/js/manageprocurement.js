@@ -1,35 +1,6 @@
 //getItems();
 var index, old_id;
 var id, general_desc, uom, price, ctr = 1;
-var tbl_proc_list = $('#tbl_procurement_list').DataTable({
-    "scrollX": true,
-    "ordering": false,
-    paging: false,
-    styles: {
-      tableHeader: {
-        fontSize: 8
-      }
-    },
-    'columnDefs': [
-        {
-            targets: [5, 6],
-            className: 'numerical-cols'
-            // 'createdCell':  function (td, data, rowData, row, col) {
-            //       $(td).attr('id', data); 
-            // }
-        },
-        {
-            targets: [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-            className: 'text-center'
-        },
-        {
-            targets: 4,
-            'createdCell':  function (td, data, rowData, row, col) {
-                  $(td).attr('id', 'quantity-col'); 
-            }
-        }
-    ]
-  });
 
 $('#departments').on('change', function(){
     var id = $(this).val();

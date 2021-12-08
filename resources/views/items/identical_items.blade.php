@@ -6,6 +6,7 @@
             <th class="text-center col-header">No.</th>
             <th class="text-center col-header">General Description</th>
             <th class="text-center col-header">Price</th>
+            <th class="text-center col-header">Similarity %</th>
         </tr>
     </thead>
     <tbody>
@@ -15,6 +16,7 @@
                 <td class="text-center">{{ $ctr++ }}</td>
                 <td>{{ $item->itemname }}</td>
                 <td class="numerical-cols">{{ number_format($item->price, 2) }}</td>
+                <td class="text-center">{{ number_format($item->perc, 2) }}</td>
             </tr> 
         @endforeach
     </tbody>

@@ -49,18 +49,16 @@
             <button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>
             <button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>
             <div class="float-right">
-            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_items"><i class="fas fa-copy mr-2"></i> Copy All Items</button> 
+              <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_items"><i class="fas fa-copy mr-2"></i> Copy All Items</button> 
             </div>
         </div>
       </div>
 
-      <div class="row m-3 bg-white">
+      <div class="row bg-white">
         <div class="col-sm-12 pt-4">
           <div id="list"></div>
         </div>
       </div>
-
-      <br><br>
 
     </div>
     @include('components.footer')
@@ -70,9 +68,9 @@
 
 <div class="modal fade" id="modal_new" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <form class="modal-content" id="frm_create_new_item">
       <div class="modal-header card-primary card-outline">
-        <h5 class="modal-title" id="modal_title">Item Form</h5>
+        <h5 class="modal-title" id="modal_title">Item Formsss</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -81,7 +79,13 @@
       <div class="modal-body">
         <div id="form"></div>
       </div>
-    </div>
+      <div class="modal-footer">
+        <div class="float-right">
+          <button type="submit" class="btn btn-sm btn-primary" id="btn-save-item"><i class="fas fa-save mr-2"></i>Save</button>
+          <button type="button" class="btn btn-sm btn-danger" id="btn-close-item" data-dismiss="modal"><i class="fas fa-window-close mr-2"></i>Close</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 

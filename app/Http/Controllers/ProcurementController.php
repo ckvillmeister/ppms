@@ -74,7 +74,25 @@ class ProcurementController extends Controller
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
         $proc_status = $settings[2]->setting_description;
+
         $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
+        $itemid = ($request->input('procitemid')) ? $request->input('procitemid') : 0;
+        $itemname = ($request->input('procitemname')) ? $request->input('procitemname') : '';
+        $price = ($request->input('procprice')) ? str_replace(',','', $request->input('procprice')) : 0;
+        $quantity = ($request->input('procqty')) ? $request->input('procqty') : 0;
+        $mode = ($request->input('procmode')) ? $request->input('procmode') : '';
+        $jan = ($request->input('January')) ? 1 : 0;
+        $feb = ($request->input('February')) ? 1 : 0;
+        $mar = ($request->input('March')) ? 1 : 0;
+        $apr = ($request->input('April')) ? 1 : 0;
+        $may = ($request->input('May')) ? 1 : 0;
+        $jun = ($request->input('June')) ? 1 : 0;
+        $jul = ($request->input('July')) ? 1 : 0;
+        $aug = ($request->input('August')) ? 1 : 0;
+        $sep = ($request->input('September')) ? 1 : 0;
+        $oct = ($request->input('October')) ? 1 : 0;
+        $nov = ($request->input('November')) ? 1 : 0;
+        $dec = ($request->input('December')) ? 1 : 0;
 
         if ($proc_status == 0){
             return array('result' => 'Warning',
@@ -82,13 +100,22 @@ class ProcurementController extends Controller
                     'message' => 'Procurement planning for year '.$year.' is already close!');
         }
 
+        $procurementid = '';
         $procurement = DB::table('procurement_info')
                 ->where('department', '=', $deptid)
                 ->where('year', '=', $year)
-                ->get();
-
-        if (count($procurement) <=0 ){
-            DB::table('procurement_info')->insert([
+                ->first();
+        
+        if ($procurement){
+            $procurementid = $procurement->id;
+            if ($procurement->status == 2){
+                return array('result' => 'Warning',
+                        'color' => 'red',
+                        'message' => 'This procurement was already approved! Therefore it cannot be modified.');
+            }
+        }
+        else{
+            $procurementid = DB::table('procurement_info')->insertGetID([
                 'department' => $deptid,
                 'year' => $year,
                 'createdby' => Auth::user()->id,
@@ -96,78 +123,60 @@ class ProcurementController extends Controller
                 'status' => 1
             ]);
         }
-        else{
-            if ($procurement[0]->status == 2){
-                return array('result' => 'Warning',
-                        'color' => 'red',
-                        'message' => 'This procurement was already approved! Therefore it cannot be modified.');
-            }
+        
+        $chkProcurementItem = DB::table('procurement_items')
+                        ->where('procurement_id', '=', $procurementid)
+                        ->where('itemid', '=', $itemid)
+                        ->first();
+
+        if ($chkProcurementItem){
+            DB::table('procurement_items')
+                ->where('procurement_id', '=', $procurementid)
+                ->where('itemid', '=', $itemid)
+                ->update([
+                'itemname' => $itemname,
+                'quantity' => $quantity,
+                'price' => $price,
+                'mode' => $mode,
+                'january' => $jan,
+                'february' => $feb,
+                'march' => $mar,
+                'april' => $apr,
+                'may' => $may,
+                'june' => $jun,
+                'july' => $jul,
+                'august' => $aug,
+                'september' => $sep,
+                'october' => $oct,
+                'november' => $nov,
+                'december' => $dec,
+                'status' => 1
+                ]);
         }
-
-        $procurement = DB::table('procurement_info')
-                ->where('department', '=', $deptid)
-                ->where('year', '=', $year)
-                ->get();
-        $list = $request->input('list');
-
-        foreach($list as $item){
-            $itemInfo = DB::table('procurement_items')
-                ->where('procurement_id', '=', $procurement[0]->id)
-                ->where('itemid', '=', $item[0])
-                ->get();
-
-            $unitprice = str_replace(',','', $item[3]);
-
-            if (count($itemInfo) <=0 ){
-                DB::table('procurement_items')->insert([
-                    'procurement_id' => $procurement[0]->id,
-                    'itemid' => $item[0],
-                    'itemname' => $item[1],
-                    'quantity' => $item[2],
-                    'price' => $unitprice,
-                    'mode' => $item[4],
-                    'january' => $item[5],
-                    'february' => $item[6],
-                    'march' => $item[7],
-                    'april' => $item[8],
-                    'may' => $item[9],
-                    'june' => $item[10],
-                    'july' => $item[11],
-                    'august' => $item[12],
-                    'september' => $item[13],
-                    'october' => $item[14],
-                    'november' => $item[15],
-                    'december' => $item[16],
-                    'addedby' => Auth::user()->id,
-                    'dateadded' => date('Y-m-d H:i:s'),
-                    'status' => 1
-                ]); 
-            }
-            else{
-                DB::table('procurement_items')
-                    ->where('procurement_id', '=', $procurement[0]->id)
-                    ->where('itemid', '=', $item[0])
-                    ->update([
-                    'itemname' => $item[1],
-                    'quantity' => $item[2],
-                    'price' => $unitprice,
-                    'mode' => $item[4],
-                    'january' => $item[5],
-                    'february' => $item[6],
-                    'march' => $item[7],
-                    'april' => $item[8],
-                    'may' => $item[9],
-                    'june' => $item[10],
-                    'july' => $item[11],
-                    'august' => $item[12],
-                    'september' => $item[13],
-                    'october' => $item[14],
-                    'november' => $item[15],
-                    'december' => $item[16],
-                    'status' => 1
-                    ]);
-            }
-                        
+        else{
+            DB::table('procurement_items')->insert([
+                'procurement_id' => $procurementid,
+                'itemid' => $itemid,
+                'itemname' => $itemname,
+                'quantity' => $quantity,
+                'price' => $price,
+                'mode' => $mode,
+                'january' => $jan,
+                'february' => $feb,
+                'march' => $mar,
+                'april' => $apr,
+                'may' => $may,
+                'june' => $jun,
+                'july' => $jul,
+                'august' => $aug,
+                'september' => $sep,
+                'october' => $oct,
+                'november' => $nov,
+                'december' => $dec,
+                'addedby' => Auth::user()->id,
+                'dateadded' => date('Y-m-d H:i:s'),
+                'status' => 1
+            ]); 
         }
 
         return array('result' => 'Success',
@@ -208,9 +217,6 @@ class ProcurementController extends Controller
         $deptid = ($request->input('deptid')) ? ($request->input('deptid')) :Auth::user()->department;
         $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
 
-        $new_items = [];
-        $ctr = 0;
-
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
             ->join('items', 'items.id', '=', 'procurement_items.itemid')
@@ -222,13 +228,10 @@ class ProcurementController extends Controller
             ->get();
 
         foreach($items as $item){
-            $new_item = (array) $item;
-            $new_item['is_allowed_to_remove'] = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
-            $new_items[$ctr] = (object) $new_item;
-            $ctr++;
+            $item->remove_allowed = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
         }
 
-        return json_encode($new_items);
+        return view('manageprocurement.procurementlist', array('items' => $items, 'months' => Lists::$months));
     }
 
     public function retrieveProcurements(Request $request){

@@ -81,8 +81,8 @@ class ItemsController extends Controller
         $categories = Categories::where('status', 1)->get();
         $classexpenditures = ClassExpenditure::where('status', 1)->get();
         
-        $iteminfo = Items::with('object_of_expenditure')->where('items.id', $id)->get();
-        $objinfo = (count($iteminfo) > 0) ? ObjectExpenditure::where('id', $iteminfo[0]->object_of_expenditure)->first() : '';
+        $iteminfo = Items::with('object_of_expenditure')->where('items.id', $id)->first();
+        $objinfo = ($iteminfo) ? ObjectExpenditure::where('id', $iteminfo->object_of_expenditure)->first() : '';
         $classinfo = [];
         $objects = [];
 
@@ -110,7 +110,7 @@ class ItemsController extends Controller
         $id = ($request->input('id')) ? $request->input('id') : 0;
         $itemname = $request->input('itemname');
         $uom = $request->input('uom');
-        $price = $request->input('itemprice');
+        $price = str_replace(',', '', $request->input('itemprice'));
         $objexp = $request->input('objexp');
         $itemlist = Items::where('status', 1)->get();
         $identical_items = [];
@@ -123,6 +123,7 @@ class ItemsController extends Controller
             $compare = similar_text($itemname, $item->itemname, $perc);
 
             if ($perc >= 50){
+                $item->perc = $perc;
                 $identical_items[] = $item;
             }
         }

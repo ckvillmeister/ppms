@@ -72,8 +72,9 @@
               </div>
               <div class="col-lg-6">
                 <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" id="btn_add_procurement_item"><i class="fas fa-plus mr-2"></i>Add Procurement</button>
-                  <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy Procurement</button> 
+                  <button type="button" class="btn btn-sm btn-primary" id="btn_add_procurement_item"><i class="fas fa-plus mr-2"></i>Add Procurement</button>
+                  <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy PPMP</button> 
+                  <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button>
                 </div>
               </div>
             </div>
@@ -88,38 +89,16 @@
                     <div class="card-body">
                       <div class="row m-3">
                         <div class="col-sm-12 align-self-center">
-                            <table class="table table-sm table-striped display bg-white" id="tbl_procurement_list" style="width: 100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center col-header" style="width:100px">Control</th>
-                                        <th class="text-center col-header">No.</th>
-                                        <th class="text-center col-header" style="width: 150px">General Description</th>
-                                        <th class="text-center col-header">Unit</th>
-                                        <th class="text-center col-header">Quantity</th>
-                                        <th class="text-center col-header">Price</th>
-                                        <th class="text-center col-header">Estimated Budget</th>
-                                        <th class="text-center col-header">Procurement Mode</th>
-                                        @foreach ($months as $month)
-                                        <th class="text-center col-header" width="">{{ $month }}</th>
-                                        @endforeach
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                </tbody>
-                            </table>
+                          <div id="procurements"></div>
                         </div>
                       </div>
                     </div>
                     <div class="card-footer">
                       <div class="float-right">
-                        <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
+                        <!-- <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
                           <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
                         </button>
-                        <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
-                          <i class="fas fa-thumbs-up mr-2"></i>Approve Procurement
-                        </button>
+                         -->
                       </div>
                     </div>
                 </div>
@@ -167,7 +146,7 @@
               <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" required>
             </div>
             <div class="col-lg-4">
-              <label class="text-xs">Unit Price:</label>
+              <label class="text-xs">Unit of Measurement:</label>
               <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom" required>
                 <option value=""></option>
                 @foreach ($uom as $key => $unit)
@@ -199,7 +178,7 @@
 
 <div class="modal fade" id="modal_add_procurement" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog" role="document">
-    <div class="modal-content">
+    <form class="modal-content" id="frm_add_procurement">
       <div class="modal-header card-primary card-outline">
         <h5 class="modal-title" id="modal_title">Add Procurement</h5>
         <div class="float-right">
@@ -213,19 +192,20 @@
         <div class="row m-3">
           <div class="col-lg-6">
             <label class="text-xs">Item General Description:</label>
-            <input type="text" class="form-control form-control-sm" placeholder="Item General Description" id="" name="" style="padding-left: 20px; background-color: white" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" readonly="readonly">
+            <input type="hidden" id="procitemid" name="procitemid">
+            <input type="text" class="form-control form-control-sm" placeholder="Item General Description" id="procitemname" name="procitemname" style="padding-left: 20px; background-color: white" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" readonly="readonly" required>
           </div>
           <div class="col-lg-2">
             <label class="text-xs">Price:</label>
-            <input type="text" class="form-control form-control-sm" placeholder="Price" id="price" name="price" style="padding-left: 20px" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" required>
+            <input type="text" class="form-control form-control-sm" placeholder="Price" id="procprice" name="procprice" style="padding-left: 20px" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" required>
           </div>
           <div class="col-lg-2">
             <label class="text-xs">Quantity:</label>
-            <input type="text" class="form-control form-control-sm" placeholder="Quantity" id="qty" name="qty" style="padding-left: 20px" required>
+            <input type="text" class="form-control form-control-sm" placeholder="Quantity" id="procqty" name="procqty" style="padding-left: 20px" required>
           </div>
           <div class="col-lg-2">
             <label class="text-xs">Mode:</label>
-            <select class="form-control form-control-sm" style="width: 100%;" id="mode" name="mode" required>
+            <select class="form-control form-control-sm" style="width: 100%;" id="procmode" name="procmode" required>
             <option value=""></option>
               @foreach ($modes as $key => $mode)
               <option value="{{ $mode }}">{{ $mode }}</option>
@@ -248,12 +228,12 @@
       </div>
       <div class="modal-footer">
         <div class="float-right">
-          <button type="button" class="btn btn-sm btn-primary" id="btn-add-procurement"><i class="fas fa-cart-plus mr-2"></i>Add Procurement</button>
-          <button type="button" class="btn btn-sm btn-secondary" id="btn-add-procurement-close"><i class="fas fa-cart-arrow-down mr-2"></i>Add Procurement & Close</button>
+          <button type="submit" class="btn btn-sm btn-primary" id="btn-add-procurement"><i class="fas fa-cart-plus mr-2"></i>Add Procurement</button>
+          <button type="submit" class="btn btn-sm btn-secondary" id="btn-add-procurement-close"><i class="fas fa-cart-arrow-down mr-2"></i>Add Procurement & Close</button>
           <button type="button" class="btn btn-sm btn-danger" id="btn-close-procurement" data-dismiss="modal" style="width:150px"><i class="fas fa-window-close mr-2"></i>Close</button>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
@@ -300,8 +280,10 @@
 </body>
 </html>
 
-<script src="{{ asset('js/manageprocurement.js') }}"></script>
 <script type="text/javascript">
+  retrieveItems(1);
+  $('#btn_add_procurement_item').addClass('invisible');
+
   $('#uom').select2({
     dropdownParent: $("#modal_create_new_item"),
     dropdownCssClass: "font",
@@ -330,7 +312,16 @@
   $('#price').inputmask();
 
   $('#departments').on('change', function(){
-    // alert($('#departments option:selected').text());
+    var dept = $(this).val(),
+        year = $('#cbo_year').val();
+
+    if (dept == ''){
+      $('#btn_add_procurement_item').addClass('invisible');
+    }
+    else{
+      retrieveProcurementItems(dept, year);
+      $('#btn_add_procurement_item').removeClass('invisible');
+    }
   });
 
   $('#btn_add_procurement_item').on('click', function(){
@@ -364,7 +355,12 @@
                                     show: true});
   });
 
+  $('#modal_create_new_item').on('shown.bs.modal', function(){
+    $("body").addClass("modal-open");
+  });
+
   $('#modal_add_procurement').on('shown.bs.modal', function(){
+    $("body").addClass("modal-open");
     $('#tbl_item_list').DataTable().columns.adjust();
   });
 
@@ -392,7 +388,7 @@
         }
         else{
           $.confirm({
-            boxWidth: '30%',
+            boxWidth: '50%',
             useBootstrap: false,
             title: 'Similar Items',
             type: 'blue',
@@ -440,6 +436,34 @@
     })
   });
   
+  $('#frm_add_procurement').on('submit', function(e){
+    e.preventDefault();
+    
+    var department = $('#departments').val(),
+        year = $('#cbo_year').val();
+
+    if (department == ''){
+      message('Error', 'red', 'Please select a department!');
+    }
+    else{
+      $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/ppmp/create',
+        method: 'POST',
+        data: $("#frm_add_procurement").serialize() + '&deptid=' + department,
+        dataType: 'HTML',
+        success: function(result) {
+          retrieveProcurementItems(department, year);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+      })
+    }
+    
+  });
 
   $('#classexp').on('change', function(){
     var classid = $(this).val();
@@ -569,5 +593,28 @@
     })
   }
 
-  retrieveItems(1);
+  function retrieveProcurementItems(deptid, year){
+    $.ajax({
+      headers: {
+          'x-csrf-token': token
+      },
+      url: '/ppmp/procurementlist',
+      method: 'POST',
+      data: {'deptid': deptid, 'year': year},
+      setCookies: token,
+      dataType: "HTML",
+      beforeSend: function() {
+          $('#basicloader').show();
+      },
+      complete: function(){
+          $('#basicloader').hide();
+      },
+      success: function(result) {
+          $('#procurements').html(result);
+      },
+      error: function(obj, msg, exception){
+          message('Error', 'red', msg + ": " + obj.status + " " + exception);
+      }
+    })
+  }
 </script>

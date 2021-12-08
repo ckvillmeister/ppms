@@ -68,31 +68,64 @@ $('body').on('click', '#reactivate', function(){
     });
 });
 
-$('body').on('submit', '#frm', function(e){
+$('body').on('submit', '#frm_create_new_item', function(e){
     e.preventDefault();
 
-    var name = $('#itemname').val(),
-        desc = $('#itemdesc').val(),
-        price = $('#itemprice').val(),
-        uom = $('#uom').val(),
-        objexp = $('#objexp').val(),
-        category = $('#category').val();
-        
-    if (name === ''){
-        message('Error', 'red', 'Please provide item name!');
-    }
-    else if (price === ''){
-        message('Error', 'red', 'Please provide item price!');
-    }
-    else if (uom === ''){
-        message('Error', 'red', 'Please select unit of measurement!');
-    }
-    else if (objexp === ''){
-        message('Error', 'red', "Please select item's object of expenditure!");
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/items.create',
+        method: 'POST',
+        data: $('#frm').serialize(),
+        dataType: 'HTML',
+    success: function(result) {
+    if (result == 1){
+        message('Saved', 'green', "Item successfully saved!");
+        retrieveItems(1);
+        $('#modal_new').modal('hide');
     }
     else{
-        request('items.create', 'POST', $(this).serialize(), 'JSON');
-        $('#modal_new').modal('hide');
-        request('itemsRetrieveItems', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
-    }
+        $.confirm({
+            boxWidth: '50%',
+            useBootstrap: false,
+            title: 'Similar Items',
+            type: 'blue',
+            content: result,
+            buttons: {
+                confirm: function () {
+                $.ajax({
+                    headers: {
+                        'x-csrf-token': token
+                    },
+                    url: '/items.create',
+                    method: 'POST',
+                    data: $("#frm_create_new_item").serialize() + '&confirm=1',
+                    dataType: 'HTML',
+                    success: function(result) {
+                    if (result == 1){
+                        message('Saved', 'green', "Item successfully saved!");
+                        retrieveItems(1);
+                        $('#modal_new').modal('hide');
+                    }
+                    else{
+                        message('Error', 'red', "Error during processing!");
+                    }
+                    },
+                    error: function(obj, msg, exception){
+                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                    }
+                })
+                },
+                cancel: function () {
+                    
+                }
+            }
+            });
+        }
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
 });

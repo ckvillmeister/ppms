@@ -1,4 +1,4 @@
-<div class="row m-3">
+<div class="row">
     <div class="col-sm-12 align-self-center">
         <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_list">
             <thead>
@@ -35,7 +35,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div><br><br>
 <script type="text/javascript">
   var table = $('#tbl_list').DataTable({
     "scrollX": true,

@@ -26,6 +26,6 @@ class CreateDashboardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dashboards');
+        //Schema::dropIfExists('dashboards');
     }
 }

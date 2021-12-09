@@ -57,6 +57,6 @@ class CreateProcurementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('procurements');
+        //Schema::dropIfExists('procurements');
     }
 }

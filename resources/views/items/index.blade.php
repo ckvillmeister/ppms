@@ -62,6 +62,7 @@
 
     </div>
     @include('components.footer')
+    <script src="{{ asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
 </div>
 </body>
 </html>
@@ -70,7 +71,7 @@
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <form class="modal-content" id="frm_create_new_item">
       <div class="modal-header card-primary card-outline">
-        <h5 class="modal-title" id="modal_title">Item Formsss</h5>
+        <h5 class="modal-title" id="modal_title">Item Information Form</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row m-3">
     <div class="col-sm-12 align-self-center">
         <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_list">
             <thead>

@@ -144,8 +144,8 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         @endif
          
         @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSettings'))
-        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles.managepermissions'])) ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles.managepermissions'])) ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles/managepermissions'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles/managepermissions'])) ? 'active' : '' }}">
             <i class="nav-icon fas fa-tools"></i>
             <p>
               Settings
@@ -156,7 +156,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
 
             @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarRoles'))
             <li class="nav-item">
-              <a href="/roles" class="nav-link {{ (Request::path() == 'roles' | Request::path() == 'roles.managepermissions') ? 'active' : '' }}">
+              <a href="/roles" class="nav-link {{ (Request::path() == 'roles' | Request::path() == 'roles/managepermissions') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p class="text-sm">Roles and Permission</p>
               </a>

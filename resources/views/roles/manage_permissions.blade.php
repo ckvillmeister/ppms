@@ -51,18 +51,23 @@ use App\Http\Controllers\AuthenticationController as Authentication;
       <div class="row m-3 bg-white">
         <div class="col-sm-12">
 
-            <div class="row pb-3" id="permissions">
-                @foreach ($permissions as $key => $permission)
-                <div class="col-sm-6 pt-3 pl-3 pr-3">
-                  <div class="bg-light p-2">
-                    <h5>
-                      <input type="checkbox" value="{{ $permission->id }}" class="mr-3" {{ (Authentication::hasAccess(Request::get('id'), $permission->id)) ? 'checked="checked' : '' }}>{{ $permission->description }}
-                    </h5>
-                  </div>
-                </div>
-                @endforeach
-
-            </div>
+            @foreach ($category as $categ)
+              <h1 class="mt-3 ml-3">{{ $categ->category }}</h1>
+              <div class="row pb-3" id="permissions">
+                  @foreach ($permissions as $key => $permission)
+                    @if ($permission->category == $categ->id)
+                      <div class="col-sm-6 pt-3 pl-3 pr-3">
+                        <div class="bg-light p-2">
+                          <h5>
+                            <input type="checkbox" value="{{ $permission->id }}" class="mr-3" {{ (Authentication::hasAccess(Request::get('id'), $permission->id)) ? 'checked="checked' : '' }}>{{ $permission->description }}
+                          </h5>
+                        </div>
+                      </div>
+                    @endif
+                  @endforeach
+              </div>
+              <br>
+            @endforeach
         </div>
       </div>
 

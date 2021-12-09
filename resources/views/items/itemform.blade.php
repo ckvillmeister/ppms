@@ -3,11 +3,11 @@
 <div class="row mt-3">
     <div class="col-lg-4">
         <label class="text-xs">Item General Description:</label>
-        <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname" style="padding-left: 20px" value="{{ (isset($iteminfo)) ? $iteminfo->itemname : '' }}">
+        <input type="text" class="form-control form-control-sm" placeholder="Ex. (Bond Paper, Ballpen, etc.)" id="itemname" name="itemname" style="padding-left: 20px" value="{{ (isset($iteminfo)) ? $iteminfo->itemname : '' }}" required>
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Class of Expenditure:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp">
+        <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp" required>
             <option value=""></option>
             @foreach ($classexpenditures as $key => $classexpenditure)
             <option value="{{ $classexpenditure->id }}" {{ ($classinfo) ? (($classinfo->id == $classexpenditure->id) ? 'selected="selected' : '') : '' }}>{{ $classexpenditure->class_exp_name }}</option>
@@ -16,7 +16,7 @@
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Object of Expenditure:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
+        <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp" required>
             <option value=""></option>
             @if ($objects)
                 @foreach($objects as $object)
@@ -31,11 +31,11 @@
     <div class="col-lg-4">
         @php ($year = date('Y'))
         <label class="text-xs">Unit Price:</label>
-        <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" value="{{ (isset($iteminfo)) ? $iteminfo->price : '' }}">
+        <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" value="{{ (isset($iteminfo)) ? $iteminfo->price : '' }}" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" required>
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Unit of Measurement:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom">
+        <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom" required>
             <option value=""></option>
             @foreach ($uom as $key => $unit)
             <option value="{{ $unit->id }}" {{ (!(isset($iteminfo))) ? '' : (($iteminfo->uom == $unit->id) ? 'selected=:"selected"' : '') }}>{{ $unit->uom.' ('.$unit->description.')' }}</option>
@@ -44,7 +44,7 @@
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Category:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
+        <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category" required>
             <option value=""></option>
             @foreach ($categories as $key => $category)
             <option value="{{ $category->id }}" {{ (!(isset($iteminfo))) ? '' : (($iteminfo->category == $category->id) ? 'selected=:"selected"' : '') }}>{{ $category->category }}</option>
@@ -54,7 +54,8 @@
 </div>
 <script>
 
-var tkn = $('meta[name="csrf-token"]').attr('content');
+  var tkn = $('meta[name="csrf-token"]').attr('content');
+  $('#itemprice').inputmask();
 
   $('#uom').select2({
     dropdownParent: $("#modal_new"),

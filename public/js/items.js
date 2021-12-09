@@ -1,4 +1,4 @@
-request('itemsRetrieveItems', 'POST', {'status' : 1, 'limit': 100}, 'HTML', '#list', '#page_loading');
+retrieveItems(1, 100);
 
 $('#new').on('click', function(){
     $('#reset').click(); 
@@ -77,12 +77,17 @@ $('body').on('submit', '#frm_create_new_item', function(e){
         },
         url: '/items.create',
         method: 'POST',
-        data: $('#frm').serialize(),
+        data: $('#frm_create_new_item').serialize(),
         dataType: 'HTML',
     success: function(result) {
     if (result == 1){
         message('Saved', 'green', "Item successfully saved!");
-        retrieveItems(1);
+        retrieveItems(1, 100);
+        $('#modal_new').modal('hide');
+    }
+    else if (result == 2){
+        message('Updated', 'green', "Item successfully updated!");
+        retrieveItems(1, 100);
         $('#modal_new').modal('hide');
     }
     else{
@@ -105,7 +110,12 @@ $('body').on('submit', '#frm_create_new_item', function(e){
                     success: function(result) {
                     if (result == 1){
                         message('Saved', 'green', "Item successfully saved!");
-                        retrieveItems(1);
+                        retrieveItems(1, 100);
+                        $('#modal_new').modal('hide');
+                    }
+                    else if (result == 2){
+                        message('Updated', 'green', "Item successfully updated!");
+                        retrieveItems(1, 100);
                         $('#modal_new').modal('hide');
                     }
                     else{
@@ -129,3 +139,7 @@ $('body').on('submit', '#frm_create_new_item', function(e){
         }
     })
 });
+
+function retrieveItems(status, limit){
+    request('itemsRetrieveItems', 'POST', {'status' : status, 'limit': limit}, 'HTML', '#list', '#page_loading');
+}

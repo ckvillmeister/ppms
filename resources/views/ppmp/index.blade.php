@@ -324,6 +324,19 @@
     }
   });
 
+  $('#cbo_year').on('change', function(){
+    var dept = $('#departments').val(),
+        year = $(this).val();
+
+    if (dept == ''){
+      $('#btn_add_procurement_item').addClass('invisible');
+    }
+    else{
+      retrieveProcurementItems(dept, year);
+      $('#btn_add_procurement_item').removeClass('invisible');
+    }
+  });
+
   $('#btn_add_procurement_item').on('click', function(){
     $('#modal_add_procurement').modal({
         backdrop: 'static',

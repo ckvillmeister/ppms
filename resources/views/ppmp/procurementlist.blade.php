@@ -12,14 +12,17 @@
             @foreach ($months as $month)
             <th class="text-center col-header" width=""><pre>{{ $month }}</pre></th>
             @endforeach
+            <th class="text-center col-header" style="width:100px"><pre>Control</pre></th>
         </tr>
     </thead>
     <tbody>
         @if ($items)
             @php ($ctr = 1)
             @foreach ($items as $item)
-                <tr>
-                    <td></td>
+                <tr data-id="{{ $item->id }}">
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deletePPMPItem({{ $item->id }})" data-toggle="tooltip" data-placement="top" title="Delete PPMP Item"><i class="fas fa-trash"></i></button>
+                    </td>
                     <td>{{ $ctr++ }}</td>
                     <td style="white-space: pre-wrap">{{ $item->itemname }}</td>
                     <td>{{ $item->uom }}</td>
@@ -57,6 +60,9 @@
                         
                     </td>
                     @endforeach
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deletePPMPItem({{ $item->id }})" data-toggle="tooltip" data-placement="top" title="Delete PPMP Item"><i class="fas fa-trash"></i></button>
+                    </td>
                 </tr>
             @endforeach
         @endif
@@ -64,32 +70,92 @@
 </table>
 <script>
     var tbl_proc_list = $('#tbl_procurement_list').DataTable({
-    "scrollX": true,
-    "ordering": false,
-    paging: false,
-    styles: {
-      tableHeader: {
-        fontSize: 8
-      }
-    },
-    'columnDefs': [
-        {
-            targets: [5, 6],
-            className: 'numerical-cols'
-            // 'createdCell':  function (td, data, rowData, row, col) {
-            //       $(td).attr('id', data); 
-            // }
-        },
-        {
-            targets: [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-            className: 'text-center'
-        },
-        {
-            targets: 4,
-            'createdCell':  function (td, data, rowData, row, col) {
-                  $(td).attr('id', 'quantity-col'); 
-            }
+        "scrollX": true,
+        "ordering": false,
+        paging: false,
+        styles: {
+        tableHeader: {
+            fontSize: 8
         }
-    ]
-  });
+        },
+        'columnDefs': [
+            {
+                targets: [5, 6],
+                className: 'numerical-cols'
+                // 'createdCell':  function (td, data, rowData, row, col) {
+                //       $(td).attr('id', data); 
+                // }
+            },
+            {
+                targets: [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+                className: 'text-center'
+            },
+            {
+                targets: 4,
+                'createdCell':  function (td, data, rowData, row, col) {
+                    $(td).attr('id', 'quantity-col'); 
+                }
+            }
+        ]
+    });
+
+    $('#tbl_procurement_list tbody td').dblclick(function() {
+        //$(this).closest('tr').find('td:eq(2)').text();  
+        var td = $(this),
+            index = $(this).index(),
+            id = $(this).closest('tr').attr('data-id'),
+            attribute = '',
+            title = '',
+            content = '';
+        
+        if (index == 4 || index == 5){
+            if (index == 4){
+                title = "Enter New Quantity";
+                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+                attribute = "quantity";
+            }
+            else if (index == 5){
+                var mask = "'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'";
+                title = "Enter New Price";
+                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+                $('#txt-field').inputmask();
+                attribute = "price";
+            }
+
+            $.confirm({
+                escapeKey: "cancel",
+                title: title,
+                content: content,
+                buttons: {
+                    save: function () {
+                        $.ajax({
+                            headers: {
+                                'x-csrf-token': token
+                            },
+                            url: '/ppmp.update/' + attribute,
+                            method: 'POST',
+                            data: {'id': id, 'attr': attribute, 'value': $('#txt-field').val()},
+                            dataType: 'HTML',
+                            success: function(result) {
+                                td.closest('tr').find('td:eq('+index+')').text($('#txt-field').val());
+                                td.closest('tr').find('td:eq(6)').text(result);
+                            },
+                            error: function(obj, msg, exception){
+                                message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                            }
+                        })
+                    },
+                    cancel: function () {
+                        
+                    }
+                }
+            });
+        }
+    });
+
+    //retrieveProcurementItems();
+
+    function deletePPMPItem(){
+
+    }
 </script>

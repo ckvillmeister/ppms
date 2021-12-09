@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Settings;
 use App\Models\Roles;
+use App\Models\Permissions;
+use App\Models\PermissionCategory;
 use App\Enums\Lists;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,12 +40,12 @@ class RolesController extends Controller
             $settings = Settings::all();
             
             if ($this::isAuthorized(Auth::user()->role, 'pagePermission')){
-                $permissions = DB::table('permissions')
-                                ->where('status', '=', 1)
-                                ->get();
+                $permissions = Permissions::with('category')->where('status', 1)->get();
+                $category = PermissionCategory::where('status', 1)->get();
 
                 return view('roles.manage_permissions', array('settings' => $settings,
-                                                                'permissions' => $permissions));
+                                                                'permissions' => $permissions,
+                                                                'category' => $category));
             }
             else{
                 return view('forbidden.index', array('settings' => $settings));

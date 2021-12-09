@@ -47,7 +47,7 @@ class ProcurementController extends Controller
             }
             elseif ($request->path() == 'ppmp'){
                 if ($this::isAuthorized(Auth::user()->role, 'sidebarManageProcurement')){
-                return view('manageprocurement.index', array('settings' => $settings,
+                return view('ppmp.index', array('settings' => $settings,
                                                     'departments' => $departments,
                                                     'modes' => $modes,
                                                     'months' => $months,
@@ -66,7 +66,7 @@ class ProcurementController extends Controller
     public function itemList(Request $request){
         $status = $request->input('status');
         $items = Items::where('status', $status)->get();
-        return view('manageprocurement.itemlist', ['items' => $items]);
+        return view('ppmp.itemlist', ['items' => $items]);
     }
 
     public function create(Request $request)
@@ -184,6 +184,23 @@ class ProcurementController extends Controller
                         'message' => 'Procurement list successfully saved!');
     }
 
+    public function update($attribute, Request $request){
+        $id = ($request->input('id')) ? $request->input('id') : 0;
+        $attr = ($request->input('attr')) ? $request->input('attr') : 0;
+        $value = ($request->input('value')) ? str_replace(',','', $request->input('value')) : 0;
+        
+        DB::table('procurement_items')
+                    ->where('id', '=', $id)
+                    ->update([$attr => $value]);
+        
+        $ppmpitem = DB::table('procurement_items')
+                        ->where('id', '=', $id)
+                        ->first();
+        $total = $ppmpitem->quantity * $ppmpitem->price;
+        return number_format($total, 2);
+        
+    }
+
     public function toggleProcurementItem(Request $request){
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
@@ -226,12 +243,12 @@ class ProcurementController extends Controller
             ->where('procurement_info.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)
             ->get();
-
+        
         foreach($items as $item){
             $item->remove_allowed = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
         }
-
-        return view('manageprocurement.procurementlist', array('items' => $items, 'months' => Lists::$months));
+        
+        return view('ppmp.procurementlist', array('items' => $items, 'months' => Lists::$months));
     }
 
     public function retrieveProcurements(Request $request){

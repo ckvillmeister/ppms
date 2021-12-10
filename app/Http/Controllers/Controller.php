@@ -31,7 +31,8 @@ class Controller extends BaseController
     public static function hasAccess($roleid, $permissionID){
         $result = DB::table('role_permissions')
                         ->where('role_id', '=', $roleid)
-                        ->where('.permission_id', '=', $permissionID)
+                        ->where('permission_id', '=', $permissionID)
+                        ->where('status', '=', 1)
                         ->get();
 
         if (count($result) >= 1){

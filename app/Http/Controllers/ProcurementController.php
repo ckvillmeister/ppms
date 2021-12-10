@@ -53,7 +53,8 @@ class ProcurementController extends Controller
                                                     'months' => $months,
                                                     'uom' => $uom,
                                                     'categories' => $categories,
-                                                    'classexpenditures' => $classexpenditures));
+                                                    'classexpenditures' => $classexpenditures,
+                                                    'can_approve' => $this::hasAccess(Auth::user()->role, 'pageApprovePPMP')));
                 }
                 else{
                     return view('forbidden.index', array('settings' => $settings));
@@ -69,13 +70,41 @@ class ProcurementController extends Controller
         return view('ppmp.itemlist', ['items' => $items]);
     }
 
+    public function itemListForUpdate(Request $request){
+        $status = $request->input('status');
+        $items = Items::where('status', $status)->get();
+        return view('ppmp.itemlistforupdate', ['items' => $items]);
+    }
+
+    public function replaceItem(Request $request){
+        $dept = $request->input('dept');
+        $year = $request->input('year');
+        $ppmpitemid = $request->input('ppmpitemid');
+        $itemid = $request->input('itemid');
+        $itemname = $request->input('itemname');
+
+        $checkItem = DB::table('procurement_items AS pitems')
+                        ->join('procurement_info AS pinfo', 'pinfo.id', '=', 'pitems.procurement_id')
+                        ->where('pinfo.department', '=', $dept)
+                        ->where('pinfo.year', '=', $year)
+                        ->where('pitems.itemid', '=', $itemid)
+                        ->get();
+
+        if (count($checkItem) > 0){
+            DB::table('procurement_items')->where('id', '=', $ppmpitemid)->update(['status' => 0]);
+        }
+        else{
+            DB::table('procurement_items')->where('id', '=', $ppmpitemid)->update(['itemid' => $itemid, 'itemname' => $itemname]);
+        }
+    }
+    
     public function create(Request $request)
     {
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
         $proc_status = $settings[2]->setting_description;
 
-        $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
         $itemid = ($request->input('procitemid')) ? $request->input('procitemid') : 0;
         $itemname = ($request->input('procitemname')) ? $request->input('procitemname') : '';
         $price = ($request->input('procprice')) ? str_replace(',','', $request->input('procprice')) : 0;
@@ -201,11 +230,11 @@ class ProcurementController extends Controller
         
     }
 
-    public function toggleProcurementItem(Request $request){
+    public function toggleProcurementItemStatus(Request $request){
         $settings = Settings::all();
         $year = $settings[1]->setting_description;
         $proc_status = $settings[2]->setting_description;
-        $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
 
         if ($proc_status == 0){
             return 3;
@@ -221,7 +250,7 @@ class ProcurementController extends Controller
         }
         
         DB::table('procurement_items')
-                ->where('id', '=', $request->input('itemid'))
+                ->where('id', '=', $request->input('id'))
                 ->update([
                     'status' => $request->input('status')
                 ]);
@@ -229,9 +258,40 @@ class ProcurementController extends Controller
         return 1;
     }
 
+    public function toggleProcurementItemMonth(Request $request){
+        $settings = Settings::all();
+        $year = $settings[1]->setting_description;
+        $proc_status = $settings[2]->setting_description;
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
+        $id = $request->input('id');
+        $month = strtolower($request->input('month'));
+        $status = ($request->input('status') == "true") ? 1 : 0;
+
+        if ($proc_status == 0){
+            return 3;
+        }
+        
+        $procurement = DB::table('procurement_info')
+                ->where('department', '=', $deptid)
+                ->where('year', '=', $year)
+                ->first();
+        
+        if ($procurement->status == 2){
+            return 2;
+        }
+        
+        DB::table('procurement_items')
+                ->where('id', '=', $id)
+                ->update([
+                    $month => $status
+                ]);
+
+        return 1;
+    }
+
     public function retrieveProcurementList(Request $request){
         $settings = Settings::all();
-        $deptid = ($request->input('deptid')) ? ($request->input('deptid')) :Auth::user()->department;
+        $deptid = ($request->input('deptid')) ? ($request->input('deptid')) : 0;
         $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
 
         $items = DB::table('procurement_items')
@@ -248,7 +308,7 @@ class ProcurementController extends Controller
             $item->remove_allowed = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
         }
         
-        return view('ppmp.procurementlist', array('items' => $items, 'months' => Lists::$months));
+        return view('ppmp.procurementlist', array('items' => $items, 'months' => Lists::$months, 'mode' => Lists::$modes));
     }
 
     public function retrieveProcurements(Request $request){
@@ -324,7 +384,7 @@ class ProcurementController extends Controller
 
     public function replicateProcurement(Request $request){
         $settings = Settings::all();
-        $deptid = ($request->input('deptid')) ? $request->input('deptid') : Auth::user()->department;
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
         $year = $request->input('year');
         $procurement_year = $settings[1]->setting_description;
 

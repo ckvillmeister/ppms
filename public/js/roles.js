@@ -1,4 +1,4 @@
-request('roles.retrieveRoles', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+retrieveRoles(1);
 
 $('#new').on('click', function(){
     $('#reset').click(); 
@@ -7,21 +7,21 @@ $('#new').on('click', function(){
         keyboard: true, 
         show: true});
 
-    request('roles.getForm', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
+    request('/roles/getform', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
 });
 
 $('#active').on('click', function(){
-    request('roles.retrieveRoles', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+    retrieveRoles(1);
 });
 
 $('#inactive').on('click', function(){
-    request('roles.retrieveRoles', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+    retrieveRoles(0);
 });
 
 $('body').on('click', '#edit', function(){
     var id = $(this).val(); 
 
-    request('roles.getForm', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
+    request('/roles/getform', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
 
     $('#modal_new').modal({
         backdrop: 'static',
@@ -38,8 +38,7 @@ $('body').on('click', '#delete', function(){
         content: 'Are you sure you want to remove this role?',
         buttons: {
             confirm: function () {
-                request('roles.toggleStatus', 'POST', {'id' : id, 'status' : 0}, 'JSON');
-                request('roles.retrieveRoles', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 0);
             },
             cancel: function () {
                 
@@ -58,8 +57,7 @@ $('body').on('click', '#reactivate', function(){
         content: 'Are you sure you want to re-activate this role?',
         buttons: {
             confirm: function () {
-                request('roles.toggleStatus', 'POST', {'id' : id, 'status' : 1}, 'JSON');
-                request('roles.retrieveRoles', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 1);
             },
             cancel: function () {
                 
@@ -77,8 +75,92 @@ $('body').on('submit', '#frm', function(e){
         message('Error', 'red', 'Please provide role name!');
     }
     else{
-        request('roles.create', 'POST', $(this).serialize(), 'JSON');
-        request('roles.retrieveRoles', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
-        $('#modal_new').modal('hide');
+        create($(this).serialize());
     }
 });
+
+function create(frm){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/roles/create',
+        method: 'POST',
+        data: frm,
+        setCookies: token,
+        dataType: "JSON",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#modal_new').modal('hide');
+            message(result['result'], result['color'], result['message']);
+            retrieveRoles(1);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function toggleStatus(id, status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/roles/togglestatus',
+        method: 'POST',
+        data: {'id' : id, 'status' : status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            var stat = 0;
+
+            if (status == 1){
+                stat = 0;
+            }
+            else if (status == 0){
+                stat = 1;
+            }
+
+            retrieveRoles(stat);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function retrieveRoles(status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/roles/retrieveroles',
+        method: 'POST',
+        data: {'status': status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#list').html(result);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}

@@ -80,7 +80,7 @@ class RolesController extends Controller
 
             return array('result' => 'Success',
                             'color' => 'green',
-                            'message' => 'Role measurement successfully added!');
+                            'message' => 'Role successfully added!');
         }
         
     }
@@ -131,7 +131,8 @@ class RolesController extends Controller
     public function saveRolePermissions(Request $request){
         $id = $request->input('id');
         $permissions = $request->input('permissions');
-
+        DB::table('role_permissions')->where('role_id', '=', $id)->update(['status' => 0]);
+        
         foreach($permissions as $permission){
             $permissioninfo = DB::table('role_permissions')
                 ->where('role_id', '=', $id )

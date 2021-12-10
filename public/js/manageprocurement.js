@@ -621,31 +621,3 @@ function retrieveProcurementList(deptid, year){
     })
 }
 
-function setApprovalStatus(dept, year){
-    $.ajax({
-        headers: {
-            'x-csrf-token': tkn
-        },
-        url: '/procurement.getprocurementinfo',
-        method: 'POST',
-        data: {'year': year, 'deptid': dept},
-        dataType: 'JSON',
-        success: function(result) {
-            if (result.status == 1){
-                $('#approve_procurement').removeClass('btn-danger');
-                $('#approve_procurement').addClass('btn-success');
-                $('#approve_procurement').html('<i class="fas fa-thumbs-up mr-2"></i>Approve Procurement');
-                $('#approve_procurement').val(2);
-            }
-            else if(result.status == 2){
-                $('#approve_procurement').removeClass('btn-success');
-                $('#approve_procurement').addClass('btn-danger');
-                $('#approve_procurement').html('<i class="fas fa-history mr-2"></i>Revert Approval');
-                $('#approve_procurement').val(1);
-            }
-        },
-        error: function(obj, msg, exception){
-            message('Error', 'red', msg + ": " + obj.status + " " + exception);
-        }
-    })
-}

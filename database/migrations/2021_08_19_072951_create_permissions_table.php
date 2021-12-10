@@ -43,7 +43,9 @@ class CreatePermissionsTable extends Migration
                     ['permission_code' => 'sidebarRoles', 'description' => 'Manage Roles', 'category' => 1,  'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarAccounts', 'description' => 'Manage User Accounts', 'category' => 1,  'createdby' => 1, 'datecreated' => $date],
                     ['permission_code' => 'sidebarSystemSettings', 'description' => 'Manage System Settings', 'category' => 1,  'createdby' => 1, 'datecreated' => $date],
-                    ['permission_code' => 'pagePermission', 'description' => 'Manage Permission', 'category' => 2,  'createdby' => 1, 'datecreated' => $date]
+                    ['permission_code' => 'pagePermission', 'description' => 'Manage Permission', 'category' => 2,  'createdby' => 1, 'datecreated' => $date],
+                    ['permission_code' => 'pageApprovePPMP', 'description' => 'Approve PPMP', 'category' => 2,  'createdby' => 1, 'datecreated' => $date],
+                    ['permission_code' => 'pageModifyPPMP', 'description' => 'Modify PPMP from other Department', 'category' => 2,  'createdby' => 1, 'datecreated' => $date],
             ];
 
         DB::table('permissions')->insert($inputs);

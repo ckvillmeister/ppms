@@ -1,4 +1,4 @@
-request('departments.retrieveDepartments', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+retrieveDepartments(1);
 
 $('#new').on('click', function(){
     $('#reset').click(); 
@@ -7,21 +7,21 @@ $('#new').on('click', function(){
         keyboard: true, 
         show: true});
 
-    request('departments.getForm', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
+    request('/departments/getform', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
 });
 
 $('#active').on('click', function(){
-    request('departments.retrieveDepartments', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+    retrieveDepartments(1);
 });
 
 $('#inactive').on('click', function(){
-    request('departments.retrieveDepartments', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+    retrieveDepartments(0);
 });
 
 $('body').on('click', '#edit', function(){
     var id = $(this).val(); 
 
-    request('departments.getForm', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
+    request('/departments/getform', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
 
     $('#modal_new').modal({
         backdrop: 'static',
@@ -38,8 +38,7 @@ $('body').on('click', '#delete', function(){
         content: 'Are you sure you want to remove this department?',
         buttons: {
             confirm: function () {
-                request('departments.toggleStatus', 'POST', {'id' : id, 'status' : 0}, 'JSON');
-                request('departments.retrieveDepartments', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 0);
             },
             cancel: function () {
                 
@@ -58,8 +57,7 @@ $('body').on('click', '#reactivate', function(){
         content: 'Are you sure you want to re-activate this department?',
         buttons: {
             confirm: function () {
-                request('departments.toggleStatus', 'POST', {'id' : id, 'status' : 1}, 'JSON');
-                request('departments.retrieveDepartments', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 1);
             },
             cancel: function () {
                 
@@ -85,8 +83,92 @@ $('body').on('submit', '#frm', function(e){
         message('Error', 'red', 'Please provide head of office!');
     }
     else{
-        request('departments.create', 'POST', $(this).serialize(), 'JSON');
-        request('departments.retrieveDepartments', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
-        $('#modal_new').modal('hide');
+        create($(this).serialize());
     }
 });
+
+function create(frm){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/departments/create',
+        method: 'POST',
+        data: frm,
+        setCookies: token,
+        dataType: "JSON",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#modal_new').modal('hide');
+            message(result['result'], result['color'], result['message']);
+            retrieveDepartments(1);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function toggleStatus(id, status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/departments/togglestatus',
+        method: 'POST',
+        data: {'id' : id, 'status' : status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            var stat = 0;
+
+            if (status == 1){
+                stat = 0;
+            }
+            else if (status == 0){
+                stat = 1;
+            }
+
+            retrieveDepartments(stat);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function retrieveDepartments(status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/departments/retrievedepartments',
+        method: 'POST',
+        data: {'status': status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#list').html(result);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}

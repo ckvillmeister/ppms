@@ -81,7 +81,7 @@
       headers: {
           'x-csrf-token': tkn
       },
-      url: '/object_expenditures.retrievobjectsbyclass',
+      url: '/object/retrievobjectsbyclass',
       method: 'POST',
       data: {'classid': classid},
       dataType: 'JSON',

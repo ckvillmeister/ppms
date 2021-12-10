@@ -1,4 +1,16 @@
 <div class="row m-3">
+    <div class="col-sm-12">
+      <div class="float-right">
+          <!-- <p>
+              Limit Records: 
+              <a href="/items/retrieveitems?status=1&limit=100">100</a> | 
+              <a href="/items/retrieveitems?status=1&limit=200">200</a> | 
+              <a href="/items/retrieveitems?status=1&limit=500">500</a> | 
+              <a href="/items/retrieveitems?status=1&limit=1000">1000</a> | 
+              <a href="/items/retrieveitems?status=1&limit=0">All</a>
+          </p> -->
+      </div>
+    </div>
     <div class="col-sm-12 align-self-center">
         <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_list">
             <thead>

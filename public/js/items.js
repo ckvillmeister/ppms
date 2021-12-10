@@ -1,4 +1,4 @@
-retrieveItems(1, 100);
+retrieveItems(1, 0);
 
 $('#new').on('click', function(){
     $('#reset').click(); 
@@ -7,21 +7,21 @@ $('#new').on('click', function(){
         keyboard: true, 
         show: true});
 
-    request('items.getForm', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
+    request('/items/getform', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
 });
 
 $('#active').on('click', function(){
-    request('itemsRetrieveItems', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+    retrieveItems(1, 0);
 });
 
 $('#inactive').on('click', function(){
-    request('itemsRetrieveItems', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+    retrieveItems(0, 0);
 });
 
 $('body').on('click', '#edit', function(){
     var id = $(this).val(); 
 
-    request('items.getForm', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
+    request('/items/getform', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
 
     $('#modal_new').modal({
         backdrop: 'static',
@@ -38,8 +38,7 @@ $('body').on('click', '#delete', function(){
         content: 'Are you sure you want to remove this item?',
         buttons: {
             confirm: function () {
-                request('items.toggleStatus', 'POST', {'id' : id, 'status' : 0}, 'JSON');
-                request('itemsRetrieveItems', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 0);
             },
             cancel: function () {
                 
@@ -58,8 +57,7 @@ $('body').on('click', '#reactivate', function(){
         content: 'Are you sure you want to re-activate this item?',
         buttons: {
             confirm: function () {
-                request('items.toggleStatus', 'POST', {'id' : id, 'status' : 1}, 'JSON');
-                request('itemsRetrieveItems', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 1);
             },
             cancel: function () {
                 
@@ -75,64 +73,64 @@ $('body').on('submit', '#frm_create_new_item', function(e){
         headers: {
             'x-csrf-token': token
         },
-        url: '/items.create',
+        url: '/items/create',
         method: 'POST',
         data: $('#frm_create_new_item').serialize(),
         dataType: 'HTML',
-    success: function(result) {
-    if (result == 1){
-        message('Saved', 'green', "Item successfully saved!");
-        retrieveItems(1, 100);
-        $('#modal_new').modal('hide');
-    }
-    else if (result == 2){
-        message('Updated', 'green', "Item successfully updated!");
-        retrieveItems(1, 100);
-        $('#modal_new').modal('hide');
-    }
-    else{
-        $.confirm({
-            boxWidth: '50%',
-            useBootstrap: false,
-            title: 'Similar Items',
-            type: 'blue',
-            content: result,
-            buttons: {
-                confirm: function () {
-                $.ajax({
-                    headers: {
-                        'x-csrf-token': token
-                    },
-                    url: '/items.create',
-                    method: 'POST',
-                    data: $("#frm_create_new_item").serialize() + '&confirm=1',
-                    dataType: 'HTML',
-                    success: function(result) {
-                    if (result == 1){
-                        message('Saved', 'green', "Item successfully saved!");
-                        retrieveItems(1, 100);
-                        $('#modal_new').modal('hide');
-                    }
-                    else if (result == 2){
-                        message('Updated', 'green', "Item successfully updated!");
-                        retrieveItems(1, 100);
-                        $('#modal_new').modal('hide');
-                    }
-                    else{
-                        message('Error', 'red', "Error during processing!");
-                    }
-                    },
-                    error: function(obj, msg, exception){
-                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
-                    }
-                })
-                },
-                cancel: function () {
-                    
-                }
-            }
-            });
+        success: function(result) {
+        if (result == 1){
+            message('Saved', 'green', "Item successfully saved!");
+            retrieveItems(1, 0);
+            $('#modal_new').modal('hide');
         }
+        else if (result == 2){
+            message('Updated', 'green', "Item successfully updated!");
+            retrieveItems(1, 0);
+            $('#modal_new').modal('hide');
+        }
+        else{
+            $.confirm({
+                boxWidth: '50%',
+                useBootstrap: false,
+                title: 'Similar Items',
+                type: 'blue',
+                content: result,
+                buttons: {
+                    confirm: function () {
+                    $.ajax({
+                        headers: {
+                            'x-csrf-token': token
+                        },
+                        url: '/items/create',
+                        method: 'POST',
+                        data: $("#frm_create_new_item").serialize() + '&confirm=1',
+                        dataType: 'HTML',
+                        success: function(result) {
+                        if (result == 1){
+                            message('Saved', 'green', "Item successfully saved!");
+                            retrieveItems(1, 0);
+                            $('#modal_new').modal('hide');
+                        }
+                        else if (result == 2){
+                            message('Updated', 'green', "Item successfully updated!");
+                            retrieveItems(1, 0);
+                            $('#modal_new').modal('hide');
+                        }
+                        else{
+                            message('Error', 'red', "Error during processing!");
+                        }
+                        },
+                        error: function(obj, msg, exception){
+                            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                        }
+                    })
+                    },
+                    cancel: function () {
+                        
+                    }
+                }
+                });
+            }
         },
         error: function(obj, msg, exception){
             message('Error', 'red', msg + ": " + obj.status + " " + exception);
@@ -140,6 +138,61 @@ $('body').on('submit', '#frm_create_new_item', function(e){
     })
 });
 
+function toggleStatus(id, status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/items/togglestatus',
+        method: 'POST',
+        data: {'id' : id, 'status' : status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            var stat = 0;
+
+            if (status == 1){
+                stat = 0;
+            }
+            else if (status == 0){
+                stat = 1;
+            }
+
+            retrieveItems(stat, 0);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
 function retrieveItems(status, limit){
-    request('itemsRetrieveItems', 'POST', {'status' : status, 'limit': limit}, 'HTML', '#list', '#page_loading');
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/itemsRetrieveItems',
+        method: 'POST',
+        data: {'status': status, 'limit': limit},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#list').html(result);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
 }

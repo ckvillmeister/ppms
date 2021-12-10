@@ -1,4 +1,4 @@
-request('accounts.retrieveAccounts', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+retrieveAccounts(1);
 
 $('#new').on('click', function(){
     $('#reset').click(); 
@@ -8,15 +8,15 @@ $('#new').on('click', function(){
         show: true});
     
     $('#password_field').addClass('visible');
-    request('accounts.getForm', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
+    request('/accounts/getform', 'POST', {'deptid' : 0}, 'HTML', '#form', '#form_loading');
 });
 
 $('#active').on('click', function(){
-    request('accounts.retrieveAccounts', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+    retrieveAccounts(1);
 });
 
 $('#inactive').on('click', function(){
-    request('accounts.retrieveAccounts', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+    retrieveAccounts(0);
 });
 
 $('body').on('click', '#changepass', function(){
@@ -33,7 +33,7 @@ $('body').on('click', '#edit', function(){
     var id = $(this).val(); 
 
     $('#password_field').addClass('invisible');
-    request('accounts.getForm', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
+    request('/accounts/getform', 'POST', {'id' : id}, 'HTML', '#form', '#form_loading');
 
     $('#modal_new').modal({
         backdrop: 'static',
@@ -50,8 +50,7 @@ $('body').on('click', '#delete', function(){
         content: 'Are you sure you want to delete this user account?',
         buttons: {
             confirm: function () {
-                request('accounts.toggleStatus', 'POST', {'id' : id, 'status' : 0}, 'JSON');
-                request('accounts.retrieveAccounts', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 0);
             },
             cancel: function () {
                 
@@ -70,8 +69,7 @@ $('body').on('click', '#reactivate', function(){
         content: 'Are you sure you want to re-activate this user account?',
         buttons: {
             confirm: function () {
-                request('accounts.toggleStatus', 'POST', {'id' : id, 'status' : 1}, 'JSON');
-                request('accounts.retrieveAccounts', 'POST', {'status' : 0}, 'HTML', '#list', '#page_loading');
+                toggleStatus(id, 1);
             },
             cancel: function () {
                 
@@ -106,18 +104,14 @@ $('body').on('submit', '#frm', function(e){
     }
     else{
         if (id){
-            request('accounts.create', 'POST', $(this).serialize(), 'JSON');
-            request('accounts.retrieveAccounts', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
-            $('#modal_new').modal('hide');
+            create($(this).serialize());
         }
         else{
             if (password === ''){
                 message('Error', 'red', 'Please provide user password!');
             }
             else{
-                request('accounts.create', 'POST', $(this).serialize(), 'JSON');
-                request('accounts.retrieveAccounts', 'POST', {'status' : 1}, 'HTML', '#list', '#page_loading');
-                $('#modal_new').modal('hide');
+                create($(this).serialize());
             }
         }
         
@@ -141,7 +135,93 @@ $('body').on('submit', '#reset_pass_frm', function(e){
         message('Error', 'red', 'Password does not match!');
     }
     else{
-        request('accounts.resetpass', 'POST', $(this).serialize(), 'JSON');
+        request('/accounts/resetpass', 'POST', $(this).serialize(), 'JSON');
         $('#modal_reset_password').modal('hide');
     }
 });
+
+function create(frm){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/accounts/create',
+        method: 'POST',
+        data: frm,
+        setCookies: token,
+        dataType: "JSON",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#modal_new').modal('hide');
+            message(result['result'], result['color'], result['message']);
+            retrieveAccounts(1);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function toggleStatus(id, status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/accounts/togglestatus',
+        method: 'POST',
+        data: {'id' : id, 'status' : status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            var stat = 0;
+
+            if (status == 1){
+                stat = 0;
+            }
+            else if (status == 0){
+                stat = 1;
+            }
+
+            retrieveAccounts(stat);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}
+
+function retrieveAccounts(status){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/accounts/retrieveaccounts',
+        method: 'POST',
+        data: {'status': status},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#list').html(result);
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+    })
+}

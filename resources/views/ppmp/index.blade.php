@@ -73,8 +73,8 @@
               <div class="col-lg-6">
                 <div class="float-right">
                   <button type="button" class="btn btn-sm btn-primary" id="btn_add_procurement_item"><i class="fas fa-plus mr-2"></i>Add Procurement</button>
-                  <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy PPMP</button> 
-                  <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button>
+                  <button type="button" class="btn btn-sm btn-secondary" id="btn_copy_ppmp" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy PPMP</button> 
+                  @if ($can_approve) <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button> @endif
                 </div>
               </div>
             </div>
@@ -85,23 +85,24 @@
 
             <div class="col-sm-12">
 
-                <div class="card card-outline direct-chat direct-chat-primary shadow-none">
-                    <div class="card-body">
-                      <div class="row m-3">
-                        <div class="col-sm-12 align-self-center">
-                          <div id="procurements"></div>
-                        </div>
+              <div class="card card-outline direct-chat direct-chat-primary shadow-none">
+                  <div class="card-body">
+                    <div class="row m-3">
+                      <div class="col-sm-12 align-self-center">
+                        <div id="procurements"></div>
                       </div>
                     </div>
-                    <div class="card-footer">
-                      <div class="float-right">
-                        <!-- <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
-                          <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
-                        </button>
-                         -->
-                      </div>
+                  </div>
+                  <div class="card-footer">
+                    <div class="float-right">
+                      <!-- <button type="button" class="btn btn-sm btn-primary" id="save_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}>
+                        <i class="fas fa-cart-arrow-down mr-2"></i>Save Procurement
+                      </button>
+                        -->
                     </div>
-                </div>
+                  </div>
+              </div>
+
             </div>
 
         </div>
@@ -283,6 +284,7 @@
 <script type="text/javascript">
   retrieveItems(1);
   $('#btn_add_procurement_item').addClass('invisible');
+  $('#btn_copy_ppmp').addClass('invisible');
 
   $('#uom').select2({
     dropdownParent: $("#modal_create_new_item"),
@@ -317,10 +319,13 @@
 
     if (dept == ''){
       $('#btn_add_procurement_item').addClass('invisible');
+      $('#btn_copy_ppmp').addClass('invisible');
     }
     else{
       retrieveProcurementItems(dept, year);
+      setApprovalStatus(dept, year);
       $('#btn_add_procurement_item').removeClass('invisible');
+      $('#btn_copy_ppmp').removeClass('invisible');
     }
   });
 
@@ -330,10 +335,13 @@
 
     if (dept == ''){
       $('#btn_add_procurement_item').addClass('invisible');
+      $('#btn_copy_ppmp').addClass('invisible');
     }
     else{
       retrieveProcurementItems(dept, year);
+      setApprovalStatus(dept, year);
       $('#btn_add_procurement_item').removeClass('invisible');
+      $('#btn_copy_ppmp').removeClass('invisible');
     }
   });
 
@@ -384,7 +392,7 @@
       headers: {
           'x-csrf-token': token
       },
-      url: '/items.create',
+      url: '/items/create',
       method: 'POST',
       data: $(this).serialize(),
       dataType: 'HTML',
@@ -412,7 +420,7 @@
                   headers: {
                       'x-csrf-token': token
                   },
-                  url: '/items.create',
+                  url: '/items/create',
                   method: 'POST',
                   data: $("#frm_create_new_item").serialize() + '&confirm=1',
                   dataType: 'HTML',
@@ -451,7 +459,9 @@
   
   $('#frm_add_procurement').on('submit', function(e){
     e.preventDefault();
-    
+    //var btn = $(this).find("input[type=submit]:focus" );
+    var btnID = event.submitter.id;
+
     var department = $('#departments').val(),
         year = $('#cbo_year').val();
 
@@ -468,6 +478,10 @@
         data: $("#frm_add_procurement").serialize() + '&deptid=' + department,
         dataType: 'HTML',
         success: function(result) {
+          if (btnID == 'btn-add-procurement-close'){
+            $('#modal_add_procurement').modal('hide');
+          }
+
           retrieveProcurementItems(department, year);
         },
         error: function(obj, msg, exception){
@@ -509,20 +523,26 @@
   });
 
   $('#approve_procurement').on('click', function(){
-    var dept = $('#departments').val(), year = $('#cbo_year').val(), dept_desc = $( "#departments option:selected" ).text(), status = $(this).val();
-
+    var dept = $('#departments').val(), 
+        year = $('#cbo_year').val(), 
+        dept_desc = $( "#departments option:selected" ).text(), 
+        status = $(this).val();
+    
     if (dept == ""){
       message('Empty', 'red', 'Please select a department first!');
     }
     else if (year == ""){
       message('Empty', 'red', 'Please select a department first!');
     }
+    else if (tbl_proc_list.rows().count() <= 0){
+      message('Empty', 'red', 'Procurement plan is empty! Nothing to approve.');
+    }
     else{
       $.ajax({
         headers: {
             'x-csrf-token': token
         },
-        url: '/procurement.approveprocurement',
+        url: '/ppmp/approveprocurement',
         method: 'POST',
         data: {'year': $('#cbo_year').val(), 'deptid': dept, 'status': status},
         dataType: 'HTML',
@@ -557,7 +577,7 @@
         headers: {
             'x-csrf-token': token
         },
-        url: '/procurement.replicateprocurement',
+        url: '/ppmp/replicateprocurement',
         method: 'POST',
         data: {'year': $('#cbo_year_copy').val(), 'deptid': dept},
         dataType: 'HTML',
@@ -628,6 +648,41 @@
       error: function(obj, msg, exception){
           message('Error', 'red', msg + ": " + obj.status + " " + exception);
       }
+    })
+  }
+
+  function setApprovalStatus(dept, year){
+    $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/ppmp/getprocurementinfo',
+        method: 'POST',
+        data: {'year': year, 'deptid': dept},
+        dataType: 'JSON',
+        success: function(result) {
+            if(result == null || result == "null"){
+                $('#approve_procurement').removeClass('btn-danger');
+                $('#approve_procurement').addClass('btn-success');
+                $('#approve_procurement').html('<i class="fas fa-thumbs-up mr-2"></i>Approve PPMP');
+                $('#approve_procurement').val(2);
+            }
+            else if (result.status == 1){
+                $('#approve_procurement').removeClass('btn-danger');
+                $('#approve_procurement').addClass('btn-success');
+                $('#approve_procurement').html('<i class="fas fa-thumbs-up mr-2"></i>Approve PPMP');
+                $('#approve_procurement').val(2);
+            }
+            else if(result.status == 2){
+                $('#approve_procurement').removeClass('btn-success');
+                $('#approve_procurement').addClass('btn-danger');
+                $('#approve_procurement').html('<i class="fas fa-history mr-2"></i>Revert PPMP');
+                $('#approve_procurement').val(1);
+            }
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
     })
   }
 </script>

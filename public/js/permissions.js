@@ -10,5 +10,5 @@ $('#save').on('click', function(){
       }
     });
   
-    request('roles.saveRolePermissions', 'POST', {'id' : id, 'permissions' : permissions}, 'JSON');
+    request('/roles/saverolepermissions', 'POST', {'id' : id, 'permissions' : permissions}, 'JSON');
 });

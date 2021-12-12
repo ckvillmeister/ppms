@@ -12,11 +12,14 @@ class Settings extends Model
     protected $cast = [
         'time'
     ];
-
+    protected $table = "settings";
     protected $primary = 'id';
-
     protected $fillable = [
         'name',
         'address'
     ];
+
+    public static function getSetting($code){
+        return Settings::where('setting_name', $code)->first();
+    }
 }

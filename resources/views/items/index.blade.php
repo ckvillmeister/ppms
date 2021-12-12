@@ -48,9 +48,9 @@
             <button class="btn btn-sm btn-primary" id="new"><i class="fas fa-plus mr-4"></i>New</button>
             <button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>
             <button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>
-            <div class="float-right">
+            <!-- <div class="float-right">
               <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_copy_items"><i class="fas fa-copy mr-2"></i> Copy All Items</button> 
-            </div>
+            </div> -->
         </div>
       </div>
 
@@ -62,7 +62,6 @@
 
     </div>
     @include('components.footer')
-    <script src="{{ asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
 </div>
 </body>
 </html>

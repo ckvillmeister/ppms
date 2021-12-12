@@ -10,7 +10,8 @@ class Departments extends Model
     use HasFactory;
 
     public $timestamps = false;
-
+    protected $primaryKey = "id";
+    protected $table = "departments";
     protected $fillable = [
         'office_name',
         'description',

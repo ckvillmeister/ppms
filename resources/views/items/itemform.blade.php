@@ -31,7 +31,7 @@
     <div class="col-lg-4">
         @php ($year = date('Y'))
         <label class="text-xs">Unit Price:</label>
-        <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" value="{{ (isset($iteminfo)) ? $iteminfo->price : '' }}" data-inputmask="'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'" required>
+        <input type="text" class="form-control form-control-sm" id="itemprice" name="itemprice" style="text-align: right" value="{{ (isset($iteminfo)) ? $iteminfo->price : '' }}" >
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Unit of Measurement:</label>
@@ -52,10 +52,11 @@
         </select>
     </div>
 </div>
+<script src="{{ asset('adminlte/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
 <script>
 
   var tkn = $('meta[name="csrf-token"]').attr('content');
-  $('#itemprice').inputmask();
+  $('#itemprice').inputmask('decimal', {'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'});
 
   $('#uom').select2({
     dropdownParent: $("#modal_new"),

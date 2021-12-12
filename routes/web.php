@@ -45,19 +45,18 @@ Route::post('ppmp/toggleprocurementitemmonth', [ProcurementController::class, 't
 Route::post('ppmp/getprocurementinfo', [ProcurementController::class, 'getProcurementInfo']);
 Route::post('ppmp/replicateprocurement', [ProcurementController::class, 'replicateProcurement']);
 Route::post('ppmp/approveprocurement', [ProcurementController::class, 'approveProcurement']);
+Route::post('ppmp/retrievebudgetedobjs', [ProcurementController::class, 'retrieveBudgetedObjects']);
+Route::post('ppmp/getnewprocurementform', [ProcurementController::class, 'getNewProcurementForm']);
 
-// Route::get('myprocurement', [ProcurementController::class, 'index']);
-// Route::post('procurement.updateProcItems', [ProcurementController::class, 'updateProcItems']);
-// Route::post('procurement.proclist', [ProcurementController::class, 'retrieveProcurements']);
-// Route::post('procurement.removeItemFromProcList', [ProcurementController::class, 'removeItemFromProcList']);
-
-Route::get('reports', [ReportsController::class, 'index']);
+//Route::get('reports', [ReportsController::class, 'index']);
+Route::get('reports/app', [ReportsController::class, 'index']);
 Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']);
 Route::post('APPDILG', [ReportsController::class, 'retrieveAPP']);
 Route::post('APPDBM', [ReportsController::class, 'retrieveAPP']);
 Route::post('APPCSE', [ReportsController::class, 'retrieveAPP']);
 
 Route::get('departments', [DepartmentsController::class, 'index']);
+Route::get('departments/set', [DepartmentsController::class, 'index']);
 Route::post('departments/retrievedepartments', [DepartmentsController::class, 'retrieveDepartments']);
 Route::post('departments/getform', [DepartmentsController::class, 'getForm']);
 Route::post('departments/create', [DepartmentsController::class, 'create']);
@@ -77,11 +76,15 @@ Route::post('class/create', [ClassExpenditureController::class, 'create']);
 Route::post('class/togglestatus', [ClassExpenditureController::class, 'toggleStatus']);
 
 Route::get('object', [ObjectExpenditureController::class, 'index']);
+Route::get('object/setbudget', [ObjectExpenditureController::class, 'setDepartmentBudget']);
 Route::post('object/retrieveobjectexpenditures', [ObjectExpenditureController::class, 'retrieveObjectExpenditures']);
+Route::post('object/retrieveobjectsforbudget', [ObjectExpenditureController::class, 'retrieveOBjectListforBudgeting']);
 Route::post('object/retrievobjectsbyclass', [ObjectExpenditureController::class, 'retrieveObjectExpendituresByClass']);
 Route::post('object/getform', [ObjectExpenditureController::class, 'getForm']);
 Route::post('object/create', [ObjectExpenditureController::class, 'create']);
-Route::post('object/toggleStatus', [ObjectExpenditureController::class, 'toggleStatus']);
+Route::post('object/togglestatus', [ObjectExpenditureController::class, 'toggleStatus']);
+Route::post('object/setbudget', [ObjectExpenditureController::class, 'setBudget']);
+Route::post('object/setaipcode', [ObjectExpenditureController::class, 'setAIPCode']);
 
 Route::get('categories', [CategoriesController::class, 'index']);
 Route::post('categories/retrievecategories', [CategoriesController::class, 'retrieveCategories']);

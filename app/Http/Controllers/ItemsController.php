@@ -58,11 +58,8 @@ class ItemsController extends Controller
             return view('manageprocurement.itemlistforupdate', array('items' => $items));
         }
         elseif ($request->path() == 'itemsRetrieveItems'){
-            $qryItems = Items::join('units', 'units.id', '=', 'items.uom')
-                        ->join('object_expenditures', 'object_expenditures.id', '=', 'items.object_of_expenditure')
-                        ->join('categories', 'categories.id', '=', 'items.category')
-                        ->select('items.*', 'units.description', 'object_expenditures.obj_exp_name', 'categories.category')
-                        ->where('items.status', '=', $request->input('status'));
+            $qryItems = Items::join('categories', 'categories.id', '=', 'items.category')
+                                ->where('items.status', '=', $request->input('status'));
 
             if ($limit){
                 $qryItems = $qryItems->limit($limit);

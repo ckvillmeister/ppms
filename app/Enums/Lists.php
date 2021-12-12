@@ -11,7 +11,20 @@ use BenSampo\Enum\Enum;
  */
 final class Lists extends Enum
 {
-    public static $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    public static $months = [
+        'Jan' => 'January', 
+        'Feb' => 'February', 
+        'Mar' => 'March', 
+        'Apr' => 'April', 
+        'May' => 'May', 
+        'Jun' => 'June', 
+        'Jul' => 'July', 
+        'Aug' => 'August', 
+        'Sep' => 'September', 
+        'Oct' => 'October', 
+        'Nov' => 'November', 
+        'Dec' => 'December'
+    ];
 
     public static $modes = [
         1 => 'Shopping', 

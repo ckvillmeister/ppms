@@ -36,20 +36,90 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         </li>
         @endif
 
-        @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSetup'))
-        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'class', 'object', 'units'])) ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'class', 'object', 'units'])) ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments/set', 'object/setbudget'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments/set', 'object/setbudget'])) ? 'active' : '' }}">
             <i class="nav-icon fas fa-sliders-h"></i>
             <p>Setup<i class="right fas fa-angle-left"></i></p>
           </a>
 
           <ul class="nav nav-treeview">
 
+            @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSetDepartment'))
+            <li class="nav-item">
+              <a href="/departments/set" class="nav-link {{ (Request::path() == 'departments/set') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p class="text-sm">Departments</p>
+              </a>
+            </li>
+            @endif
+
+            @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarObjectsSetBudget'))
+            <li class="nav-item">
+              <a href="/object/setbudget" class="nav-link {{ (Request::path() == 'object/setbudget') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p class="text-sm">Object of Expenditure</p>
+              </a>
+            </li>
+            @endif
+
+          </ul>
+        </li>
+        
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['ppmp'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['ppmp'])) ? 'active' : '' }}">
+            <i class="nav-icon fas fa-shopping-cart"></i>
+            <p>Preparation<i class="right fas fa-angle-left"></i></p>
+          </a>
+
+          <ul class="nav nav-treeview">
+
+            @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarPPMP'))
+            <li class="nav-item">
+              <a href="/ppmp" class="nav-link {{ (Request::path() == 'ppmp') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                  <p class="text-sm">PPMP</p>
+              </a>
+            </li>
+            @endif
+
+          </ul>
+        </li>
+
+        @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarReports'))
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['reports/app'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['reports/app'])) ? 'active' : '' }}">
+            <i class="nav-icon fas fa-file-alt"></i>
+            <p>Reports<i class="right fas fa-angle-left"></i></p>
+          </a>
+
+          <ul class="nav nav-treeview">
+
+            <li class="nav-item">
+              <a href="/reports/app" class="nav-link {{ (Request::path() == 'reports/app') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p class="text-sm">APP</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+        @endif
+         
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'class', 'object', 'units', 'roles', 'accounts', 'settings', 'roles/managepermissions'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments', 'items', 'categories', 'class', 'object', 'units', 'roles', 'accounts', 'settings', 'roles/managepermissions'])) ? 'active' : '' }}">
+            <i class="nav-icon fas fa-tools"></i>
+            <p>
+              Settings
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+
             @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarDepartments'))
             <li class="nav-item">
               <a href="/departments" class="nav-link {{ (Request::path() == 'departments') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p class="text-sm">Departments</p>
+                <p class="text-sm">List of Departments</p>
               </a>
             </li>
             @endif
@@ -58,7 +128,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
             <li class="nav-item">
               <a href="/class" class="nav-link {{ (Request::path() == 'class') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p class="text-sm">Class of Expenditures</p>
+                <p class="text-sm">List of Class</p>
               </a>
             </li>
             @endif
@@ -67,7 +137,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
             <li class="nav-item">
               <a href="/object" class="nav-link {{ (Request::path() == 'object') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p class="text-sm">Object of Expenditures</p>
+                <p class="text-sm">List of Objects</p>
               </a>
             </li>
             @endif
@@ -76,7 +146,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
             <li class="nav-item">
               <a href="/categories" class="nav-link {{ (Request::path() == 'categories') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p class="text-sm">Categories</p>
+                <p class="text-sm">List of Categories</p>
               </a>
             </li>
             @endif
@@ -85,7 +155,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
             <li class="nav-item">
               <a href="/units" class="nav-link {{ (Request::path() == 'units') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p class="text-sm">Units</p>
+                <p class="text-sm">List of Units</p>
               </a>
             </li>
             @endif
@@ -98,61 +168,6 @@ use App\Http\Controllers\AuthenticationController as Authentication;
               </a>
             </li>
             @endif
-
-          </ul>
-        </li>
-        @endif
-
-        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['ppmp'])) ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (in_array(Request::path(), ['ppmp'])) ? 'active' : '' }}">
-            <i class="nav-icon fas fa-shopping-cart"></i>
-            <p>Preparation<i class="right fas fa-angle-left"></i></p>
-          </a>
-
-          <ul class="nav nav-treeview">
-
-            <!-- @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarMyProcurement'))
-            <li class="nav-item">
-              <a href="myprocurement" class="nav-link {{ (Request::path() == 'myprocurement') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>My Procurement</p>
-              </a>
-            </li>
-            @endif -->
-
-            @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarManageProcurement'))
-            <li class="nav-item">
-              <a href="/ppmp" class="nav-link {{ (Request::path() == 'ppmp') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                  <p class="text-sm">PPMP</p>
-              </a>
-            </li>
-            @endif
-
-          </ul>
-        </li>
-        
-        @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarReports'))
-        <li class="nav-item">
-          <a href="/reports" class="nav-link {{ (Request::path() == 'reports') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-file-alt"></i>
-            <p>
-              Reports
-            </p>
-          </a>
-        </li>
-        @endif
-         
-        @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSettings'))
-        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles/managepermissions'])) ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (in_array(Request::path(), ['roles', 'accounts', 'settings', 'roles/managepermissions'])) ? 'active' : '' }}">
-            <i class="nav-icon fas fa-tools"></i>
-            <p>
-              Settings
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
 
             @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarRoles'))
             <li class="nav-item">
@@ -181,11 +196,12 @@ use App\Http\Controllers\AuthenticationController as Authentication;
             </li>
             @endif
 
+            <br><br>
+
           </ul>
 
         </li>
-        @endif
-
+        
       </ul>
     </nav>
   </div>

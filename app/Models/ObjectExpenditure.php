@@ -26,4 +26,5 @@ class ObjectExpenditure extends Model
     public function class_of_expenditure(){
         return $this->belongsTo(ClassExpenditure::class, 'class_exp_id', 'id');
     }
+
 }

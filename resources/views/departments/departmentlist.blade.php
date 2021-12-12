@@ -25,11 +25,12 @@
                         <td>{{ $department->sub_office_in_charge }}</td>
                         <td>{{ $department->position }}</td>
                         <td class="text-center">
-                          <button class="btn btn-sm btn-warning" id="edit" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Edit Department"><i class="fas fa-edit"></i></button>
+                          <a class="btn btn-sm btn-primary col-sm-12" href="/object/setbudget/?id={{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Select Department"><i class="fas fa-check-circle mr-2"></i>Select</a><br>
+                          <button class="btn btn-sm btn-warning col-sm-12 mt-1 " id="edit" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Edit Department"><i class="fas fa-edit mr-2"></i>Edit</button><br>
                           @if ($department->status == 1)
-                          <button class="btn btn-sm btn-danger" id="delete" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Delete Department"><i class="fas fa-trash"></i></button>
+                          <button class="btn btn-sm btn-danger col-sm-12 mt-1 " id="delete" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Delete Department"><i class="fas fa-trash mr-2"></i>Delete</button><br>
                           @elseif ($department->status == 0)
-                          <button class="btn btn-sm btn-success" id="reactivate" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Re-activate Department"><i class="fas fa-check"></i></button>
+                          <button class="btn btn-sm btn-success col-sm-12 mt-1 " id="reactivate" value="{{ $department->id }}" data-toggle="tooltip" data-placement="top" title="Re-activate Department"><i class="fas fa-check mr-2"></i>Re-Activate</button>
                           @endif
                         </td>
                     </tr> 

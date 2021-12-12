@@ -80,6 +80,14 @@ class DepartmentsController extends Controller
         return view('departments.departmentlist', array('departments' => $departments));
     }
 
+    public function setDepartment(Request $request){
+        $departments = Departments::where('status', 1)
+                                        ->orderBy('id', 'asc')
+                                        ->get();
+
+        return view('departments.setdepartment', array('settings' => Settings::all(), 'departments' => $departments));
+    }
+
     public function getForm(Request $request){
         $id = ($request->input('id')) ? $request->input('id') : 0;
 

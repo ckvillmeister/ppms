@@ -67,7 +67,7 @@
     </div>
 </div>
 <br>
-<div class="row" id="container">
+<div class="row m-2" id="container">
     <div class="col-sm-12 align-self-center">
         <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_app" style="width:100%">
             <thead>

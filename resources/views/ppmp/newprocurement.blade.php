@@ -1,8 +1,6 @@
 
 <tr>
-    <td></td>
-    <td></td>
-    <td>
+    <td colspan="3">
         <input list="items" name="item" id="item" class="form form-control form-control-sm">
         <datalist id="items">
             @if ($items)

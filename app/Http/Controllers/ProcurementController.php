@@ -563,4 +563,30 @@ class ProcurementController extends Controller
         return json_encode($info);
     }
     
+    public function getItems(){
+        $control = '<input list="items" name="item" id="txt-field" class="form form-control form-control-sm">';
+        $control .= '<datalist id="items">';
+        $items = Items::where('status', 1)->get();
+
+        foreach ($items as $item){
+            $control .= '<option value="'.$item->itemname.'">';
+        }
+        $control .= '</datalist>';
+
+        return $control;
+    }
+
+    public function getUnits(){
+        $control = '<input list="units" name="unit" id="txt-field" class="form form-control form-control-sm">';
+        $control .= '<datalist id="units">';
+        $units = Units::where('status', 1)->get();
+
+        foreach ($units as $unit){
+            $control .= '<option value="'.$unit->description.'">';
+        }
+        $control .= '</datalist>';
+
+        return $control;
+    }
+    
 }

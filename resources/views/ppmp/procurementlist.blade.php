@@ -240,8 +240,48 @@
             title = '',
             content = '';
         
-        if (jQuery.inArray(colindex, [4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) !== -1){
-            if (colindex == 4){
+        if (jQuery.inArray(colindex, [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) !== -1){
+            if (colindex == 2){
+                title = "Select / Type New Item";
+                attribute = "itemname";
+
+                $.ajax({
+                    headers: {
+                        'x-csrf-token': token
+                    },
+                    'async': false,
+                    url: '/ppmp/getitems',
+                    method: 'POST',
+                    dataType: 'HTML',
+                    success: function(result) {
+                        content = result;
+                    },
+                    error: function(obj, msg, exception){
+                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                    }
+                })
+            }
+            if (colindex == 3){
+                title = "Select / Type New Unit";
+                attribute = "unit";
+
+                $.ajax({
+                    headers: {
+                        'x-csrf-token': token
+                    },
+                    'async': false,
+                    url: '/ppmp/getunits',
+                    method: 'POST',
+                    dataType: 'HTML',
+                    success: function(result) {
+                        content = result;
+                    },
+                    error: function(obj, msg, exception){
+                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                    }
+                })
+            }
+            else if (colindex == 4){
                 title = "Enter New Quantity";
                 content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
                 attribute = "quantity";
@@ -378,10 +418,16 @@
                                 },
                                 url: '/ppmp/update/' + attribute,
                                 method: 'POST',
-                                data: {'id': id, 'attr': attribute, 'value': $('#txt-field').val()},
+                                data: {'id': id, 'attr': attribute, 'value': strValue},
                                 dataType: 'HTML',
                                 success: function(result) {
-                                    if (colindex == 4 || colindex == 5){
+                                    if (colindex == 2){
+                                        td.closest('tr').find('td:eq(2)').text(strValue);
+                                    }
+                                    else if (colindex == 3){
+                                        td.closest('tr').find('td:eq(3)').text(strValue);
+                                    }
+                                    else if (colindex == 4 || colindex == 5){
                                         td.closest('tr').find('td:eq(' + colindex + ')').text(strValue);
                                         td.closest('tr').find('td:eq(6)').text(result);
                                     }

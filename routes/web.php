@@ -47,6 +47,8 @@ Route::post('ppmp/replicateprocurement', [ProcurementController::class, 'replica
 Route::post('ppmp/approveprocurement', [ProcurementController::class, 'approveProcurement']);
 Route::post('ppmp/retrievebudgetedobjs', [ProcurementController::class, 'retrieveBudgetedObjects']);
 Route::post('ppmp/getnewprocurementform', [ProcurementController::class, 'getNewProcurementForm']);
+Route::post('ppmp/getitems', [ProcurementController::class, 'getItems']);
+Route::post('ppmp/getunits', [ProcurementController::class, 'getUnits']);
 
 //Route::get('reports', [ReportsController::class, 'index']);
 Route::get('reports/app', [ReportsController::class, 'index']);

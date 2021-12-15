@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemsTable extends Migration
+class CreateObjectAipCodeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,15 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('object_aip_code', function (Blueprint $table) {
             $table->id();
-            $table->string('itemname');
-            $table->string('description')->nullable(true);
-            $table->double('price')->nullable(true);
-            $table->integer('uom')->nullable(true);
-            $table->integer('object_of_expenditure')->nullable(true);
-            $table->integer('category')->nullable(true);
+            $table->integer('object');
+            $table->string('year');
+            $table->string('aipcode');
             $table->string('createdby')->nullable(true);
             $table->datetime('datecreated')->nullable(true);
             $table->string('updatedby')->nullable(true);
-            $table->datetime('dateupdated')->nullable(true);;
+            $table->datetime('dateupdated')->nullable(true);
             $table->integer('status');
         });
     }
@@ -36,6 +33,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        //Schema::dropIfExists('items');
+        Schema::dropIfExists('object_aip_code');
     }
 }

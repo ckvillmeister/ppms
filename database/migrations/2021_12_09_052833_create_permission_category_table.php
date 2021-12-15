@@ -22,7 +22,9 @@ class CreatePermissionCategoryTable extends Migration
 
         $inputs = [
             ['category' => 'Sidebar Menu'],
-            ['category' => 'Special Permissions']
+            ['category' => 'Departments Page'],
+            ['category' => 'Object of Expenditures Page'],
+            ['category' => 'PPMP Page']
         ];
 
         DB::table('permission_category')->insert($inputs);

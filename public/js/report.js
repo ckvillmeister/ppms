@@ -18,7 +18,13 @@ $('#print_ppmp').on('click', function(){
 
 $('#displayapp').on('click', function(){
     var app = $('#app_format').val();
-    displayAPP(app);
+
+    if (app == ""){
+        message('Error', 'red', "Please select APP format to display!");
+    }
+    else{
+        displayAPP(app);
+    }
 })
 
 $('#export_app').on('click', function(){

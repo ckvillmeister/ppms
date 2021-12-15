@@ -8,6 +8,7 @@ use App\Models\Items;
 use App\Models\ClassExpenditure;
 use App\Models\ObjectExpenditure;
 use App\Models\Departments;
+use App\Models\DepartmentBudget;
 use App\Models\Units;
 use App\Models\Categories;
 use App\Enums\Lists;
@@ -32,33 +33,18 @@ class ProcurementController extends Controller
             $departments = Departments::where('status', 1)->orderBy('office_name', 'ASC')->orderBy('sub_office', 'ASC')->get();
             $classexpenditures = ClassExpenditure::where('status', 1)->get();
             
-            if ($request->path() == 'myprocurement'){
-                if ($this::isAuthorized(Auth::user()->role, 'sidebarMyProcurement')){
-                    return view('myprocurement.index', array('settings' => $settings, 
-                                                    'months' => $months,
-                                                    'modes' => $modes,
-                                                    'categories' => $categories,
-                                                    'classexpenditures' => $classexpenditures,
-                                                    'uom' => $uom));
-                }
-                else{
-                    return view('forbidden.index', array('settings' => $settings));
-                }
-            }
-            elseif ($request->path() == 'ppmp'){
-                if ($this::isAuthorized(Auth::user()->role, 'sidebarManageProcurement')){
+            if ($this::isAuthorized(Auth::user()->role, 'sidebarPPMP')){
                 return view('ppmp.index', array('settings' => $settings,
-                                                    'departments' => $departments,
-                                                    'modes' => $modes,
-                                                    'months' => $months,
-                                                    'uom' => $uom,
-                                                    'categories' => $categories,
-                                                    'classexpenditures' => $classexpenditures,
-                                                    'can_approve' => $this::hasAccess(Auth::user()->role, 'pageApprovePPMP')));
-                }
-                else{
-                    return view('forbidden.index', array('settings' => $settings));
-                }
+                                                'departments' => $departments,
+                                                'modes' => $modes,
+                                                'months' => $months,
+                                                'uom' => $uom,
+                                                'categories' => $categories,
+                                                'classexpenditures' => $classexpenditures,
+                                                'can_approve' => $this::hasAccess(Auth::user()->role, 'pageApprovePPMP')));
+            }
+            else{
+                return view('forbidden.index', array('settings' => $settings));
             }
             
         }
@@ -101,69 +87,112 @@ class ProcurementController extends Controller
     public function create(Request $request)
     {
         $settings = Settings::all();
-        $year = $settings[1]->setting_description;
         $proc_status = $settings[2]->setting_description;
 
-        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
-        $itemid = ($request->input('procitemid')) ? $request->input('procitemid') : 0;
-        $itemname = ($request->input('procitemname')) ? $request->input('procitemname') : '';
-        $price = ($request->input('procprice')) ? str_replace(',','', $request->input('procprice')) : 0;
-        $quantity = ($request->input('procqty')) ? $request->input('procqty') : 0;
-        $mode = ($request->input('procmode')) ? $request->input('procmode') : '';
-        $jan = ($request->input('January')) ? 1 : 0;
-        $feb = ($request->input('February')) ? 1 : 0;
-        $mar = ($request->input('March')) ? 1 : 0;
-        $apr = ($request->input('April')) ? 1 : 0;
-        $may = ($request->input('May')) ? 1 : 0;
-        $jun = ($request->input('June')) ? 1 : 0;
-        $jul = ($request->input('July')) ? 1 : 0;
-        $aug = ($request->input('August')) ? 1 : 0;
-        $sep = ($request->input('September')) ? 1 : 0;
-        $oct = ($request->input('October')) ? 1 : 0;
-        $nov = ($request->input('November')) ? 1 : 0;
-        $dec = ($request->input('December')) ? 1 : 0;
+        $dept = ($request->input('dept')) ? $request->input('dept') : 0;
+        $year = ($request->input('year')) ? $request->input('year') : 0;
+        $itemname = ($request->input('itemname')) ? trim($request->input('itemname')) : '';
+        $object = ($request->input('object')) ? trim($request->input('object')) : '';
+        $unit = ($request->input('unit')) ?  trim($request->input('unit')) : 0;
+        $quantity = ($request->input('qty')) ? $request->input('qty') : 0;
+        $price = ($request->input('price')) ? str_replace(',','', $request->input('price')) : 0;
+        $mode = ($request->input('mode')) ?  trim($request->input('mode')) : '';
+        $jan = ($request->input('January')) ? $request->input('January') : 0;
+        $feb = ($request->input('February')) ? $request->input('February') : 0;
+        $mar = ($request->input('March')) ? $request->input('March') : 0;
+        $apr = ($request->input('April')) ? $request->input('April') : 0;
+        $may = ($request->input('May')) ? $request->input('May') : 0;
+        $jun = ($request->input('June')) ? $request->input('June') : 0;
+        $jul = ($request->input('July')) ? $request->input('July') : 0;
+        $aug = ($request->input('August')) ? $request->input('August') : 0;
+        $sep = ($request->input('September')) ? $request->input('September') : 0;
+        $oct = ($request->input('October')) ? $request->input('October') : 0;
+        $nov = ($request->input('November')) ? $request->input('November') : 0;
+        $dec = ($request->input('December')) ? $request->input('December') : 0;
 
+        //Start: Check if procurement status is closed
         if ($proc_status == 0){
             return array('result' => 'Warning',
                     'color' => 'red',
                     'message' => 'Procurement planning for year '.$year.' is already close!');
         }
+        //End: Check if procurement status is closed
 
+        
         $procurementid = '';
         $procurement = DB::table('procurement_info')
-                ->where('department', '=', $deptid)
+                ->where('department', '=', $dept)
                 ->where('year', '=', $year)
                 ->first();
-        
+
+        //Check if a department has already a procurement for this year
         if ($procurement){
             $procurementid = $procurement->id;
+
+            //Check if procurement is already approved
             if ($procurement->status == 2){
                 return array('result' => 'Warning',
                         'color' => 'red',
                         'message' => 'This procurement was already approved! Therefore it cannot be modified.');
             }
-        }
+        }//IF not approved
         else{
             $procurementid = DB::table('procurement_info')->insertGetID([
-                'department' => $deptid,
+                'department' => $dept,
                 'year' => $year,
                 'createdby' => Auth::user()->id,
                 'datecreated' => date('Y-m-d H:i:s'),
                 'status' => 1
             ]);
         }
+
+        
+        $itemtotal = $quantity * $price;
+        $budget = DepartmentBudget::where('object', $object)->where('year', $year)->first();
+        $allocated = DB::table('procurement_items AS pitems')
+                            ->join('procurement_info AS pinfo', 'pinfo.id', '=', 'pitems.procurement_id')
+                            ->select('pitems.*')
+                            ->where('pinfo.department', '=', $dept)
+                            ->where('pinfo.year', '=', $year)
+                            ->where('pitems.object', '=', $object)
+                            ->get();
+        
+        //Check item amount exceeds the approved amount  
+        if ($budget){
+            if ($itemtotal > $budget->amount){
+                return array('result' => 'Warning',
+                        'color' => 'red',
+                        'message' => 'Item total amount is larger than the approved amount for this object of expenditure!');
+            }
+        }
+
+        //Check item amount exceeds the approved amount  
+        if (count($allocated) > 0){
+            $total = 0.0;
+
+            foreach($allocated as $alloc){
+                $total += ($alloc->quantity * $alloc->price);
+            }
+
+            if (($itemtotal + $total) > $budget->amount){
+                return array('result' => 'Warning',
+                        'color' => 'red',
+                        'message' => 'Item total amount is larger than the approved amount for this object of expenditure!');
+            }
+        }
         
         $chkProcurementItem = DB::table('procurement_items')
                         ->where('procurement_id', '=', $procurementid)
-                        ->where('itemid', '=', $itemid)
+                        ->where('itemname', '=', $itemname)
                         ->first();
 
         if ($chkProcurementItem){
             DB::table('procurement_items')
                 ->where('procurement_id', '=', $procurementid)
-                ->where('itemid', '=', $itemid)
+                ->where('itemname', '=', $itemname)
                 ->update([
-                'itemname' => $itemname,
+                'object' => $object,    
+                'unit' => $unit,    
                 'quantity' => $quantity,
                 'price' => $price,
                 'mode' => $mode,
@@ -185,8 +214,9 @@ class ProcurementController extends Controller
         else{
             DB::table('procurement_items')->insert([
                 'procurement_id' => $procurementid,
-                'itemid' => $itemid,
                 'itemname' => $itemname,
+                'object' => $object,
+                'unit' => $unit,
                 'quantity' => $quantity,
                 'price' => $price,
                 'mode' => $mode,
@@ -208,7 +238,27 @@ class ProcurementController extends Controller
             ]); 
         }
 
-        return array('result' => 'Success',
+        $checkIfItemExist = Items::where('itemname', $itemname)->get();
+
+        if (!(count($checkIfItemExist) > 0)){
+            Items::insert(['itemname' => $itemname, 
+                            'category' => 1, 
+                            'createdby' => Auth::user()->id,
+                            'datecreated' => date('Y-m-d H:i:s'),
+                            'status' => 1]);
+        }
+
+        $checkIfUnitExist = Units::where('description', $unit)->get();
+
+        if (!(count($checkIfUnitExist) > 0)){
+            Items::insert(['uom' => $unit, 
+                            'description' => $unit, 
+                            'createdby' => Auth::user()->id,
+                            'datecreated' => date('Y-m-d H:i:s'),
+                            'status' => 1]);
+        }
+
+        return array('result' => 1,
                         'color' => 'green',
                         'message' => 'Procurement list successfully saved!');
     }
@@ -289,26 +339,42 @@ class ProcurementController extends Controller
         return 1;
     }
 
+    public function retrieveBudgetedObjects(Request $request){
+        $settings = Settings::all();
+        $deptid = ($request->input('deptid')) ? ($request->input('deptid')) : 0;
+        $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
+        $objects = DepartmentBudget::with('object')->where('department', $deptid)->where('year', $year)->where('amount', '<>', 0)->orderBy('object', 'ASC')->get();
+    
+        return view('ppmp.budgetedobjs', array('objects' => $objects));
+    }
+
+    public function getNewProcurementForm(){
+        $items = Items::where('status', 1)->get();
+        $units = Units::where('status', 1)->get();
+        $modes = Lists::$modes;
+        return view('ppmp.newprocurement', [
+            'items' => $items,
+            'units' => $units,
+            'modes' => $modes
+        ]);
+    }
+
     public function retrieveProcurementList(Request $request){
         $settings = Settings::all();
         $deptid = ($request->input('deptid')) ? ($request->input('deptid')) : 0;
         $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
 
+        
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
-            ->join('items', 'items.id', '=', 'procurement_items.itemid')
-            ->join('units', 'units.id', '=', 'items.uom')
-            ->select('procurement_items.*', 'units.uom', 'units.description')
+            ->select('procurement_items.*')
             ->where('procurement_info.department', '=', $deptid)
             ->where('procurement_info.year', '=', $year)
             ->where('procurement_items.status', '<>', 0)
             ->get();
-        
-        foreach($items as $item){
-            $item->remove_allowed = ($settings[2]->setting_description) ? 1 : ((in_array(Auth::user()->role, [1, 2])) ? 1 : 0);
-        }
-        
-        return view('ppmp.procurementlist', array('items' => $items, 'months' => Lists::$months, 'mode' => Lists::$modes));
+
+        $objects = DepartmentBudget::with(['object', 'aipcode'])->where('department', $deptid)->where('year', $year)->where('amount', '<>', 0)->orderBy('object', 'ASC')->get();
+        return view('ppmp.procurementlist', array('items' => $items, 'objects' => $objects, 'months' => Lists::$months, 'mode' => Lists::$modes));
     }
 
     public function retrieveProcurements(Request $request){
@@ -390,8 +456,6 @@ class ProcurementController extends Controller
 
         $items = DB::table('procurement_items')
             ->join('procurement_info', 'procurement_info.id', '=', 'procurement_items.procurement_id')
-            ->join('items', 'items.id', '=', 'procurement_items.itemid')
-            ->join('units', 'units.id', '=', 'items.uom')
             ->select('procurement_items.*')
             ->where('procurement_info.department', '=', $deptid)
             ->where('procurement_info.year', '=', $year)
@@ -422,7 +486,8 @@ class ProcurementController extends Controller
                 $checkItem = DB::table('procurement_items AS pitem')
                     ->join('procurement_info AS pinfo', 'pinfo.id', '=', 'pitem.procurement_id')
                     ->select('pinfo.*', 'pitem.*', 'pitem.id AS proc_item_id')
-                    ->where('pitem.itemid', '=', $item->itemid)
+                    ->where('pinfo.department', '=', $deptid)
+                    ->where('pitem.itemname', '=', $item->itemname)
                     ->where('pinfo.year', '=', $procurement_year)
                     ->first();
     
@@ -438,8 +503,9 @@ class ProcurementController extends Controller
                 else{
                     DB::table('procurement_items')->insert([
                         'procurement_id' => $procid,
-                        'itemid' => $item->itemid,
                         'itemname' => $item->itemname,
+                        'unit' => $item->unit,
+                        'object' => $item->object,
                         'quantity' => $item->quantity,
                         'price' => $item->price,
                         'mode' => $item->mode,
@@ -495,6 +561,39 @@ class ProcurementController extends Controller
                         ->first();
 
         return json_encode($info);
+    }
+    
+    public function getItems(){
+        $control = '<input list="items" name="item" id="txt-field" class="form form-control form-control-sm">';
+        $control .= '<datalist id="items">';
+        $items = Items::where('status', 1)->get();
+
+        foreach ($items as $item){
+            $control .= '<option value="'.$item->itemname.'">';
+        }
+        $control .= '</datalist>';
+
+        return $control;
+    }
+
+    public function getUnits(){
+        $control = '<input list="units" name="unit" id="txt-field" class="form form-control form-control-sm">';
+        $control .= '<datalist id="units">';
+        $units = Units::where('status', 1)->get();
+
+        foreach ($units as $unit){
+            $control .= '<option value="'.$unit->description.'">';
+        }
+        $control .= '</datalist>';
+
+        return $control;
+    }
+
+    public function export(Request $request){
+        $dept = $request->input('deptid');
+        $year = $request->input('year');
+
+        
     }
     
 }

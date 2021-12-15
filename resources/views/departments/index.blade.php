@@ -1,3 +1,6 @@
+@php
+use App\Http\Controllers\AuthenticationController as Authentication; 
+@endphp
 <html>
 
 <head>
@@ -45,9 +48,9 @@
 
       <div class="row m-3">
         <div class="col-sm-12">
-            <button class="btn btn-sm btn-primary" id="new"><i class="fas fa-plus mr-4"></i>New</button>
-            <button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>
-            <button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>
+            @if (Authentication::isAuthorized(Auth::user()->role, 'deptNew'))<button class="btn btn-sm btn-primary" id="new"><i class="fas fa-plus mr-4"></i>New</button>@endif
+            @if (Authentication::isAuthorized(Auth::user()->role, 'deptViewActive'))<button class="btn btn-sm btn-secondary" id="active"><i class="fas fa-check mr-2"></i>Active</button>@endif
+            @if (Authentication::isAuthorized(Auth::user()->role, 'deptViewInactive'))<button class="btn btn-sm btn-danger" id="inactive"><i class="fas fa-trash mr-2"></i>Inactive</button>@endif
         </div>
       </div>
 

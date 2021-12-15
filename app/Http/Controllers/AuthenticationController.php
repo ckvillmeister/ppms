@@ -38,13 +38,6 @@ class AuthenticationController extends Controller
             $request->session()->regenerate();
             $redirect = 'dashboard';
 
-            if (in_array(Auth::user()->role, [1, 2])){
-                $redirect = 'dashboard';
-            }
-            else{
-                $redirect = 'myprocurement';
-            }
-
             return array('result' => 'Success',
                         'color' => 'green',
                         'message' => 'Login Successful!',

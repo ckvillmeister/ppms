@@ -19,6 +19,7 @@ class Controller extends BaseController
                         ->select('role_permissions.*')
                         ->where('role_permissions.role_id', '=', $roleid)
                         ->where('permissions.permission_code', '=', $permissionCode)
+                        ->where('role_permissions.status', '=', 1)
                         ->get();
 
         if (count($result) >= 1){

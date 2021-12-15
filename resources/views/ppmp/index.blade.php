@@ -1,3 +1,6 @@
+@php
+use App\Http\Controllers\AuthenticationController as Authentication; 
+@endphp
 <html>
 
 <head>
@@ -72,9 +75,9 @@
               </div>
               <div class="col-lg-6">
                 <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-primary" id="btn_add_procurement_item"><i class="fas fa-plus mr-2"></i>Add Procurement</button>
+                  <!-- <button type="button" class="btn btn-sm btn-primary" id="btn_add_procurement_item"><i class="fas fa-plus mr-2"></i>Add Procurement</button> -->
                   <button type="button" class="btn btn-sm btn-secondary" id="btn_copy_ppmp" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy PPMP</button> 
-                  @if ($can_approve) <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button> @endif
+                  @if (Authentication::isAuthorized(Auth::user()->role, 'ppmpApprove'))<button type="button" class="btn btn-sm btn-success" id="approve_procurement"><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button>@endif
                 </div>
               </div>
             </div>
@@ -89,6 +92,7 @@
                   <div class="card-body">
                     <div class="row m-3">
                       <div class="col-sm-12 align-self-center">
+                        <div id="objs"></div>
                         <div id="procurements"></div>
                       </div>
                     </div>
@@ -282,7 +286,7 @@
 </html>
 
 <script type="text/javascript">
-  retrieveItems(1);
+  //retrieveItems(1);
   $('#btn_add_procurement_item').addClass('invisible');
   $('#btn_copy_ppmp').addClass('invisible');
 
@@ -322,10 +326,32 @@
       $('#btn_copy_ppmp').addClass('invisible');
     }
     else{
-      retrieveProcurementItems(dept, year);
-      setApprovalStatus(dept, year);
-      $('#btn_add_procurement_item').removeClass('invisible');
-      $('#btn_copy_ppmp').removeClass('invisible');
+      $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/ppmp/retrievebudgetedobjs',
+        method: 'POST',
+        data: {'deptid': dept, 'year': year},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#objs').html(result);
+            retrieveProcurementItems(dept, year);
+            setApprovalStatus(dept, year);
+            $('#btn_add_procurement_item').removeClass('invisible');
+            $('#btn_copy_ppmp').removeClass('invisible');
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+      })
     }
   });
 
@@ -338,10 +364,32 @@
       $('#btn_copy_ppmp').addClass('invisible');
     }
     else{
-      retrieveProcurementItems(dept, year);
-      setApprovalStatus(dept, year);
-      $('#btn_add_procurement_item').removeClass('invisible');
-      $('#btn_copy_ppmp').removeClass('invisible');
+      $.ajax({
+        headers: {
+            'x-csrf-token': token
+        },
+        url: '/ppmp/retrievebudgetedobjs',
+        method: 'POST',
+        data: {'deptid': dept, 'year': year},
+        setCookies: token,
+        dataType: "HTML",
+        beforeSend: function() {
+            $('#basicloader').show();
+        },
+        complete: function(){
+            $('#basicloader').hide();
+        },
+        success: function(result) {
+            $('#objs').html(result);
+            retrieveProcurementItems(dept, year);
+            setApprovalStatus(dept, year);
+            $('#btn_add_procurement_item').removeClass('invisible');
+            $('#btn_copy_ppmp').removeClass('invisible');
+        },
+        error: function(obj, msg, exception){
+            message('Error', 'red', msg + ": " + obj.status + " " + exception);
+        }
+      })
     }
   });
 
@@ -534,7 +582,7 @@
     else if (year == ""){
       message('Empty', 'red', 'Please select a department first!');
     }
-    else if (tbl_proc_list.rows().count() <= 0){
+    else if ($('#tbl_procurement_list > tbody > tr').length <= 0){
       message('Empty', 'red', 'Procurement plan is empty! Nothing to approve.');
     }
     else{

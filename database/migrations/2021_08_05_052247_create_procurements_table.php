@@ -27,8 +27,9 @@ class CreateProcurementsTable extends Migration
         Schema::create('procurement_items', function (Blueprint $table) {
             $table->id();
             $table->integer('procurement_id');
-            $table->integer('itemid');
             $table->string('itemname');
+            $table->string('unit');
+            $table->integer('object');
             $table->integer('quantity');
             $table->double('price');
             $table->string('mode');

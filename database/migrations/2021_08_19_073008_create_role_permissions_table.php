@@ -44,7 +44,14 @@ class CreateRolePermissionsTable extends Migration
                     ['role_id' => 1, 'permission_id' => 15, 'createdby' => 1, 'datecreated' => $date],
                     ['role_id' => 1, 'permission_id' => 16, 'createdby' => 1, 'datecreated' => $date],
                     ['role_id' => 1, 'permission_id' => 17, 'createdby' => 1, 'datecreated' => $date],
-                    ['role_id' => 1, 'permission_id' => 18, 'createdby' => 1, 'datecreated' => $date]
+                    ['role_id' => 1, 'permission_id' => 18, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 19, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 20, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 21, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 22, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 23, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 24, 'createdby' => 1, 'datecreated' => $date],
+                    ['role_id' => 1, 'permission_id' => 25, 'createdby' => 1, 'datecreated' => $date]
             ];
 
         DB::table('role_permissions')->insert($inputs);

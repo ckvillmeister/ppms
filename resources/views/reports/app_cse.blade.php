@@ -67,7 +67,7 @@
     </div>
 </div>
 <br>
-<div class="row" id="container">
+<div class="row m-2" id="container">
     <div class="col-sm-12 align-self-center">
         <table class="table table-sm table-bordered table-striped display bg-white" id="tbl_app" style="width:100%">
             <thead>
@@ -244,8 +244,8 @@
                         @php ($grandtotalqtr4 += ($item->avg_price * ($qtyoct + $qtynov + $qtydec)))
                         @php ($grandtotal += ($item->avg_price * $item->total_qty))
                         
-                        <td class="text-center" colspan="3">{{ $item->itemname }}</td>
-                        <td class="text-center">{{ $item->description }}</td>
+                        <td class="" colspan="3">{{ $item->itemname }}</td>
+                        <td class="text-center">{{ $item->unit }}</td>
                         <td class="text-center">{{ $qtyjan }}</td>
                         <td class="text-center">{{ $qtyfeb }}</td>
                         <td class="text-center">{{ $qtymar }}</td>

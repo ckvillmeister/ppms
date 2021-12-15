@@ -22,6 +22,7 @@
     </div>
 </div>
 <br>
+<script src="{{ asset('adminlte/plugins/table2excel/js/table2excel.js') }}"></script>
 <script>
     $("#text-approved-amount").inputmask('decimal', {'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'});
 
@@ -29,7 +30,16 @@
         var amount = $('option:selected', this).attr('data-amount');
         $('#text-approved-amount').val(amount);
     })
+    
+    $('#btn-export').on('click', function(){
+        var deptname = $('#departments option:selected').text();
 
+        $("body #tbl_procurement_list").table2excel({
+            name: "Project Procurement Management Plan - " + deptname,
+            filename: "Project Procurement Management Plan - "  + deptname
+        });
+    });
+    
     $('#btn-print').on('click', function(){
         var dept = $('#departments').val(),
             deptname = $('#departments option:selected').text(),

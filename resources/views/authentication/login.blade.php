@@ -10,7 +10,7 @@
 
   <div class="login-box">
     <div class="text-center">
-      <img src="{{ asset('/images/trinidadlogo.png') }}" height="150" width="150">
+      <img src="{{ asset('/images/TrinidadLogo.png') }}" height="150" width="150">
     </div>
     <div class="login-logo">
       <strong><a href="#" class="text-light" style="text-shadow: 2px 3px #000000;">{{ $settings[0]->setting_description }}</a></strong>

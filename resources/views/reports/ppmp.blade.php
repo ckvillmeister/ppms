@@ -97,50 +97,51 @@
             <thead>
                 <tr>
                     <th class="text-center">No.</th>
+                    <th class="text-center">AIP Ref. Code</th>
                     <th class="text-center" style="width: 150px">General Description</th>
                     <th class="text-center">Unit</th>
                     <th class="text-center">Quantity</th>
                     <th class="text-center">Price</th>
                     <th class="text-center">Estimated Budget</th>
                     <th class="text-center">Procurement Mode</th>
-                    @foreach ($months as $month)
-                    <th class="text-center" width="">{{ $month }}</th>
+                    @foreach ($months as $key => $month)
+                    <th class="text-center" width="">{{ $key }}</th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @php ($no = 1)
                 @php ($ctr = 1)
-                @php ($prev_object_of_expenditure = '')
                 @php ($row_count = count($items))
+                @php ($prev_object_of_expenditure = '')
+
                 @php ($price = 0.0)
-                @php ($total = 0.0)
-                @php ($jan = 0.0)
-                @php ($feb = 0.0)
-                @php ($mar = 0.0)
-                @php ($apr = 0.0)
-                @php ($may = 0.0)
-                @php ($jun = 0.0)
-                @php ($jul = 0.0)
-                @php ($aug = 0.0)
-                @php ($sep = 0.0)
-                @php ($oct = 0.0)
-                @php ($nov = 0.0)
-                @php ($dec = 0.0)
-                @php ($totprice = 0.0)
-                @php ($totitem = 0.0)
-                @php ($totjan = 0.0)
-                @php ($totfeb = 0.0)
-                @php ($totmar = 0.0)
-                @php ($totapr = 0.0)
-                @php ($totmay = 0.0)
-                @php ($totjun = 0.0)
-                @php ($totjul = 0.0)
-                @php ($totaug = 0.0)
-                @php ($totsep = 0.0)
-                @php ($totoct = 0.0)
-                @php ($totnov = 0.0)
-                @php ($totdec = 0.0)
+                @php ($subtotal = 0.0)
+                @php ($grandtotal = 0.0)
+                @php ($subtotal_jan = 0.0)
+                @php ($subtotal_feb = 0.0)
+                @php ($subtotal_mar = 0.0)
+                @php ($subtotal_apr = 0.0)
+                @php ($subtotal_may = 0.0)
+                @php ($subtotal_jun = 0.0)
+                @php ($subtotal_jul = 0.0)
+                @php ($subtotal_aug = 0.0)
+                @php ($subtotal_sep = 0.0)
+                @php ($subtotal_oct = 0.0)
+                @php ($subtotal_nov = 0.0)
+                @php ($subtotal_dec = 0.0)
+                @php ($grandtotal_jan = 0.0)
+                @php ($grandtotal_feb = 0.0)
+                @php ($grandtotal_mar = 0.0)
+                @php ($grandtotal_apr = 0.0)
+                @php ($grandtotal_may = 0.0)
+                @php ($grandtotal_jun = 0.0)
+                @php ($grandtotal_jul = 0.0)
+                @php ($grandtotal_aug = 0.0)
+                @php ($grandtotal_sep = 0.0)
+                @php ($grandtotal_oct = 0.0)
+                @php ($grandtotal_nov = 0.0)
+                @php ($grandtotal_dec = 0.0)
                 
                 @foreach ($items as $item)
                     @php ($count = 0)
@@ -148,21 +149,21 @@
                     @if ($item->obj_exp_name != $prev_object_of_expenditure)
                         @if ($prev_object_of_expenditure)
                             <tr>
-                                <td colspan="5"><strong>SUBTOTAL</strong></td>
-                                <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
+                                <td colspan="6"><strong>SUBTOTAL</strong></td>
+                                <td class="numerical-cols"><strong>{{ number_format($subtotal, 2) }}</strong></td>
                                 <td class="text-center"></td>
-                                <td class="numerical-cols"><strong>{{ ($jan) ? number_format($jan, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($feb) ? number_format($feb, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($mar) ? number_format($mar, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($apr) ? number_format($apr, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($may) ? number_format($may, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($jun) ? number_format($jun, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($jul) ? number_format($jul, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($aug) ? number_format($aug, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($sep) ? number_format($sep, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($oct) ? number_format($oct, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($nov) ? number_format($nov, 2) : '' }}</strong></td>
-                                <td class="numerical-cols"><strong>{{ ($dec) ? number_format($dec, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_jan) ? number_format($subtotal_jan, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_feb) ? number_format($subtotal_feb, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_mar) ? number_format($subtotal_mar, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_apr) ? number_format($subtotal_apr, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_may) ? number_format($subtotal_may, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_jun) ? number_format($subtotal_jun, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_jul) ? number_format($subtotal_jul, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_aug) ? number_format($subtotal_aug, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_sep) ? number_format($subtotal_sep, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_oct) ? number_format($subtotal_oct, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_nov) ? number_format($subtotal_nov, 2) : '' }}</strong></td>
+                                <td class="numerical-cols"><strong>{{ ($subtotal_dec) ? number_format($subtotal_dec, 2) : '' }}</strong></td>
                             </tr>
                         @endif
 
@@ -172,79 +173,79 @@
                         </tr>
                         
                         @php ($prev_object_of_expenditure = $item->obj_exp_name)
-                        @php ($price = 0.0)
-                        @php ($total = 0.0)
-                        @php ($jan = 0.0)
-                        @php ($feb = 0.0)
-                        @php ($mar = 0.0)
-                        @php ($apr = 0.0)
-                        @php ($may = 0.0)
-                        @php ($jun = 0.0)
-                        @php ($jul = 0.0)
-                        @php ($aug = 0.0)
-                        @php ($sep = 0.0)
-                        @php ($oct = 0.0)
-                        @php ($nov = 0.0)
-                        @php ($dec = 0.0)
+                        @php ($subtotal = 0.0)
+                        @php ($subtotal_jan = 0.0)
+                        @php ($subtotal_feb = 0.0)
+                        @php ($subtotal_mar = 0.0)
+                        @php ($subtotal_apr = 0.0)
+                        @php ($subtotal_may = 0.0)
+                        @php ($subtotal_jun = 0.0)
+                        @php ($subtotal_jul = 0.0)
+                        @php ($subtotal_aug = 0.0)
+                        @php ($subtotal_sep = 0.0)
+                        @php ($subtotal_oct = 0.0)
+                        @php ($subtotal_nov = 0.0)
+                        @php ($subtotal_dec = 0.0)
                         @php ($no = 1)
                     @else
                         @php ($prev_object_of_expenditure = $item->obj_exp_name)
                     @endif
 
-                    @php ($price += $item->unit_price)
-                    @php ($total += ($item->unit_price * $item->total_qty))
-
+                    @php ($subtotal += ($item->unit_price * $item->total_qty))
+                    @php ($grandtotal += ($item->unit_price * $item->total_qty))
+                    
                     <tr>
                         @if ($item->january)
-                            @php ($jan += ($item->unit_price * $item->january))
-                            @php ($totjan += $jan)
+                            @php ($subtotal_jan += ($item->unit_price * $item->january))
+                            @php ($grandtotal_jan += ($item->unit_price * $item->january))
                         @endif
                         @if ($item->february)
-                            @php ($feb += ($item->unit_price * $item->february))
-                            @php ($totfeb += $feb)
+                            @php ($subtotal_feb += ($item->unit_price * $item->february))
+                            @php ($grandtotal_feb += ($item->unit_price * $item->february))
                         @endif
                         @if ($item->march)
-                            @php ($mar += ($item->unit_price * $item->march))
-                            @php ($totmar += $mar)
+                            @php ($subtotal_mar += ($item->unit_price * $item->march))
+                            @php ($grandtotal_mar += ($item->unit_price * $item->march)))
                         @endif
                         @if ($item->april)
-                            @php ($apr += ($item->unit_price * $item->april))
-                            @php ($totapr += $apr)
+                            @php ($subtotal_apr += ($item->unit_price * $item->april))
+                            @php ($grandtotal_apr += ($item->unit_price * $item->april))
                         @endif
                         @if ($item->may)
-                            @php ($may += ($item->unit_price * $item->may))
-                            @php ($totmay += $may)
+                            @php ($subtotal_may += ($item->unit_price * $item->may))
+                            @php ($grandtotal_may += ($item->unit_price * $item->may))
                         @endif
                         @if ($item->june)
-                            @php ($jun += ($item->unit_price * $item->june))
-                            @php ($totjun += $jun)
+                            @php ($subtotal_jun += ($item->unit_price * $item->june))
+                            @php ($grandtotal_jun += ($item->unit_price * $item->june))
                         @endif
                         @if ($item->july)
-                            @php ($jul += ($item->unit_price * $item->july))
-                            @php ($totjul += $jul)
+                            @php ($subtotal_jul += ($item->unit_price * $item->july))
+                            @php ($grandtotal_jul += ($item->unit_price * $item->july))
                         @endif
                         @if ($item->august)
-                            @php ($aug += ($item->unit_price * $item->august))
-                            @php ($totaug += $aug)
+                            @php ($subtotal_aug += ($item->unit_price * $item->august))
+                            @php ($grandtotal_aug += ($item->unit_price * $item->august))
                         @endif
                         @if ($item->september)
-                            @php ($sep += ($item->unit_price * $item->september))
-                            @php ($totsep += $sep)
+                            @php ($subtotal_sep += ($item->unit_price * $item->september))
+                            @php ($grandtotal_sep += ($item->unit_price * $item->september))
                         @endif
                         @if ($item->october)
-                            @php ($oct += ($item->unit_price * $item->october))
-                            @php ($totoct += $oct)
+                            @php ($subtotal_oct += ($item->unit_price * $item->october))
+                            @php ($grandtotal_oct += ($item->unit_price * $item->october))
                         @endif
                         @if ($item->november)
-                            @php ($nov += ($item->unit_price * $item->november))
-                            @php ($totnov += $nov)
+                            @php ($subtotal_nov += ($item->unit_price * $item->november))
+                            @php ($grandtotal_nov += ($item->unit_price * $item->november))
                         @endif
                         @if ($item->december)
-                            @php ($dec += ($item->unit_price * $item->december))
-                            @php ($totdec += $dec)
+                            @php ($subtotal_dec += ($item->unit_price * $item->december))
+                            @php ($grandtotal_dec += ($item->unit_price * $item->december))
                         @endif
                         
                         <td class="text-center">{{ $no++ }}</td>
+                        <td>{{ $item->aipcode }}</td>
                         <td class="text-center">{{ $item->itemname }}</td>
                         <td class="text-center">{{ $item->unit }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>
@@ -267,40 +268,40 @@
                     @php ($ctr++)
                     @if ($row_count < $ctr)
                     <tr>
-                        <td colspan="5"><strong>SUBTOTAL</strong></td>
-                        <td class="numerical-cols"><strong>{{ number_format($total, 2) }}</strong></td>
+                        <td colspan="6"><strong>SUBTOTAL</strong></td>
+                        <td class="numerical-cols"><strong>{{ number_format($subtotal, 2) }}</strong></td>
                         <td class="text-center"></td>
-                        <td class="numerical-cols"><strong>{{ ($jan) ? number_format($jan, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($feb) ? number_format($feb, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($mar) ? number_format($mar, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($apr) ? number_format($apr, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($may) ? number_format($may, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($jun) ? number_format($jun, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($jul) ? number_format($jul, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($aug) ? number_format($aug, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($sep) ? number_format($sep, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($oct) ? number_format($oct, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($nov) ? number_format($nov, 2) : '' }}</strong></td>
-                        <td class="numerical-cols"><strong>{{ ($dec) ? number_format($dec, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_jan) ? number_format($subtotal_jan, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_feb) ? number_format($subtotal_feb, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_mar) ? number_format($subtotal_mar, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_apr) ? number_format($subtotal_apr, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_may) ? number_format($subtotal_may, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_jun) ? number_format($subtotal_jun, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_jul) ? number_format($subtotal_jul, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_aug) ? number_format($subtotal_aug, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_sep) ? number_format($subtotal_sep, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_oct) ? number_format($subtotal_oct, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_nov) ? number_format($subtotal_nov, 2) : '' }}</strong></td>
+                        <td class="numerical-cols"><strong>{{ ($subtotal_dec) ? number_format($subtotal_dec, 2) : '' }}</strong></td>
                     </tr>
                     @endif
                 @endforeach
                 <tr>
-                    <td colspan="5"><strong>GRAND TOTAL</strong></td>
-                    <td class="numerical-cols"><strong>{{ number_format($totitem, 2) }}</strong></td>
+                    <td colspan="6"><strong>GRAND TOTAL</strong></td>
+                    <td class="numerical-cols"><strong>{{ number_format($grandtotal, 2) }}</strong></td>
                     <td class="text-center"></td>
-                    <td class="numerical-cols"><strong>{{ ($totjan) ? number_format($totjan, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totfeb) ? number_format($totfeb, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totmar) ? number_format($totmar, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totapr) ? number_format($totapr, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totmay) ? number_format($totmay, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totjun) ? number_format($totjun, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totjul) ? number_format($totjul, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totaug) ? number_format($totaug, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totsep) ? number_format($totsep, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totoct) ? number_format($totoct, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totnov) ? number_format($totnov, 2) : '' }}</strong></td>
-                    <td class="numerical-cols"><strong>{{ ($totdec) ? number_format($totdec, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_jan) ? number_format($grandtotal_jan, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_feb) ? number_format($grandtotal_feb, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_mar) ? number_format($grandtotal_mar, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_apr) ? number_format($grandtotal_apr, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_may) ? number_format($grandtotal_may, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_jun) ? number_format($grandtotal_jun, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_jul) ? number_format($grandtotal_jul, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_aug) ? number_format($grandtotal_aug, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_sep) ? number_format($grandtotal_sep, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_oct) ? number_format($grandtotal_oct, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_nov) ? number_format($grandtotal_nov, 2) : '' }}</strong></td>
+                    <td class="numerical-cols"><strong>{{ ($grandtotal_dec) ? number_format($grandtotal_dec, 2) : '' }}</strong></td>
                 </tr>
             </tbody>
         </table>

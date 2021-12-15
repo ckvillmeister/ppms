@@ -7,6 +7,7 @@ use App\Models\Settings;
 use App\Models\Departments;
 use App\Models\ObjectExpenditure;
 use App\Models\Categories;
+use App\Models\ObjectAIPCode;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,6 +88,11 @@ class ReportsController extends Controller
             ->orderBy('procurement_items.object', 'asc')
             ->orderBy('procurement_items.itemname', 'asc')
             ->get();
+        }
+
+        foreach ($items as $item){
+            $aip = ObjectAIPCode::where('object', $item->object)->where('year', $year)->first();
+            $item->aipcode = $aip->aipcode;
         }
 
         $months = Lists::$months;

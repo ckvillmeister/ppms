@@ -7,7 +7,7 @@
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Class of Expenditure:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp" required>
+        <select class="form-control form-control-sm" style="width: 100%;" id="classexp" name="classexp">
             <option value=""></option>
             @foreach ($classexpenditures as $key => $classexpenditure)
             <option value="{{ $classexpenditure->id }}" {{ ($classinfo) ? (($classinfo->id == $classexpenditure->id) ? 'selected="selected' : '') : '' }}>{{ $classexpenditure->class_exp_name }}</option>
@@ -16,7 +16,7 @@
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Object of Expenditure:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp" required>
+        <select class="form-control form-control-sm" style="width: 100%;" id="objexp" name="objexp">
             <option value=""></option>
             @if ($objects)
                 @foreach($objects as $object)
@@ -35,7 +35,7 @@
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Unit of Measurement:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom" required>
+        <select class="form-control form-control-sm" style="width: 100%;" id="uom" name="uom">
             <option value=""></option>
             @foreach ($uom as $key => $unit)
             <option value="{{ $unit->id }}" {{ (!(isset($iteminfo))) ? '' : (($iteminfo->uom == $unit->id) ? 'selected=:"selected"' : '') }}>{{ $unit->uom.' ('.$unit->description.')' }}</option>
@@ -44,7 +44,7 @@
     </div>
     <div class="col-lg-4">
         <label class="text-xs">Category:</label>
-        <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category" required>
+        <select class="form-control form-control-sm" style="width: 100%;" id="category" name="category">
             <option value=""></option>
             @foreach ($categories as $key => $category)
             <option value="{{ $category->id }}" {{ (!(isset($iteminfo))) ? '' : (($iteminfo->category == $category->id) ? 'selected=:"selected"' : '') }}>{{ $category->category }}</option>

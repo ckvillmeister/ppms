@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 <style>
     #container {
         overflow-x: auto;
@@ -195,7 +196,7 @@
                     @endif
                     <tr>
                         <td class="text-center"></td>
-                        <td class="text-center">{{ $item->itemname }}</td>
+                        <td class="">{{ $item->itemname }}</td>
                         <td class="text-center"></td>
                         <td class="text-center">{{ $item->mode }}</td>
                         <td class="text-center" colspan="4">{{ $schedule }}</td>
@@ -238,5 +239,6 @@
     </div>
 </div>
 
+<script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
 <script>
 </script>

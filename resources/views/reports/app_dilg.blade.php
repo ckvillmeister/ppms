@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 <style>
     #container {
         overflow-x: auto;
@@ -190,7 +191,7 @@
                         @php ($grandtotal += ($item->avg_price * $item->total_qty))
                         
                         <td class="text-center">{{ $no++ }}</td>
-                        <td class="text-center">{{ $item->itemname }}</td>
+                        <td class="">{{ $item->itemname }}</td>
                         <td class="numerical-cols">{{ number_format($item->avg_price, 2) }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>
                         <td class="text-center">{{ $item->unit }}</td>
@@ -237,5 +238,6 @@
     </div>
 </div>
 
+<script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
 <script>
 </script>

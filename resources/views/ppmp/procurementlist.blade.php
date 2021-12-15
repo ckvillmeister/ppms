@@ -18,8 +18,21 @@
     <tbody>
         @if ($items)
             @php ($ctr = 1)
+            @php ($grandtotal = 0.0)
+            @php ($grandtotal_jan = 0.0)
+            @php ($grandtotal_feb = 0.0)
+            @php ($grandtotal_mar = 0.0)
+            @php ($grandtotal_apr = 0.0)
+            @php ($grandtotal_may = 0.0)
+            @php ($grandtotal_jun = 0.0)
+            @php ($grandtotal_jul = 0.0)
+            @php ($grandtotal_aug = 0.0)
+            @php ($grandtotal_sep = 0.0)
+            @php ($grandtotal_oct = 0.0)
+            @php ($grandtotal_nov = 0.0)
+            @php ($grandtotal_dec = 0.0)
             @foreach ($objects as $object)
-                <tr class="bg-light">
+                <tr class="bg-primary">
                     <td colspan="21"><span class="text-xs">{{ $object->object()->where('id', $object->object)->first()->obj_exp_name }}</span></td>
                 </tr>
                 @php ($jan = 0.0)
@@ -49,6 +62,19 @@
                         @php ($oct += ($item->october) ? $item->october * $item->price : 0)
                         @php ($nov += ($item->november) ? $item->november * $item->price : 0)
                         @php ($dec += ($item->december) ? $item->december * $item->price : 0)
+                        @php ($grandtotal += ($item->price * $item->quantity))
+                        @php ($grandtotal_jan += ($item->january) ? $item->january * $item->price : 0)
+                        @php ($grandtotal_feb += ($item->february) ? $item->february * $item->price : 0)
+                        @php ($grandtotal_mar += ($item->march) ? $item->march * $item->price : 0)
+                        @php ($grandtotal_apr += ($item->april) ? $item->april * $item->price : 0)
+                        @php ($grandtotal_may += ($item->may) ? $item->may * $item->price : 0)
+                        @php ($grandtotal_jun += ($item->june) ? $item->june * $item->price : 0)
+                        @php ($grandtotal_jul += ($item->july) ? $item->july * $item->price : 0)
+                        @php ($grandtotal_aug += ($item->august) ? $item->august * $item->price : 0)
+                        @php ($grandtotal_sep += ($item->september) ? $item->september * $item->price : 0)
+                        @php ($grandtotal_oct += ($item->october) ? $item->october * $item->price : 0)
+                        @php ($grandtotal_nov += ($item->november) ? $item->november * $item->price : 0)
+                        @php ($grandtotal_dec += ($item->december) ? $item->december * $item->price : 0)
                         @php ($total_per_object += ($item->price * $item->quantity))
                         <tr data-id="{{ $item->id }}">
                             <td class="text-xs text-center">{{ $ctr++ }}</td>
@@ -137,6 +163,24 @@
                 </tr>
             @endforeach
         @endif
+        <tr class="bg-gray">
+            <td class="text-xs" colspan="6">Grand Total:</td>
+            <td class="text-xs text-right"><strong>{{ number_format($grandtotal, 2) }}</strong></td>
+            <td class="text-xs"></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_jan) ? number_format($grandtotal_jan, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_feb) ? number_format($grandtotal_feb, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_mar) ? number_format($grandtotal_mar, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_apr) ? number_format($grandtotal_apr, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_may) ? number_format($grandtotal_may, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_jun) ? number_format($grandtotal_jun, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_jul) ? number_format($grandtotal_jul, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_aug) ? number_format($grandtotal_aug, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_sep) ? number_format($grandtotal_sep, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_oct) ? number_format($grandtotal_oct, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_nov) ? number_format($grandtotal_nov, 2) : '' }}</strong></td>
+            <td class="text-xs text-right"><strong>{{ ($grandtotal_dec) ? number_format($grandtotal_dec, 2) : '' }}</strong></td>
+            <td class="text-xs"></td>
+        </tr>
     </tbody>
 </table>
 <div class="row mt-3">

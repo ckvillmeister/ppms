@@ -244,7 +244,7 @@
                         @php ($grandtotalqtr4 += ($item->avg_price * ($qtyoct + $qtynov + $qtydec)))
                         @php ($grandtotal += ($item->avg_price * $item->total_qty))
                         
-                        <td class="text-center" colspan="3">{{ $item->itemname }}</td>
+                        <td class="" colspan="3">{{ $item->itemname }}</td>
                         <td class="text-center">{{ $item->unit }}</td>
                         <td class="text-center">{{ $qtyjan }}</td>
                         <td class="text-center">{{ $qtyfeb }}</td>

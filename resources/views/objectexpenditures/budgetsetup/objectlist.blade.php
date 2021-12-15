@@ -1,3 +1,6 @@
+@php
+use App\Http\Controllers\AuthenticationController as Authentication; 
+@endphp
 <table class="table table-sm table-bordered table-striped display bg-white" style="width: 100%" id="tbl_list">
     <thead>
         <tr>
@@ -25,9 +28,9 @@
                     @endif
                 </td>
                 <td class="text-center">
-                <button class="btn btn-sm btn-warning col-sm-12" id="edit" value="{{ $objectexpenditure->id }}" data-toggle="tooltip" data-placement="top" title="Edit Object of Expenditure"><i class="fas fa-edit mr-2"></i>Edit</button><br>
+                @if (Authentication::isAuthorized(Auth::user()->role, 'objectEdit'))<button class="btn btn-sm btn-warning col-sm-12" id="edit" value="{{ $objectexpenditure->id }}" data-toggle="tooltip" data-placement="top" title="Edit Object of Expenditure"><i class="fas fa-edit mr-2"></i>Edit</button><br>@endif
                 @if ($objectexpenditure->status == 1)
-                <button class="btn btn-sm btn-danger col-sm-12 mt-1" id="delete" value="{{ $objectexpenditure->id }}" data-toggle="tooltip" data-placement="top" title="Delete Object of Expenditure"><i class="fas fa-trash mr-2"></i>Delete</button><br>
+                @if (Authentication::isAuthorized(Auth::user()->role, 'objectDelete'))<button class="btn btn-sm btn-danger col-sm-12 mt-1" id="delete" value="{{ $objectexpenditure->id }}" data-toggle="tooltip" data-placement="top" title="Delete Object of Expenditure"><i class="fas fa-trash mr-2"></i>Delete</button><br>@endif
                 @elseif ($objectexpenditure->status == 0)
                 <button class="btn btn-sm btn-success col-sm-12 mt-1" id="reactivate" value="{{ $objectexpenditure->id }}" data-toggle="tooltip" data-placement="top" title="Re-activate Object of Expenditure"><i class="fas fa-check mr-2"></i>Activate</button>
                 @endif

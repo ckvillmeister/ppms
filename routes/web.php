@@ -52,7 +52,7 @@ Route::post('ppmp/getunits', [ProcurementController::class, 'getUnits']);
 
 //Route::get('reports', [ReportsController::class, 'index']);
 Route::get('reports/app', [ReportsController::class, 'index']);
-Route::post('reports.getDeptPPMP', [ReportsController::class, 'retrieveDeptPPMP']);
+Route::post('reports/getppmp', [ReportsController::class, 'retrieveDeptPPMP']);
 Route::post('APPDILG', [ReportsController::class, 'retrieveAPP']);
 Route::post('APPDBM', [ReportsController::class, 'retrieveAPP']);
 Route::post('APPCSE', [ReportsController::class, 'retrieveAPP']);

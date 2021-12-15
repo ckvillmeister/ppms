@@ -588,5 +588,12 @@ class ProcurementController extends Controller
 
         return $control;
     }
+
+    public function export(Request $request){
+        $dept = $request->input('deptid');
+        $year = $request->input('year');
+
+        
+    }
     
 }

@@ -52,7 +52,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         <div class="col-sm-12">
 
             @foreach ($category as $categ)
-              <h1 class="mt-3 ml-3">{{ $categ->category }}</h1>
+              <h4 class="mt-3 ml-3">{{ $categ->category }}</h4>
               <div class="row pb-3" id="permissions">
                   @foreach ($permissions as $key => $permission)
                     @if ($permission->category == $categ->id)

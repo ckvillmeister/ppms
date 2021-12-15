@@ -49,7 +49,7 @@
           <a href="#" class="dropdown-item" data-toggle="modal" data-target="#modal_change_password">
             <i class="fas fa-key ml-3 mr-3"></i> Change Password
           </a>
-          <a href="authenticate/logout" class="dropdown-item">
+          <a href="/authenticate/logout" class="dropdown-item">
             <i class="fas fa-undo ml-3 mr-3"></i> Logout
           </a>
         </div>

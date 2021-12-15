@@ -39,17 +39,12 @@ class RolesController extends Controller
         else{
             $settings = Settings::all();
             
-            if ($this::isAuthorized(Auth::user()->role, 'pagePermission')){
-                $permissions = Permissions::with('category')->where('status', 1)->get();
-                $category = PermissionCategory::where('status', 1)->get();
+            $permissions = Permissions::with('category')->where('status', 1)->get();
+            $category = PermissionCategory::where('status', 1)->get();
 
-                return view('roles.manage_permissions', array('settings' => $settings,
-                                                                'permissions' => $permissions,
-                                                                'category' => $category));
-            }
-            else{
-                return view('forbidden.index', array('settings' => $settings));
-            }
+            return view('roles.manage_permissions', array('settings' => $settings,
+                                                            'permissions' => $permissions,
+                                                            'category' => $category));
         }
     }
 

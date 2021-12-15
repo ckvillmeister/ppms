@@ -1,3 +1,6 @@
+@php
+use App\Http\Controllers\AuthenticationController as Authentication; 
+@endphp
 <html>
 
 <head>
@@ -74,7 +77,7 @@
                 <div class="float-right">
                   <!-- <button type="button" class="btn btn-sm btn-primary" id="btn_add_procurement_item"><i class="fas fa-plus mr-2"></i>Add Procurement</button> -->
                   <button type="button" class="btn btn-sm btn-secondary" id="btn_copy_ppmp" data-toggle="modal" data-target="#modal_copy_procurement"><i class="fas fa-copy mr-2"></i> Copy PPMP</button> 
-                  <button type="button" class="btn btn-sm btn-success" id="approve_procurement" {{ ($settings[2]->setting_description) ? '' : ((in_array(Auth::user()->role, [1, 2])) ? '' : 'disabled') }}><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button>
+                  @if (Authentication::isAuthorized(Auth::user()->role, 'ppmpApprove'))<button type="button" class="btn btn-sm btn-success" id="approve_procurement"><i class="fas fa-thumbs-up mr-2"></i>Approve PPMP</button>@endif
                 </div>
               </div>
             </div>
@@ -579,7 +582,7 @@
     else if (year == ""){
       message('Empty', 'red', 'Please select a department first!');
     }
-    else if (tbl_proc_list.rows().count() <= 0){
+    else if ($('#tbl_procurement_list > tbody > tr').length <= 0){
       message('Empty', 'red', 'Procurement plan is empty! Nothing to approve.');
     }
     else{

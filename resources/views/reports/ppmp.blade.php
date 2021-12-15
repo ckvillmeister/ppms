@@ -196,114 +196,73 @@
 
                     <tr>
                         @if ($item->january)
-                            @php ($count += 1)
+                            @php ($jan += ($item->unit_price * $item->january))
+                            @php ($totjan += $jan)
                         @endif
                         @if ($item->february)
-                            @php ($count += 1)
+                            @php ($feb += ($item->unit_price * $item->february))
+                            @php ($totfeb += $feb)
                         @endif
                         @if ($item->march)
-                            @php ($count += 1)
+                            @php ($mar += ($item->unit_price * $item->march))
+                            @php ($totmar += $mar)
                         @endif
                         @if ($item->april)
-                            @php ($count += 1)
+                            @php ($apr += ($item->unit_price * $item->april))
+                            @php ($totapr += $apr)
                         @endif
                         @if ($item->may)
-                            @php ($count += 1)
+                            @php ($may += ($item->unit_price * $item->may))
+                            @php ($totmay += $may)
                         @endif
                         @if ($item->june)
-                            @php ($count += 1)
+                            @php ($jun += ($item->unit_price * $item->june))
+                            @php ($totjun += $jun)
                         @endif
                         @if ($item->july)
-                            @php ($count += 1)
+                            @php ($jul += ($item->unit_price * $item->july))
+                            @php ($totjul += $jul)
                         @endif
                         @if ($item->august)
-                            @php ($count += 1)
+                            @php ($aug += ($item->unit_price * $item->august))
+                            @php ($totaug += $aug)
                         @endif
                         @if ($item->september)
-                            @php ($count += 1)
+                            @php ($sep += ($item->unit_price * $item->september))
+                            @php ($totsep += $sep)
                         @endif
                         @if ($item->october)
-                            @php ($count += 1)
+                            @php ($oct += ($item->unit_price * $item->october))
+                            @php ($totoct += $oct)
                         @endif
                         @if ($item->november)
-                            @php ($count += 1)
+                            @php ($nov += ($item->unit_price * $item->november))
+                            @php ($totnov += $nov)
                         @endif
                         @if ($item->december)
-                            @php ($count += 1)
-                        @endif
-
-                        @php ($quot = ($item->unit_price * $item->total_qty) / $count)
-                        @php ($totprice += $item->unit_price)
-                        @php ($totitem += ($item->unit_price * $item->total_qty))
-
-                        @if ($item->january)
-                            @php ($jan += $quot)
-                            @php ($totjan += $quot)
-                        @endif
-                        @if ($item->february)
-                            @php ($feb += $quot)
-                            @php ($totfeb += $quot)
-                        @endif
-                        @if ($item->march)
-                            @php ($mar += $quot)
-                            @php ($totmar += $quot)
-                        @endif
-                        @if ($item->april)
-                            @php ($apr += $quot)
-                            @php ($totapr += $quot)
-                        @endif
-                        @if ($item->may)
-                            @php ($may += $quot)
-                            @php ($totmay += $quot)
-                        @endif
-                        @if ($item->june)
-                            @php ($jun += $quot)
-                            @php ($totjun += $quot)
-                        @endif
-                        @if ($item->july)
-                            @php ($jul += $quot)
-                            @php ($totjul += $quot)
-                        @endif
-                        @if ($item->august)
-                            @php ($aug += $quot)
-                            @php ($totaug += $quot)
-                        @endif
-                        @if ($item->september)
-                            @php ($sep += $quot)
-                            @php ($totsep += $quot)
-                        @endif
-                        @if ($item->october)
-                            @php ($oct += $quot)
-                            @php ($totoct += $quot)
-                        @endif
-                        @if ($item->november)
-                            @php ($nov += $quot)
-                            @php ($totnov += $quot)
-                        @endif
-                        @if ($item->december)
-                            @php ($dec += $quot)
-                            @php ($totdec += $quot)
+                            @php ($dec += ($item->unit_price * $item->december))
+                            @php ($totdec += $dec)
                         @endif
                         
                         <td class="text-center">{{ $no++ }}</td>
                         <td class="text-center">{{ $item->itemname }}</td>
-                        <td class="text-center">{{ $item->description }}</td>
+                        <td class="text-center">{{ $item->unit }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>
                         <td class="numerical-cols">{{ number_format($item->unit_price, 2) }}</td>
                         <td class="numerical-cols">{{ number_format($item->unit_price * $item->total_qty, 2) }}</td>
                         <td class="text-center">{{ $item->mode }}</td>
-                        <td class="numerical-cols">{{ ($item->january) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->february) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->march) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->april) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->may) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->june) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->july) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->august) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->september) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->october) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->november) ? number_format($quot, 2) : '' }}</td>
-                        <td class="numerical-cols">{{ ($item->december) ? number_format($quot, 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->january) ? number_format(($item->unit_price * $item->january), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->february) ? number_format(($item->unit_price * $item->february), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->march) ? number_format(($item->unit_price * $item->march), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->april) ? number_format(($item->unit_price * $item->april), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->may) ? number_format(($item->unit_price * $item->may), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->june) ? number_format(($item->unit_price * $item->june), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->july) ? number_format(($item->unit_price * $item->july), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->august) ? number_format(($item->unit_price * $item->august), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->september) ? number_format(($item->unit_price * $item->september), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->october) ? number_format(($item->unit_price * $item->october), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->november) ? number_format(($item->unit_price * $item->november), 2) : '' }}</td>
+                        <td class="numerical-cols">{{ ($item->december) ? number_format(($item->unit_price * $item->december), 2) : '' }}</td>
                     </tr>
                     @php ($ctr++)
                     @if ($row_count < $ctr)

@@ -49,6 +49,8 @@ Route::post('ppmp/retrievebudgetedobjs', [ProcurementController::class, 'retriev
 Route::post('ppmp/getnewprocurementform', [ProcurementController::class, 'getNewProcurementForm']);
 Route::post('ppmp/getitems', [ProcurementController::class, 'getItems']);
 Route::post('ppmp/getunits', [ProcurementController::class, 'getUnits']);
+Route::post('ppmp/setprocsched', [ProcurementController::class, 'setProcurementSchedule']);
+
 
 //Route::get('reports', [ReportsController::class, 'index']);
 Route::get('reports/app', [ReportsController::class, 'index']);
@@ -116,6 +118,7 @@ Route::post('accounts/togglestatus', [UserController::class, 'toggleStatus']);
 Route::post('accounts/resetpass', [UserController::class, 'resetPassword']);
 
 Route::get('settings', [SettingsController::class, 'index']);
+Route::get('setup/settings', [SettingsController::class, 'index']);
 Route::post('settings.save', [SettingsController::class, 'saveSettings']);
 Route::get('settings.backupDatabase', [SettingsController::class, 'backupDatabase']);
 Route::post('settings.toggleStatus', [SettingsController::class, 'toggleProcurementStatus']);

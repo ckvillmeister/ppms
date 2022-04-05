@@ -61,8 +61,8 @@
               <span class="info-box-icon bg-success elevation-1"><i class="fas fa-building"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Departments</span>
-                <span class="info-box-number"></span>
+                <span class="info-box-text">Total Departments & Sub Offices</span>
+                <span class="info-box-number">{{ count($all_departments) }}</span>
               </div>
             </div>
           </div>

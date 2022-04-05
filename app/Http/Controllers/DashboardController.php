@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dashboard;
 use App\Models\Settings;
+use App\Models\Departments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,13 @@ class DashboardController extends Controller
         }
         else{
             $settings = Settings::all();
+            $year = 0;
+
+            foreach($settings as $setting){
+                if ($setting->setting_name == 'Procurement Year'){
+                    $year = $setting->setting_description;
+                }
+            }
 
             if ($this::isAuthorized(Auth::user()->role, 'sidebarDashboard')){
                 $new_departments = [];
@@ -30,6 +38,7 @@ class DashboardController extends Controller
                                 ->select('departments.*')
                                 ->where('procurement_info.status', '=', 1)
                                 ->where('departments.status', '=', 1)
+                                ->where('procurement_info.year', '=', $year)
                                 ->orderBy('departments.office_name', 'asc')
                                 ->get();
 
@@ -49,6 +58,7 @@ class DashboardController extends Controller
 
                 return view('dashboard.index', array('settings' => $settings,
                                                         'departments' => $new_departments,
+                                                        'all_departments' => Departments::where('status', 1)->get(),
                                                         'colors' => $colors,
                                                         'procured_items' => $procured_items,
                                                         'depts' => $depts,

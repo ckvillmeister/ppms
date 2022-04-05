@@ -36,13 +36,22 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         </li>
         @endif
 
-        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['departments/set', 'object/setbudget'])) ? 'menu-open' : '' }}">
-          <a href="#" class="nav-link {{ (in_array(Request::path(), ['departments/set', 'object/setbudget'])) ? 'active' : '' }}">
+        <li class="nav-item has-treeview {{ (in_array(Request::path(), ['setup/settings', 'departments/set', 'object/setbudget'])) ? 'menu-open' : '' }}">
+          <a href="#" class="nav-link {{ (in_array(Request::path(), ['setup/settings', 'departments/set', 'object/setbudget'])) ? 'active' : '' }}">
             <i class="nav-icon fas fa-sliders-h"></i>
             <p>Setup<i class="right fas fa-angle-left"></i></p>
           </a>
 
           <ul class="nav nav-treeview">
+
+            @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSystemSettings'))
+            <li class="nav-item">
+              <a href="/setup/settings" class="nav-link {{ (Request::path() == 'setup/settings') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p class="text-sm">System Settings</p>
+              </a>
+            </li>
+            @endif
 
             @if (Authentication::isAuthorized(Auth::user()->role, 'sidebarSetDepartment'))
             <li class="nav-item">

@@ -84,11 +84,7 @@ use App\Http\Controllers\AuthenticationController as Authentication;
           </div>
         </div>
 
-        <div class="row mb-3 mt-4">
-
-            <div class="col-sm-12">
-
-              <div class="card card-outline direct-chat direct-chat-primary shadow-none">
+        <div class="card card-outline direct-chat direct-chat-primary shadow-none">
                   <div class="card-body">
                     <div class="row m-3">
                       <div class="col-sm-12 align-self-center">
@@ -106,10 +102,6 @@ use App\Http\Controllers\AuthenticationController as Authentication;
                     </div>
                   </div>
               </div>
-
-            </div>
-
-        </div>
         
     </div>
     @include('components.footer')

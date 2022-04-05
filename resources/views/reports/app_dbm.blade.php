@@ -198,8 +198,22 @@
                         <td class="text-center"></td>
                         <td class="">{{ $item->itemname }}</td>
                         <td class="text-center"></td>
-                        <td class="text-center">{{ $item->mode }}</td>
-                        <td class="text-center" colspan="4">{{ $schedule }}</td>
+                        <td class="text-center">
+                            @if (($item->avg_price * $item->total_qty) >= 200000)
+                                {{ 'Public Bidding' }}
+                            @elseif (($item->avg_price * $item->total_qty) >= 50000 & ($item->avg_price * $item->total_qty) <= 199999)
+                                {{ 'Small Value Procurement' }}
+                            @else
+                                {{ 'Shopping' }}
+                            @endif
+                        </td>
+                        <td class="text-center" colspan="4">
+                            @if ($item->sched)
+                                {{ 'Bidding' }}
+                            @else
+                                {{ $schedule }}
+                            @endif
+                        </td>
                         <td class="text-center">GoP</td>
                         <td class="numerical-cols">{{ number_format(($item->avg_price * $item->total_qty), 2) }}</td>
                         <td class="numerical-cols">{{ ($item->class_exp_id == 1) ? number_format(($item->avg_price * $item->total_qty), 2) : '' }}</td>

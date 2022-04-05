@@ -127,7 +127,7 @@
 </div>
 </body>
 </html>
-<script src="{{ 'adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' }}"></script>
+<script src="{{ '/adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js' }}"></script>
 <script>
 $('#frm').on('submit', function(e){
   e.preventDefault();
@@ -143,7 +143,7 @@ $('#frm').on('submit', function(e){
       message('Error', 'red', 'Please provide procurement year!');
   }
   else{
-      request('settings.save', 'POST', $(this).serialize(), 'JSON');
+      request('/settings.save', 'POST', $(this).serialize(), 'JSON');
   }
 });
 
@@ -156,10 +156,10 @@ $("#proc_status").on('switchChange.bootstrapSwitch', function(e, state){
     status = 1
   }
 
-  request('settings.toggleStatus', 'POST', {'status': status}, 'HTML');
+  request('/settings.toggleStatus', 'POST', {'status': status}, 'HTML');
 })
 
 $("#backupDB").on('click', function(){
-  request('settings.backupDatabase', 'POST', null, 'JSON');
+  request('/settings.backupDatabase', 'POST', null, 'JSON');
 })
 </script>

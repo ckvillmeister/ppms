@@ -8,6 +8,8 @@ use App\Models\Departments;
 use App\Models\ObjectExpenditure;
 use App\Models\Categories;
 use App\Models\ObjectAIPCode;
+use App\Models\DepartmentBudget;
+use App\Models\ProcurementSchedule;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,7 +93,7 @@ class ReportsController extends Controller
         }
 
         foreach ($items as $item){
-            $aip = ObjectAIPCode::where('object', $item->object)->where('year', $year)->first();
+            $aip = DepartmentBudget::where('department', $dept)->where('object', $item->object)->where('year', $year)->first();
             $item->aipcode = $aip->aipcode;
         }
 
@@ -159,6 +161,16 @@ class ReportsController extends Controller
                             ->orderBy('pitems.object', 'asc')
                             ->orderBy('pitems.itemname', 'asc')
                             ->get();
+
+            foreach ($items as $item){
+                $sched = ProcurementSchedule::where('item', $item->id)->where('status', 1)->first();
+                
+                // if ($item->id == 7){
+                //     dd('asd');
+                // }
+                $item->sched = $sched;
+            }
+
             return view('reports.app_dbm', array('settings' => $settings, 'items' => $items));
         }
         elseif ($request->path() == 'APPCSE'){

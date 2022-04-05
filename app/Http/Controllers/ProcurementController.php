@@ -11,6 +11,7 @@ use App\Models\Departments;
 use App\Models\DepartmentBudget;
 use App\Models\Units;
 use App\Models\Categories;
+use App\Models\ProcurementSchedule;
 use App\Enums\Lists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -155,10 +156,12 @@ class ProcurementController extends Controller
                             ->where('pinfo.department', '=', $dept)
                             ->where('pinfo.year', '=', $year)
                             ->where('pitems.object', '=', $object)
+                            ->where('pitems.status', '=', 1)
                             ->get();
         
         //Check item amount exceeds the approved amount  
         if ($budget){
+           
             if ($itemtotal > $budget->amount){
                 return array('result' => 'Warning',
                         'color' => 'red',
@@ -594,6 +597,25 @@ class ProcurementController extends Controller
         $year = $request->input('year');
 
         
+    }
+
+    public function setProcurementSchedule(Request $request){
+        $id = ($request->input('id')) ? $request->input('id') : 0;
+        $advertisement = ($request->input('advertisement')) ? $request->input('advertisement') : 0;
+        $bidding = ($request->input('bidding')) ? $request->input('bidding') : 0;
+        $award = ($request->input('award')) ? $request->input('award') : 0;
+        $contract_signing = ($request->input('contract_signing')) ? $request->input('contract_signing') : 0;
+
+        $sched = ProcurementSchedule::where('item', $id)->first();
+
+        if ($sched){
+            ProcurementSchedule::where('item', $id)->update(['advertisement' => $advertisement, 'bidding' => $bidding, 'award' => $award, 'contract_signing' => $contract_signing]);
+        }
+        else{
+            ProcurementSchedule::insert(['item' => $id, 'advertisement' => $advertisement, 'bidding' => $bidding, 'award' => $award, 'contract_signing' => $contract_signing]);
+        }
+
+        return 1;
     }
     
 }

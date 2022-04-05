@@ -150,19 +150,20 @@ class ObjectExpenditureController extends Controller
                                 ->where('year', $year)
                                 ->where('object', $object->id)
                                 ->first();
-            $aip = ObjectAIPCode::where('year', $year)
-                                ->where('object', $object->id)
-                                ->first();
+            // $aip = ObjectAIPCode::where('year', $year)
+            //                     ->where('object', $object->id)
+            //                     ->first();
             
             if ($budget){
                 $object->amount = $budget->amount;
+                $object->aipcode = $budget->aipcode;
             }
 
-            if ($aip){
-                $object->aip = $aip->aipcode;
-            }
+            // if ($aip){
+            //     $object->aip = $aip->aipcode;
+            // }
         }
-
+        
         return view('objectexpenditures.budgetsetup.objectlist', array('objectexpenditures' => $objectexpenditures));
     }
 
@@ -204,33 +205,62 @@ class ObjectExpenditureController extends Controller
     }
 
     public function setAIPCode(Request $request){
+        $deptid = ($request->input('deptid')) ? $request->input('deptid') : 0;
         $objid = ($request->input('objid')) ? $request->input('objid') : 0;
         $code = ($request->input('code')) ? $request->input('code') : 0;
         $year = Settings::getSetting('Procurement Year')->setting_description;
         
-        $isAIPCodeExist = ObjectAIPCode::where('year', $year)
-                                        ->where('object', $objid)
-                                        ->get();
+        // $isAIPCodeExist = ObjectAIPCode::where('year', $year)
+        //                                 ->where('object', $objid)
+        //                                 ->get();
 
-        if (count($isAIPCodeExist) > 0){
-            ObjectAIPCode::where('year', $year)
-            ->where('object', $objid)
-            ->update([
-                'aipcode' => $code,
-                'updatedby' => Auth::user()->id,
-                'dateupdated' => date('Y-m-d H:i:s'),
-                'status' => 1
-            ]);
+        // if (count($isAIPCodeExist) > 0){
+        //     ObjectAIPCode::where('year', $year)
+        //     ->where('object', $objid)
+        //     ->update([
+        //         'aipcode' => $code,
+        //         'updatedby' => Auth::user()->id,
+        //         'dateupdated' => date('Y-m-d H:i:s'),
+        //         'status' => 1
+        //     ]);
+        // }
+        // else{
+        //     ObjectAIPCode::insert([
+        //         'object' => $objid,
+        //         'year' => $year,
+        //         'aipcode' => $code,
+        //         'createdby' => Auth::user()->id,
+        //         'datecreated' => date('Y-m-d H:i:s'),
+        //         'status' => 1
+        //     ]);
+        // }
+
+        $isBudgetExist = DepartmentBudget::where('department', $deptid)
+                            ->where('year', $year)
+                            ->where('object', $objid)
+                            ->get();
+
+        if (count($isBudgetExist) > 0){
+            DepartmentBudget::where('department', $deptid)
+                            ->where('year', $year)
+                            ->where('object', $objid)
+                            ->update([
+                                'aipcode' => $code,
+                                'updatedby' => Auth::user()->id,
+                                'dateupdated' => date('Y-m-d H:i:s'),
+                                'status' => 1
+                            ]);
         }
         else{
-            ObjectAIPCode::insert([
-                'object' => $objid,
-                'year' => $year,
-                'aipcode' => $code,
-                'createdby' => Auth::user()->id,
-                'datecreated' => date('Y-m-d H:i:s'),
-                'status' => 1
-            ]);
+            DepartmentBudget::insert([
+                                'department' => $deptid,
+                                'year' => $year,
+                                'object' => $objid,
+                                'aipcode' => $code,
+                                'createdby' => Auth::user()->id,
+                                'datecreated' => date('Y-m-d H:i:s'),
+                                'status' => 1
+                            ]);
         }
 
         return 1;

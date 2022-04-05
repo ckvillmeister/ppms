@@ -169,6 +169,7 @@
 
                         <tr>
                             <td></td>
+                            <td>{{ $item->aipcode }}</td>
                             <td colspan="18"><strong>{{ $item->obj_exp_name }}</strong></td>
                         </tr>
                         
@@ -245,7 +246,7 @@
                         @endif
                         
                         <td class="text-center">{{ $no++ }}</td>
-                        <td>{{ $item->aipcode }}</td>
+                        <td></td>
                         <td class="text-center">{{ $item->itemname }}</td>
                         <td class="text-center">{{ $item->unit }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>

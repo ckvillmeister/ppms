@@ -56,22 +56,13 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         </div>
         <div class="col-sm-6">
           <div class="float-right">
-            Department / Office: <strong>{{ ($info->sub_office) ? $info->office_name.' - '.$info->sub_office : $info->description }}<strong>
+            Department / Office: <strong>{{ ($info->sub_office) ? $info->office_name.' - '.$info->sub_office : $info->description }}</strong>
           </div>
         </div>
       </div>
 
-      <div class="row bg-white">
-        <div class="col-sm-12 pt-1">
-
-            <div class="row m-3">
-                <div class="col-sm-12 align-self-center">
-                    <input type="hidden" id="deptid" value="{{ app('request')->input('id') }}">
-                    <div id="list"></div>
-                </div>
-            </div>
-        </div>
-      </div>
+      <input type="hidden" id="deptid" value="{{ app('request')->input('id') }}">
+      <div id="list"></div>
 
       <br><br>
 

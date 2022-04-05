@@ -54,11 +54,8 @@ use App\Http\Controllers\AuthenticationController as Authentication;
         </div>
       </div>
 
-      <div class="row bg-white">
-        <div class="col-sm-12 pt-4">
-          <div id="list"></div>
-        </div>
-      </div>
+      <div id="list"></div>
+      
     </div>
     @include('components.footer')
     <script src="{{ asset('js/departments.js') }}"></script>

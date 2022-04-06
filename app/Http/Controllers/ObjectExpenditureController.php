@@ -176,12 +176,14 @@ class ObjectExpenditureController extends Controller
         $isBudgetExist = DepartmentBudget::where('department', $deptid)
                             ->where('year', $year)
                             ->where('object', $objid)
+                            ->where('status', 1)
                             ->get();
 
         if (count($isBudgetExist) > 0){
             DepartmentBudget::where('department', $deptid)
             ->where('year', $year)
             ->where('object', $objid)
+            ->where('status', 1)
             ->update([
                 'amount' => $amount,
                 'updatedby' => Auth::user()->id,

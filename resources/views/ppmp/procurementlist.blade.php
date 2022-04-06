@@ -2,8 +2,8 @@
     <thead>
         <tr>
             <th class="text-center text-xs">No.</th>
-            <th class="text-center text-xs">AIP Ref. Code</th>
-            <th class="text-center text-xs">General Description</th>
+            <th class="text-center text-xs" width="7.5%">AIP Ref. Code</th>
+            <th class="text-center text-xs" width="15%">General Description</th>
             <th class="text-center text-xs">Unit</th>
             <th class="text-center text-xs">Qty</th>
             <th class="text-center text-xs">Price</th>
@@ -12,7 +12,7 @@
             @foreach ($months as $key => $month)
             <th class="text-center text-xs" width="">{{ $key }}</th>
             @endforeach
-            <th class="text-center text-xs">Control</th>
+            <th class="text-center text-xs" width="7.5%">Control</th>
         </tr>
     </thead>
     <tbody>
@@ -35,7 +35,7 @@
                 <tr class="bg-primary">
                     <td></td>
                     <td>{{ $object->aipcode }}</td>
-                    <td colspan="19"><span class="text-xs">{{ $object->object()->where('id', $object->object)->first()->obj_exp_name }}</span></td>
+                    <td colspan="19"><span class="text-xs">{{ $object->object()->where('id', $object->object)->first()->obj_exp_name }} - Approved Budget: {{ number_format($object->amount, 2) }}</span></td>
                 </tr>
                 @php ($jan = 0.0)
                 @php ($feb = 0.0)
@@ -161,6 +161,7 @@
                                 @if ($item->mode == 'Public Bidding')
                                 <button class="btn btn-sm btn-success" id="btn-show-set-schedule" value="{{ $item->id }}" data-toggle="tooltip" data-placement="top" title="Add Procurement Schedule"><i class="fas fa-plus"></i></button>
                                 @endif
+                                <button class="btn btn-sm btn-warning" onclick="editPPMPItem({{ $item->id }})" data-toggle="tooltip" data-placement="top" title="Edit PPMP Item"><i class="fas fa-edit"></i></button>
                                 <button class="btn btn-sm btn-danger" onclick="deletePPMPItem({{ $item->id }})" data-toggle="tooltip" data-placement="top" title="Delete PPMP Item"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
@@ -182,8 +183,9 @@
                     <td class="text-xs text-right"><strong>{{ ($oct) ? number_format($oct, 2) : '' }}</strong></td>
                     <td class="text-xs text-right"><strong>{{ ($nov) ? number_format($nov, 2) : '' }}</strong></td>
                     <td class="text-xs text-right"><strong>{{ ($dec) ? number_format($dec, 2) : '' }}</strong></td>
-                    <td class="text-xs"></td>
-
+                    <td class="text-xs text-center">
+                        <button class="btn btn-xs btn-primary form-control form-control-sm" id="new-item" value="{{ $object->object }}"><i class="fas fa-plus mr-2"></i>New</button>
+                    </td>
                 </tr>
             @endforeach
         @endif
@@ -207,13 +209,6 @@
         </tr>
     </tbody>
 </table>
-<div class="row mt-3">
-    <div class="col-lg-12">
-        <div class="float-right">
-            <button class="btn btn-sm btn-primary" id="new-item"><i class="fas fa-plus mr-2"></i>New</button>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="modal_item_list" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog" role="document">
@@ -292,6 +287,29 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal_procurement_item_edit" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header card-primary card-outline">
+        <h5 class="modal-title" id="modal_title">Edit Item Procurement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div id="itemform"></div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="float-right">
+        <button type="button" class="btn btn-sm btn-primary" id="btn-update-procurement-item" data-dismiss="modal" style="width:150px"><i class="fas fa-save mr-2"></i>Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     var selected_col_index, selected_row_index, selected_id;
 
@@ -327,19 +345,23 @@
 
     $('#objects').select2({dropdownCssClass: "font"});
 
-    $('#new-item').on('click', function(){
+    $('#tbl_procurement_list').on('click', '#new-item', function(){
         var object = $('#objects').val();
+        var rowindex = $(this).closest('tr');
+        var objectid = $(this).val();
+        //td:eq(1)
 
-        if (object == '' || object == 0){
-            message('Error', 'red', "Please select object of expenditure first!");
-        }
-        else{
+        // if (object == '' || object == 0){
+        //     message('Error', 'red', "Please select object of expenditure first!");
+        // }
+        // else{
             $.ajax({
                 headers: {
                     'x-csrf-token': token
                 },
                 url: '/ppmp/getnewprocurementform',
                 method: 'POST',
+                data: {objectid: objectid},
                 dataType: 'HTML',
                 beforeSend: function() {
                     $('#basicloader').show();
@@ -348,237 +370,240 @@
                     $('#basicloader').hide();
                 },
                 success: function(result) {
-                    $('#tbl_procurement_list').append(result);
+                    //$("#" + id + ).closest( "tr" ).after( ... );
+                   // $('#tbl_procurement_list').append(result);
+                    $(result).insertAfter(rowindex);
+                    //$('#tbl_procurement_list > tbody').eq(rowindex + 1).append(result);
                 },
                 error: function(obj, msg, exception){
                     message('Error', 'red', msg + ": " + obj.status + " " + exception);
                 }
             })
-        }
+        //}
     });
 
-    $('#tbl_procurement_list tbody td').dblclick(function() {
-        var td = $(this),
-            colindex = $(this).index(),
-            rowindex = $(this).closest('tr').index(),
-            id = $(this).closest('tr').attr('data-id'),
-            attribute = '',
-            title = '',
-            content = '';
+    // $('#tbl_procurement_list tbody td').dblclick(function() {
+    //     var td = $(this),
+    //         colindex = $(this).index(),
+    //         rowindex = $(this).closest('tr').index(),
+    //         id = $(this).closest('tr').attr('data-id'),
+    //         attribute = '',
+    //         title = '',
+    //         content = '';
         
-        if (jQuery.inArray(colindex, [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) !== -1){
-            if (colindex == 2){
-                title = "Select / Type New Item";
-                attribute = "itemname";
+    //     if (jQuery.inArray(colindex, [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) !== -1){
+    //         if (colindex == 2){
+    //             title = "Select / Type New Item";
+    //             attribute = "itemname";
 
-                $.ajax({
-                    headers: {
-                        'x-csrf-token': token
-                    },
-                    'async': false,
-                    url: '/ppmp/getitems',
-                    method: 'POST',
-                    dataType: 'HTML',
-                    success: function(result) {
-                        content = result;
-                    },
-                    error: function(obj, msg, exception){
-                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
-                    }
-                })
-            }
-            if (colindex == 3){
-                title = "Select / Type New Unit";
-                attribute = "unit";
+    //             $.ajax({
+    //                 headers: {
+    //                     'x-csrf-token': token
+    //                 },
+    //                 'async': false,
+    //                 url: '/ppmp/getitems',
+    //                 method: 'POST',
+    //                 dataType: 'HTML',
+    //                 success: function(result) {
+    //                     content = result;
+    //                 },
+    //                 error: function(obj, msg, exception){
+    //                     message('Error', 'red', msg + ": " + obj.status + " " + exception);
+    //                 }
+    //             })
+    //         }
+    //         if (colindex == 3){
+    //             title = "Select / Type New Unit";
+    //             attribute = "unit";
 
-                $.ajax({
-                    headers: {
-                        'x-csrf-token': token
-                    },
-                    'async': false,
-                    url: '/ppmp/getunits',
-                    method: 'POST',
-                    dataType: 'HTML',
-                    success: function(result) {
-                        content = result;
-                    },
-                    error: function(obj, msg, exception){
-                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
-                    }
-                })
-            }
-            else if (colindex == 4){
-                title = "Enter New Quantity";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "quantity";
-            }
-            else if (colindex == 5){
-                title = "Enter New Price";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "price";
-            }
-            else if (colindex == 7){
-                title = "Select New Mode of Procurement";
-                content = "<select class='form form-control' id='txt-field' autofocus>@foreach($mode as $m) <option value='{{ $m }}'>{{ $m }}</option> @endforeach</select>";
-                attribute = "mode";
-            }
-            else if (colindex == 8){
-                title = "Enter New Quantity for Month of January";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "january";
-            }
-            else if (colindex == 9){
-                title = "Enter New Quantity for Month of February";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "february";
-            }
-            else if (colindex == 10){
-                title = "Enter New Quantity for Month of March";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "march";
-            }
-            else if (colindex == 11){
-                title = "Enter New Quantity for Month of April";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "april";
-            }
-            else if (colindex == 12){
-                title = "Enter New Quantity for Month of May";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "may";
-            }
-            else if (colindex == 13){
-                title = "Enter New Quantity for Month of June";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "june";
-            }
-            else if (colindex == 14){
-                title = "Enter New Quantity for Month of July";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "july";
-            }
-            else if (colindex == 15){
-                title = "Enter New Quantity for Month of August";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "august";
-            }
-            else if (colindex == 16){
-                title = "Enter New Quantity for Month of September";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "september";
-            }
-            else if (colindex == 17){
-                title = "Enter New Quantity for Month of October";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "october";
-            }
-            else if (colindex == 18){
-                title = "Enter New Quantity for Month of November";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "november";
-            }
-            else if (colindex == 19){
-                title = "Enter New Quantity for Month of December";
-                content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
-                attribute = "december";
-            }
+    //             $.ajax({
+    //                 headers: {
+    //                     'x-csrf-token': token
+    //                 },
+    //                 'async': false,
+    //                 url: '/ppmp/getunits',
+    //                 method: 'POST',
+    //                 dataType: 'HTML',
+    //                 success: function(result) {
+    //                     content = result;
+    //                 },
+    //                 error: function(obj, msg, exception){
+    //                     message('Error', 'red', msg + ": " + obj.status + " " + exception);
+    //                 }
+    //             })
+    //         }
+    //         else if (colindex == 4){
+    //             title = "Enter New Quantity";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "quantity";
+    //         }
+    //         else if (colindex == 5){
+    //             title = "Enter New Price";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "price";
+    //         }
+    //         else if (colindex == 7){
+    //             title = "Select New Mode of Procurement";
+    //             content = "<select class='form form-control' id='txt-field' autofocus>@foreach($mode as $m) <option value='{{ $m }}'>{{ $m }}</option> @endforeach</select>";
+    //             attribute = "mode";
+    //         }
+    //         else if (colindex == 8){
+    //             title = "Enter New Quantity for Month of January";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "january";
+    //         }
+    //         else if (colindex == 9){
+    //             title = "Enter New Quantity for Month of February";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "february";
+    //         }
+    //         else if (colindex == 10){
+    //             title = "Enter New Quantity for Month of March";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "march";
+    //         }
+    //         else if (colindex == 11){
+    //             title = "Enter New Quantity for Month of April";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "april";
+    //         }
+    //         else if (colindex == 12){
+    //             title = "Enter New Quantity for Month of May";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "may";
+    //         }
+    //         else if (colindex == 13){
+    //             title = "Enter New Quantity for Month of June";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "june";
+    //         }
+    //         else if (colindex == 14){
+    //             title = "Enter New Quantity for Month of July";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "july";
+    //         }
+    //         else if (colindex == 15){
+    //             title = "Enter New Quantity for Month of August";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "august";
+    //         }
+    //         else if (colindex == 16){
+    //             title = "Enter New Quantity for Month of September";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "september";
+    //         }
+    //         else if (colindex == 17){
+    //             title = "Enter New Quantity for Month of October";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "october";
+    //         }
+    //         else if (colindex == 18){
+    //             title = "Enter New Quantity for Month of November";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "november";
+    //         }
+    //         else if (colindex == 19){
+    //             title = "Enter New Quantity for Month of December";
+    //             content = "<input type='text' class='form form-control' id='txt-field' autofocus>";
+    //             attribute = "december";
+    //         }
 
-            $.confirm({
-                escapeKey: "cancel",
-                title: title,
-                content: content,
-                buttons: {
-                    save: function () {
-                        var strValue = $('#txt-field').val();
+    //         $.confirm({
+    //             escapeKey: "cancel",
+    //             title: title,
+    //             content: content,
+    //             buttons: {
+    //                 save: function () {
+    //                     var strValue = $('#txt-field').val();
 
-                        if(jQuery.inArray(colindex, [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) !== -1){
-                            var orig_qty = td.closest('tr').find('td:eq(' + colindex + ')').attr('data-qty');
-                            td.closest('tr').find('td:eq(' + colindex + ')').attr({'data-qty': strValue});
+    //                     if(jQuery.inArray(colindex, [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) !== -1){
+    //                         var orig_qty = td.closest('tr').find('td:eq(' + colindex + ')').attr('data-qty');
+    //                         td.closest('tr').find('td:eq(' + colindex + ')').attr({'data-qty': strValue});
                             
-                            var mainqty = td.closest('tr').find('td:eq(4)').text();
-                            var totalqty = 0;
-                            var jan = td.closest('tr').find('td:eq(8)').attr('data-qty') ? td.closest('tr').find('td:eq(8)').attr('data-qty') : 0,
-                                feb = td.closest('tr').find('td:eq(9)').attr('data-qty') ? td.closest('tr').find('td:eq(9)').attr('data-qty') : 0,
-                                mar = td.closest('tr').find('td:eq(10)').attr('data-qty') ? td.closest('tr').find('td:eq(10)').attr('data-qty') : 0,
-                                apr = td.closest('tr').find('td:eq(11)').attr('data-qty') ? td.closest('tr').find('td:eq(11)').attr('data-qty') : 0,
-                                may = td.closest('tr').find('td:eq(12)').attr('data-qty') ? td.closest('tr').find('td:eq(12)').attr('data-qty') : 0,
-                                jun = td.closest('tr').find('td:eq(13)').attr('data-qty') ? td.closest('tr').find('td:eq(13)').attr('data-qty') : 0,
-                                jul = td.closest('tr').find('td:eq(14)').attr('data-qty') ? td.closest('tr').find('td:eq(14)').attr('data-qty') : 0,
-                                aug = td.closest('tr').find('td:eq(15)').attr('data-qty') ? td.closest('tr').find('td:eq(15)').attr('data-qty') : 0,
-                                sep = td.closest('tr').find('td:eq(16)').attr('data-qty') ? td.closest('tr').find('td:eq(16)').attr('data-qty') : 0,
-                                oct = td.closest('tr').find('td:eq(17)').attr('data-qty') ? td.closest('tr').find('td:eq(17)').attr('data-qty') : 0,
-                                nov = td.closest('tr').find('td:eq(18)').attr('data-qty') ? td.closest('tr').find('td:eq(18)').attr('data-qty') : 0,
-                                dec = td.closest('tr').find('td:eq(19)').attr('data-qty') ? td.closest('tr').find('td:eq(19)').attr('data-qty') : 0;
+    //                         var mainqty = td.closest('tr').find('td:eq(4)').text();
+    //                         var totalqty = 0;
+    //                         var jan = td.closest('tr').find('td:eq(8)').attr('data-qty') ? td.closest('tr').find('td:eq(8)').attr('data-qty') : 0,
+    //                             feb = td.closest('tr').find('td:eq(9)').attr('data-qty') ? td.closest('tr').find('td:eq(9)').attr('data-qty') : 0,
+    //                             mar = td.closest('tr').find('td:eq(10)').attr('data-qty') ? td.closest('tr').find('td:eq(10)').attr('data-qty') : 0,
+    //                             apr = td.closest('tr').find('td:eq(11)').attr('data-qty') ? td.closest('tr').find('td:eq(11)').attr('data-qty') : 0,
+    //                             may = td.closest('tr').find('td:eq(12)').attr('data-qty') ? td.closest('tr').find('td:eq(12)').attr('data-qty') : 0,
+    //                             jun = td.closest('tr').find('td:eq(13)').attr('data-qty') ? td.closest('tr').find('td:eq(13)').attr('data-qty') : 0,
+    //                             jul = td.closest('tr').find('td:eq(14)').attr('data-qty') ? td.closest('tr').find('td:eq(14)').attr('data-qty') : 0,
+    //                             aug = td.closest('tr').find('td:eq(15)').attr('data-qty') ? td.closest('tr').find('td:eq(15)').attr('data-qty') : 0,
+    //                             sep = td.closest('tr').find('td:eq(16)').attr('data-qty') ? td.closest('tr').find('td:eq(16)').attr('data-qty') : 0,
+    //                             oct = td.closest('tr').find('td:eq(17)').attr('data-qty') ? td.closest('tr').find('td:eq(17)').attr('data-qty') : 0,
+    //                             nov = td.closest('tr').find('td:eq(18)').attr('data-qty') ? td.closest('tr').find('td:eq(18)').attr('data-qty') : 0,
+    //                             dec = td.closest('tr').find('td:eq(19)').attr('data-qty') ? td.closest('tr').find('td:eq(19)').attr('data-qty') : 0;
 
-                            var per_month_total = parseInt(jan) + parseInt(feb) + parseInt(mar) + parseInt(apr) + parseInt(may) + parseInt(jun) + parseInt(jul) + parseInt(aug) + parseInt(sep) + parseInt(oct) + parseInt(nov) + parseInt(dec);
+    //                         var per_month_total = parseInt(jan) + parseInt(feb) + parseInt(mar) + parseInt(apr) + parseInt(may) + parseInt(jun) + parseInt(jul) + parseInt(aug) + parseInt(sep) + parseInt(oct) + parseInt(nov) + parseInt(dec);
                             
-                            // if (parseInt(per_month_total) != parseInt(mainqty)){
-                            //     td.closest('tr').find('td:eq(' + colindex + ')').attr({'data-qty': orig_qty});
-                            //     message('Error', 'red',"Quantity allocated per month is not equal with the total quantity!");
-                            // }
-                            // else{
-                                $.ajax({
-                                    headers: {
-                                        'x-csrf-token': token
-                                    },
-                                    url: '/ppmp/update/' + attribute,
-                                    method: 'POST',
-                                    data: {'id': id, 'attr': attribute, 'value': $('#txt-field').val()},
-                                    dataType: 'HTML',
-                                    success: function(result) {
-                                        var dept = $('#departments').val(),
-                                            year = $('#cbo_year').val();
+    //                         // if (parseInt(per_month_total) != parseInt(mainqty)){
+    //                         //     td.closest('tr').find('td:eq(' + colindex + ')').attr({'data-qty': orig_qty});
+    //                         //     message('Error', 'red',"Quantity allocated per month is not equal with the total quantity!");
+    //                         // }
+    //                         // else{
+    //                             $.ajax({
+    //                                 headers: {
+    //                                     'x-csrf-token': token
+    //                                 },
+    //                                 url: '/ppmp/update/' + attribute,
+    //                                 method: 'POST',
+    //                                 data: {'id': id, 'attr': attribute, 'value': $('#txt-field').val()},
+    //                                 dataType: 'HTML',
+    //                                 success: function(result) {
+    //                                     var dept = $('#departments').val(),
+    //                                         year = $('#cbo_year').val();
 
-                                            retrieveProcurementItems(dept, year);
-                                    },
-                                    error: function(obj, msg, exception){
-                                        message('Error', 'red', msg + ": " + obj.status + " " + exception);
-                                    }
-                                })
-                            //}
-                        }
-                        else{
-                            $.ajax({
-                                headers: {
-                                    'x-csrf-token': token
-                                },
-                                url: '/ppmp/update/' + attribute,
-                                method: 'POST',
-                                data: {'id': id, 'attr': attribute, 'value': strValue},
-                                dataType: 'HTML',
-                                success: function(result) {
-                                    if (colindex == 2){
-                                        td.closest('tr').find('td:eq(2)').text(strValue);
-                                    }
-                                    else if (colindex == 3){
-                                        td.closest('tr').find('td:eq(3)').text(strValue);
-                                    }
-                                    else if (colindex == 4 || colindex == 5){
-                                        td.closest('tr').find('td:eq(' + colindex + ')').text(strValue);
+    //                                         retrieveProcurementItems(dept, year);
+    //                                 },
+    //                                 error: function(obj, msg, exception){
+    //                                     message('Error', 'red', msg + ": " + obj.status + " " + exception);
+    //                                 }
+    //                             })
+    //                         //}
+    //                     }
+    //                     else{
+    //                         $.ajax({
+    //                             headers: {
+    //                                 'x-csrf-token': token
+    //                             },
+    //                             url: '/ppmp/update/' + attribute,
+    //                             method: 'POST',
+    //                             data: {'id': id, 'attr': attribute, 'value': strValue},
+    //                             dataType: 'HTML',
+    //                             success: function(result) {
+    //                                 if (colindex == 2){
+    //                                     td.closest('tr').find('td:eq(2)').text(strValue);
+    //                                 }
+    //                                 else if (colindex == 3){
+    //                                     td.closest('tr').find('td:eq(3)').text(strValue);
+    //                                 }
+    //                                 else if (colindex == 4 || colindex == 5){
+    //                                     td.closest('tr').find('td:eq(' + colindex + ')').text(strValue);
 
-                                        var dept = $('#departments').val(),
-                                            year = $('#cbo_year').val();
+    //                                     var dept = $('#departments').val(),
+    //                                         year = $('#cbo_year').val();
 
-                                        retrieveProcurementItems(dept, year);
-                                    }
-                                    else if (colindex == 7){
-                                        td.closest('tr').find('td:eq(7)').text(strValue);
-                                    }
+    //                                     retrieveProcurementItems(dept, year);
+    //                                 }
+    //                                 else if (colindex == 7){
+    //                                     td.closest('tr').find('td:eq(7)').text(strValue);
+    //                                 }
                                     
-                                },
-                                error: function(obj, msg, exception){
-                                    message('Error', 'red', msg + ": " + obj.status + " " + exception);
-                                }
-                            })
-                        }
-                    },
-                    cancel: function () {
+    //                             },
+    //                             error: function(obj, msg, exception){
+    //                                 message('Error', 'red', msg + ": " + obj.status + " " + exception);
+    //                             }
+    //                         })
+    //                     }
+    //                 },
+    //                 cancel: function () {
                         
-                    }
-                }
-            });
-        }
-    });
+    //                 }
+    //             }
+    //         });
+    //     }
+    // });
 
     function changeMonth(id, month){
         var status = $(event.target).is(":checked");
@@ -598,6 +623,29 @@
                 $('#basicloader').hide();
             },
             success: function(result) {
+                
+            },
+            error: function(obj, msg, exception){
+                message('Error', 'red', msg + ": " + obj.status + " " + exception);
+            }
+        })
+    }
+
+    function editPPMPItem(id){
+        $.ajax({
+            headers: {
+                'x-csrf-token': token
+            },
+            url: '/ppmp/edititem',
+            method: 'POST',
+            data: {form: 1, id: id},
+            dataType: 'HTML',
+            success: function(result) {
+                $('#itemform').html(result);
+                $('#modal_procurement_item_edit').modal({
+                                    backdrop: 'static',
+                                    keyboard: true, 
+                                    show: true});
                 
             },
             error: function(obj, msg, exception){
@@ -698,6 +746,230 @@
         })
     });
 
+
+    
+</script>
+
+<script>
+    $("body .months").inputmask('decimal');
+    $("body #qty").inputmask('decimal');
+    $("body #price").inputmask('decimal', {'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'});
+    $("body #total").inputmask('decimal', {'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'});
+
+    function compute(){
+        var qty = $(event.target).closest('tr').find('#qty').val();
+        var price = $(event.target).closest('tr').find('#price').val().replace(',', '');
+
+        if (!(qty == '' || qty == 0 || price == '' || price == 0)){
+            var total = parseFloat(qty) * parseFloat(price);
+            $(event.target).closest('tr').find('#total').val(total);
+        }
+    }
+
+    function addProcurement(objectid){
+        
+        var dept = $('#departments').val(),
+            year = $('#cbo_year').val(),
+            itemname = $(event.target).closest('tr').find('#item').val(),
+            unit = $(event.target).closest('tr').find('#unit').val(),
+            object = $('#objects').val(),
+            //qty = $(event.target).closest('tr').find('#qty').val(),
+            price = $(event.target).closest('tr').find('#price').val(),
+            mode = $(event.target).closest('tr').find('#mode').val(),
+            jan = $('#January').val() ? $('#January').val() : 0,
+            feb = $('#February').val() ? $('#February').val() : 0,
+            mar = $('#March').val() ? $('#March').val() : 0,
+            apr = $('#April').val() ? $('#April').val() : 0,
+            may = $('#May').val() ? $('#May').val() : 0,
+            jun = $('#June').val() ? $('#June').val() : 0,
+            jul = $('#July').val() ? $('#July').val() : 0,
+            aug = $('#August').val() ? $('#August').val() : 0,
+            sep = $('#September').val() ? $('#September').val() : 0,
+            oct = $('#October').val() ? $('#October').val() : 0,
+            nov = $('#November').val() ? $('#November').val() : 0,
+            dec = $('#December').val() ? $('#December').val() : 0;
+        var per_month_total = parseInt(jan) + parseInt(feb) + parseInt(mar) + parseInt(apr) + parseInt(may) + parseInt(jun) + parseInt(jul) + parseInt(aug) + parseInt(sep) + parseInt(oct) + parseInt(nov) + parseInt(dec);
+        
+        if (itemname == ''){
+            message('Error', 'red',"Please select / provide an item name!");
+        }
+        else if (unit == ''){
+            message('Error', 'red',"Please select / provide unit of measurement!");
+        }
+        // else if (qty == ''){
+        //     message('Error', 'red',"Please enter an item quantity!");
+        // }
+        else if (price == ''){
+            message('Error', 'red',"Please enter an item price!");
+        }
+        else if (mode == ''){
+            message('Error', 'red',"Please select mode of procurement!");
+        }
+        else if (parseInt(per_month_total) < 1){
+            message('Error', 'red',"Please select a month and provide its quantity for this item!");
+        }
+        // else if (parseInt(per_month_total) > parseInt(qty)){
+        //     message('Error', 'red',"Quantity allocated per month is more than the item quantity entered!");
+        // }
+        // else if (parseInt(per_month_total) < parseInt(qty)){
+        //     message('Error', 'red',"Quantity allocated per month is less than the item quantity entered!");
+        // }
+        else{
+            $.ajax({
+                headers: {
+                    'x-csrf-token': token
+                },
+                url: '/ppmp/create',
+                method: 'POST',
+                data: {
+                    'dept': dept,
+                    'year': year,
+                    'itemname': itemname,
+                    'object': objectid,
+                    'unit': unit,
+                    'qty': per_month_total,
+                    'price': price,
+                    'mode': mode,
+                    'January': jan,
+                    'February': feb,
+                    'March': mar,
+                    'April': apr,
+                    'May': may,
+                    'June': jun,
+                    'July': jul,
+                    'August': aug,
+                    'September': sep,
+                    'October': oct,
+                    'November': nov,
+                    'December': dec
+                },
+                setCookies: token,
+                dataType: "JSON",
+                beforeSend: function() {
+                    $('#basicloader').show();
+                },
+                complete: function(){
+                    $('#basicloader').hide();
+                },
+                success: function(result) {
+                    if (result.result == 1){
+                        retrieveProcurementItems(dept, year);
+                    }
+                    else{
+                        message(result.result, result.color, result.message);
+                    }
+                },
+                error: function(obj, msg, exception){
+                    message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                }
+            })
+        }
+    }
+
+    $('#btn-update-procurement-item').on('click', function(){
+        var id = $('#proc_item_id').val(),
+            itemname = $('#eitem').val(),
+            unit = $('#eunit').val(),
+            //qty = $('#eqty').val(),
+            price = $('#eprice').val(),
+            mode = $('#emode').val(),
+            jan = $('#eJanuary').val() ? $('#eJanuary').val() : 0,
+            feb = $('#eFebruary').val() ? $('#eFebruary').val() : 0,
+            mar = $('#eMarch').val() ? $('#eMarch').val() : 0,
+            apr = $('#eApril').val() ? $('#eApril').val() : 0,
+            may = $('#eMay').val() ? $('#eMay').val() : 0,
+            jun = $('#eJune').val() ? $('#eJune').val() : 0,
+            jul = $('#eJuly').val() ? $('#eJuly').val() : 0,
+            aug = $('#eAugust').val() ? $('#eAugust').val() : 0,
+            sep = $('#eSeptember').val() ? $('#eSeptember').val() : 0,
+            oct = $('#eOctober').val() ? $('#eOctober').val() : 0,
+            nov = $('#eNovember').val() ? $('#eNovember').val() : 0,
+            dec = $('#eDecember').val() ? $('#eDecember').val() : 0;
+        var per_month_total = parseInt(jan) + parseInt(feb) + parseInt(mar) + parseInt(apr) + parseInt(may) + parseInt(jun) + parseInt(jul) + parseInt(aug) + parseInt(sep) + parseInt(oct) + parseInt(nov) + parseInt(dec);
+        
+        if (itemname == ''){
+            message('Error', 'red',"Please select / provide an item name!");
+        }
+        else if (unit == ''){
+            message('Error', 'red',"Please select / provide unit of measurement!");
+        }
+        // else if (qty == ''){
+        //     message('Error', 'red',"Please enter an item quantity!");
+        // }
+        else if (price == ''){
+            message('Error', 'red',"Please enter an item price!");
+        }
+        else if (mode == ''){
+            message('Error', 'red',"Please select mode of procurement!");
+        }
+        else if (parseInt(per_month_total) < 1){
+            message('Error', 'red',"Please select a month and provide its quantity for this item!");
+        }
+        // else if (parseInt(per_month_total) > parseInt(qty)){
+        //     message('Error', 'red',"Quantity allocated per month is more than the item quantity entered!");
+        // }
+        // else if (parseInt(per_month_total) < parseInt(qty)){
+        //     message('Error', 'red',"Quantity allocated per month is less than the item quantity entered!");
+        // }
+        else{
+            $.ajax({
+                headers: {
+                    'x-csrf-token': token
+                },
+                url: '/ppmp/edititem',
+                method: 'POST',
+                data: {
+                    form: 0, 
+                    id: id,
+                    itemname: itemname,
+                    unit: unit,
+                    qty: per_month_total,
+                    price: price,
+                    mode: mode,
+                    January: jan,
+                    February: feb,
+                    March: mar,
+                    April: apr,
+                    May: may,
+                    June: jun,
+                    July: jul,
+                    August: aug,
+                    September: sep,
+                    October: oct,
+                    November: nov,
+                    December: dec
+                },
+                dataType: 'HTML',
+                success: function(result) {
+                    var dept = $('#departments').val(),
+                        year = $('#cbo_year').val();
+
+                    if (result == 1){
+                        $.alert({
+                            title: 'Updated!',
+                            type: 'blue',
+                            content: "Procured item info successfully updated!",
+                            buttons: {
+                                ok: function(){
+                                    retrieveProcurementItems(dept, year);
+                                }
+                            }
+                            })
+                    }
+                    else{
+                        $('#itemform').html(result);
+                        $('#modal_procurement_item_edit').modal({
+                                        backdrop: 'static',
+                                        keyboard: true, 
+                                        show: true});
+                    }
+                },
+                error: function(obj, msg, exception){
+                    message('Error', 'red', msg + ": " + obj.status + " " + exception);
+                }
+            })
+        }
+    })
 
     
 </script>

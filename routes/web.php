@@ -37,6 +37,7 @@ Route::get('ppmp', [ProcurementController::class, 'index']);
 Route::post('ppmp/itemlist', [ProcurementController::class, 'itemList']);
 Route::post('ppmp/itemlistforupdate', [ProcurementController::class, 'itemListForUpdate']);
 Route::post('ppmp/create', [ProcurementController::class, 'create']);
+Route::post('ppmp/edititem', [ProcurementController::class, 'editProcurementItem']);
 Route::post('ppmp/replaceitem', [ProcurementController::class, 'replaceItem']);
 Route::post('ppmp/procurementlist', [ProcurementController::class, 'retrieveProcurementList']);
 Route::post('ppmp/update/{attribute}', [ProcurementController::class, 'update']);

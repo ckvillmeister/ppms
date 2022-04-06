@@ -346,19 +346,23 @@ class ProcurementController extends Controller
         $settings = Settings::all();
         $deptid = ($request->input('deptid')) ? ($request->input('deptid')) : 0;
         $year = ($request->input('year')) ? ($request->input('year')) : $settings[1]->setting_description;
-        $objects = DepartmentBudget::with('object')->where('department', $deptid)->where('year', $year)->where('amount', '<>', 0)->orderBy('object', 'ASC')->get();
+        $objects = DepartmentBudget::with('object')->where('department', $deptid)->where('year', $year)->where('amount', '<>', 0)->where('status', '<>', 0)->orderBy('object', 'ASC')->get();
     
         return view('ppmp.budgetedobjs', array('objects' => $objects));
     }
 
-    public function getNewProcurementForm(){
+    public function getNewProcurementForm(Request $request){
+        $objectid = ($request->input('objectid')) ? ($request->input('objectid')) : 0;
         $items = Items::where('status', 1)->get();
         $units = Units::where('status', 1)->get();
         $modes = Lists::$modes;
+        $months = Lists::$months;
         return view('ppmp.newprocurement', [
             'items' => $items,
             'units' => $units,
-            'modes' => $modes
+            'modes' => $modes,
+            'objectid' => $objectid,
+            'months' => $months
         ]);
     }
 
@@ -616,6 +620,73 @@ class ProcurementController extends Controller
         }
 
         return 1;
+    }
+
+    public function editProcurementItem(Request $request){
+        $form = ($request->input('form')) ? $request->input('form') : 0;
+        $id = ($request->input('id')) ? $request->input('id') : 0;
+
+        if ($form){
+            $items = Items::where('status', 1)->get();
+            $units = Units::where('status', 1)->get();
+            $modes = Lists::$modes;
+            $months = Lists::$months;
+            $item_info = DB::table('procurement_items')->where('id', '=', $id)->first();
+            return view('ppmp.editprocurement', [
+                'id' => $id, 
+                'info' => $item_info,
+                'items' => $items,
+                'units' => $units,
+                'modes' => $modes,
+                'months' => $months
+            ]);
+        }
+        else{
+            $id = ($request->input('id')) ? $request->input('id') : 0;
+            $itemname = ($request->input('itemname')) ? trim($request->input('itemname')) : '';
+            $unit = ($request->input('unit')) ?  trim($request->input('unit')) : 0;
+            $quantity = ($request->input('qty')) ? $request->input('qty') : 0;
+            $price = ($request->input('price')) ? str_replace(',','', $request->input('price')) : 0;
+            $mode = ($request->input('mode')) ?  trim($request->input('mode')) : '';
+            $jan = ($request->input('January')) ? $request->input('January') : 0;
+            $feb = ($request->input('February')) ? $request->input('February') : 0;
+            $mar = ($request->input('March')) ? $request->input('March') : 0;
+            $apr = ($request->input('April')) ? $request->input('April') : 0;
+            $may = ($request->input('May')) ? $request->input('May') : 0;
+            $jun = ($request->input('June')) ? $request->input('June') : 0;
+            $jul = ($request->input('July')) ? $request->input('July') : 0;
+            $aug = ($request->input('August')) ? $request->input('August') : 0;
+            $sep = ($request->input('September')) ? $request->input('September') : 0;
+            $oct = ($request->input('October')) ? $request->input('October') : 0;
+            $nov = ($request->input('November')) ? $request->input('November') : 0;
+            $dec = ($request->input('December')) ? $request->input('December') : 0;
+
+            DB::table('procurement_items')
+                ->where('id', '=', $id)
+                ->update([  
+                    'itemname' => $itemname,
+                    'unit' => $unit,    
+                    'quantity' => $quantity,
+                    'price' => $price,
+                    'mode' => $mode,
+                    'january' => $jan,
+                    'february' => $feb,
+                    'march' => $mar,
+                    'april' => $apr,
+                    'may' => $may,
+                    'june' => $jun,
+                    'july' => $jul,
+                    'august' => $aug,
+                    'september' => $sep,
+                    'october' => $oct,
+                    'november' => $nov,
+                    'december' => $dec,
+                    'status' => 1
+                ]);
+            return 1;
+        }
+        
+
     }
     
 }

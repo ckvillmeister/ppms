@@ -1,4 +1,4 @@
-<div class="row mt-3">
+<!-- <div class="row mt-3">
     <div class="col-lg-6">
         <select class="form form-control form-control-sm" id="objects" style="width:100%">
             <option value="" data-amount=''> - Object of Expenditures - </option>
@@ -12,7 +12,7 @@
             <input type="text" class="form form-control form-control-sm bg-white text-right" id="text-approved-amount" readonly="readonly">
         </div>
     </div>
-</div>
+</div>-->
 <div class="row mt-3">
     <div class="col-lg-12">
         <div class="float-right">
@@ -21,7 +21,7 @@
         </div>
     </div>
 </div>
-<br>
+<br> 
 <script src="{{ asset('adminlte/plugins/table2excel/js/table2excel.js') }}"></script>
 <script>
     $("#text-approved-amount").inputmask('decimal', {'alias': 'decimal', 'groupSeparator': ',', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0'});

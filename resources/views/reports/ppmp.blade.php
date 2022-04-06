@@ -55,8 +55,10 @@
 <br>
 <div class="row header">
     <div class="col-lg-6 col-6">
-        <strong>MUNICIPALITY OF TRINIDAD</strong><br>
-        Name of LGU
+        <img style="position: absolute; z-index: 1" src="{{ asset('/images/TrinidadLogo.png') }}" height="50" width="50"><br>
+        <div style="margin-left:55px">
+        <strong>MUNICIPALITY OF TRINIDAD</strong><br>Name of LGU
+        </div>
     </div>
     <div class="col-lg-5 col-5">
         <div class="float-right">

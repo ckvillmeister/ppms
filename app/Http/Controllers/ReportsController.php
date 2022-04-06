@@ -163,12 +163,25 @@ class ReportsController extends Controller
                             ->get();
 
             foreach ($items as $item){
-                $sched = ProcurementSchedule::where('item', $item->id)->where('status', 1)->first();
+                $proc_item_info = DB::table('procurement_items AS pitems')
+                    ->join('procurement_info AS pinfo', 'pinfo.id', '=', 'pitems.procurement_id')
+                    ->select('pitems.*')
+                    ->where('pitems.itemname', '=', $item->itemname)
+                    ->where('pinfo.year', '=', $year)
+                    ->where('pitems.status', '=', 1)
+                    ->get();
+                $item->sched = 0;
+                if (count($proc_item_info) >= 1){
+                    foreach($proc_item_info as $proc_item){
+                        $sched = ProcurementSchedule::where('item', $proc_item->id)->where('status', 1)->first();
+
+                        if ($sched){
+                            $item->sched = $sched;
+                            break;
+                        }
+                    }
+                }
                 
-                // if ($item->id == 7){
-                //     dd('asd');
-                // }
-                $item->sched = $sched;
             }
 
             return view('reports.app_dbm', array('settings' => $settings, 'items' => $items));

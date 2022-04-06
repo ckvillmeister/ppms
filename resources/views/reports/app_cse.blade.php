@@ -196,7 +196,7 @@
                             @endif
                             @if ($rem_qty)
                                 @if ($item->june)
-                                    @php ($qtyjune += 1)
+                                    @php ($qtyjun += 1)
                                     @php ($rem_qty -= 1)
                                 @endif
                             @endif

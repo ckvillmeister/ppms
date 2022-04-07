@@ -94,7 +94,11 @@ class ReportsController extends Controller
 
         foreach ($items as $item){
             $aip = DepartmentBudget::where('department', $dept)->where('object', $item->object)->where('year', $year)->first();
-            $item->aipcode = $aip->aipcode;
+            $item->aipcode = '';
+            
+            if ($aip){
+                $item->aipcode = $aip->aipcode;
+            }
         }
 
         $months = Lists::$months;

@@ -380,7 +380,7 @@ class ProcurementController extends Controller
             ->where('procurement_items.status', '<>', 0)
             ->get();
 
-        $objects = DepartmentBudget::with(['object', 'aipcode'])->where('department', $deptid)->where('year', $year)->where('amount', '<>', 0)->orderBy('object', 'ASC')->get();
+        $objects = DepartmentBudget::with(['object', 'aipcode'])->where('department', $deptid)->where('year', $year)->where('amount', '<>', 0)->where('status', 1)->orderBy('object', 'ASC')->get();
         return view('ppmp.procurementlist', array('items' => $items, 'objects' => $objects, 'months' => Lists::$months, 'mode' => Lists::$modes));
     }
 
@@ -687,6 +687,13 @@ class ProcurementController extends Controller
         }
         
 
+    }
+
+    public function getProcurementSchedule(Request $request){
+        $id = ($request->input('id')) ? $request->input('id') : 0;
+        $sched = '';
+        $sched = ProcurementSchedule::where('item', $id)->where('status', 1)->first();
+        return json_encode($sched);
     }
     
 }

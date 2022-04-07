@@ -51,6 +51,7 @@ Route::post('ppmp/getnewprocurementform', [ProcurementController::class, 'getNew
 Route::post('ppmp/getitems', [ProcurementController::class, 'getItems']);
 Route::post('ppmp/getunits', [ProcurementController::class, 'getUnits']);
 Route::post('ppmp/setprocsched', [ProcurementController::class, 'setProcurementSchedule']);
+Route::post('ppmp/getprocsched', [ProcurementController::class, 'getProcurementSchedule']);
 
 
 //Route::get('reports', [ReportsController::class, 'index']);

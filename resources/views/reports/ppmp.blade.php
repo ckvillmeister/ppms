@@ -249,7 +249,7 @@
                         
                         <td class="text-center">{{ $no++ }}</td>
                         <td></td>
-                        <td class="text-center">{{ $item->itemname }}</td>
+                        <td class="">{{ $item->itemname }}</td>
                         <td class="text-center">{{ $item->unit }}</td>
                         <td class="text-center">{{ $item->total_qty }}</td>
                         <td class="numerical-cols">{{ number_format($item->unit_price, 2) }}</td>

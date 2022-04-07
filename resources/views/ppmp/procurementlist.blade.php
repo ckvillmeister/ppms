@@ -209,7 +209,7 @@
         </tr>
     </tbody>
 </table>
-
+<br>
 <div class="modal fade" id="modal_item_list" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog" role="document">
     <div class="modal-content">
@@ -701,11 +701,39 @@
     $('#btn-show-set-schedule').on('click', function(){
         var id = $(this).val();
 
-        $('#btn-submit-procurement-sched').val(id);
-        $('#modal_procurement_schedule').modal({
-                                    backdrop: 'static',
-                                    keyboard: true, 
-                                    show: true});
+        $.ajax({
+            headers: {
+                'x-csrf-token': token
+            },
+            url: '/ppmp/getprocsched',
+            method: 'POST',
+            data: {'id': id},
+            dataType: 'JSON',
+            success: function(result) {
+                $('#advertisement').val('');
+                $('#bidding').val('');
+                $('#award').val('');
+                $('#contract_signing').val('');
+
+                if (result){
+                    $('#advertisement').val(result['advertisement']);
+                    $('#bidding').val(result['bidding']);
+                    $('#award').val(result['award']);
+                    $('#contract_signing').val(result['contract_signing']);
+                }
+                
+                $('#btn-submit-procurement-sched').val(id);
+                $('#modal_procurement_schedule').modal({
+                                            backdrop: 'static',
+                                            keyboard: true, 
+                                            show: true});
+            },
+            error: function(obj, msg, exception){
+                message('Error', 'red', msg + ": " + obj.status + " " + exception);
+            }
+        })
+
+        
     });
 
     $('#btn-submit-procurement-sched').on('click', function(){

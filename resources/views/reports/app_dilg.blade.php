@@ -237,7 +237,7 @@
         </table>
     </div>
 </div>
-
+<br><br><br>
 <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
 <script>
 </script>
